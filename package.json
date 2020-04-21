@@ -34,6 +34,7 @@
     "prebuild": "npm run test",
     "pretest": "npm run lint",
     "prepublishOnly": "npm run build",
+    "jest": "jest",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint -c .eslintrc.js --ext .ts src && tsc --noEmit --project tsconfig.json",

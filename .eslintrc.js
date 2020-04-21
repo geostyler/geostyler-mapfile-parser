@@ -115,7 +115,8 @@ module.exports = {
                     "profile",
                     "profileEnd",
                     "timeStamp",
-                    "context"
+                    "context",
+                    "log",
                 ]
             }
         ],
