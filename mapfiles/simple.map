@@ -1,0 +1,13 @@
+LAYER
+  NAME "my_layer"
+  TYPE POINT
+  DATA "points.shp"
+  CLASS
+    NAME "Test point"
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 255 0
+      SIZE 15
+    END
+  END
+END

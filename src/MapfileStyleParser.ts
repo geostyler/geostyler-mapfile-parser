@@ -1,3 +1,5 @@
+const mapfile2js = require('./mapfile2js/index'); // eslint-disable-line
+const parse = mapfile2js.parse;
 import {
   StyleParser,
   Style
@@ -37,10 +39,8 @@ export class MapfileStyleParser implements StyleParser {
   readStyle(mapfile: string): Promise<Style> {
     return new Promise<Style>((resolve, reject) => {
       try {
-        const geostylerStyle: Style = {
-          name: 'TODO',
-          rules: []
-        };
+        const mapfileObject: { [s: string]: any }[] = parse(mapfile);
+        const geostylerStyle = this.mapfileObjectToGeoStylerStyle(mapfileObject);
         resolve(geostylerStyle);
       } catch (error) {
         reject(error);
@@ -65,6 +65,18 @@ export class MapfileStyleParser implements StyleParser {
         reject(error);
       }
     });
+  }
+
+  /**
+   * TODO
+   */
+  mapfileObjectToGeoStylerStyle(mapfileObject: { [s: string]: any }[]): Style {
+    console.log(mapfileObject);
+    const geostylerStyle: Style = {
+      name: 'TODO',
+      rules: []
+    };
+    return geostylerStyle;
   }
 }
 

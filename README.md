@@ -8,4 +8,4 @@
 
 ### How to use
 
-TODO
+Not useable now, wait on the first release.

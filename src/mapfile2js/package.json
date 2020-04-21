@@ -1,0 +1,22 @@
+{
+  "name": "mapfile2js",
+  "version": "0.0.1",
+  "description": "MapServer Mapfile parser and builder for Node.js",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stadt-bielefeld/mapfile2js.git"
+  },
+  "author": "Jens Brokfeld <jens.brokfeld@bielefeld.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stadt-bielefeld/mapfile2js/issues"
+  },
+  "homepage": "https://github.com/stadt-bielefeld/mapfile2js#readme"
+}
