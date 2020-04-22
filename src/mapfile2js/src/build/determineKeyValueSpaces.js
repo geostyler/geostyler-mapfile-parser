@@ -1,37 +1,31 @@
-
 /**
  * Determines the spaces between key and value
  * @param {array} obj Array of line objects
  * @param {number} tabSize Tab size in spaces
  */
 function determineKeyValueSpaces(obj, tabSize) {
-
   let lastDepth = 0;
   let spacesIndex = 0;
 
   let spaces = [];
 
-    //iterate over all lines
+  //iterate over all lines
   obj.forEach((line) => {
-
     if (lastDepth !== line.depth) {
       spacesIndex++;
     }
 
     //key found
     if (line.key) {
-
       //value found
       if (line.value) {
-
         //block line found
         if (line.isBlockLine) {
-          line.keyValueSpaces = ' ';
+          line.keyValueSpaces = " ";
         } else {
-
           if (!spaces[spacesIndex]) {
             spaces[spacesIndex] = {
-              maxKeyLength: 1
+              maxKeyLength: 1,
             };
           }
 
@@ -54,24 +48,22 @@ function determineKeyValueSpaces(obj, tabSize) {
 
   //iterate over all lines
   obj.forEach((line) => {
-    
     if (lastDepth !== line.depth) {
       spacesIndex++;
     }
 
     //key found
     if (line.key) {
-
       //value found
       if (line.value) {
-
         //block line found
         if (!line.isBlockLine) {
-          if(spaces[spacesIndex]){
-            let numSpaces = spaces[spacesIndex].maxKeyLength - line.key.length + tabSize;
-            line.keyValueSpaces = '';
+          if (spaces[spacesIndex]) {
+            let numSpaces =
+              spaces[spacesIndex].maxKeyLength - line.key.length + tabSize;
+            line.keyValueSpaces = "";
             for (let i = 0; i < numSpaces; i++) {
-              line.keyValueSpaces += ' ';
+              line.keyValueSpaces += " ";
             }
           }
         }
@@ -79,13 +71,11 @@ function determineKeyValueSpaces(obj, tabSize) {
     }
 
     lastDepth = line.depth;
-
   });
 
   console.log(obj);
 
   return obj;
 }
-
 
 module.exports = determineKeyValueSpaces;

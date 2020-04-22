@@ -1,7 +1,5 @@
-
-
 function log(level, msg, err) {
-  let msg = level + ': ' + msg;
+  let msg = `${level}': '${msg}`;
   console.log(msg);
 }
 

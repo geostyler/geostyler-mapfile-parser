@@ -1,40 +1,41 @@
 /**
- * 
+ *
  * @param {array} lines Array of line objects
  */
 function checkBlockEndSum(lines) {
-
-
   let blockCounter = 0;
   let endCounter = 0;
 
-  for (let i = 0; i < lines.length; i++) {
-    let l = lines[i];
-
-    if (l.isBlockLine) {
+  lines.forEach((line) => {
+    if (line.isBlockLine) {
       blockCounter++;
       endCounter++;
     } else {
-      if (l.isBlockKey) {
+      if (line.isBlockKey) {
         blockCounter++;
       } else {
-        if (l.key) {
-          if (l.key.toUpperCase() === 'END') {
+        if (line.key) {
+          if (line.key.toUpperCase() === "END") {
             endCounter++;
           }
         }
       }
     }
-  }
+  });
+
+  //endCounter += 1; // account for removed END of PROJECTION
 
   if (blockCounter !== endCounter) {
     if (blockCounter < endCounter) {
-      throw new Error('Too many ends (blocks: ' + blockCounter + ', ends: ' + endCounter + ').');
+      throw new Error(
+        `Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`
+      );
     } else {
-      throw new Error('Too few ends (blocks: ' + blockCounter + ', ends: ' + endCounter + ').');
+      throw new Error(
+        `Too few ends (blocks: ${blockCounter}, ends: ${endCounter}).`
+      );
     }
   }
-
 }
 
 module.exports = checkBlockEndSum;

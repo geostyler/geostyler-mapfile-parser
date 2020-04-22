@@ -1,93 +1,89 @@
-
-const obj = {
-  "num": 1,
-  "content": "MAP # aaa",
-  "isEmpty": false,
-  "isComment": false,
-  "includesComment": true,
-  "comment": "aaa",
-  "contentWithoutComment": "MAP"
-};
-
-const checkComment = require(__dirname + '/parse/checkComment.js');
-const checkKeyValue = require(__dirname + '/parse/checkKeyValue.js');
-const checkBlockKey = require(__dirname + '/parse/checkBlockKey.js');
-const checkBlockEndSum = require(__dirname + '/parse/checkBlockEndSum.js');
-const determineDepth = require(__dirname + '/parse/determineDepth.js');
-
-const regExpWhitespace = new RegExp('\\s');
-
-const defaultOptions = {
-  quotes: '"'
-}
+const checkComment = require(`${__dirname}/parse/checkComment.js`);
+const checkKeyValue = require(`${__dirname}/parse/checkKeyValue.js`);
+const checkBlockKey = require(`${__dirname}/parse/checkBlockKey.js`);
+const parseBlockKey = require(`${__dirname}/parse/parseBlockKey.js`);
+const checkBlockEndSum = require(`${__dirname}/parse/checkBlockEndSum.js`);
+const determineDepth = require(`${__dirname}/parse/determineDepth.js`);
 
 /**
  * Parses a MapServer Mapfile to a JavaScript object.
- * @param {string} c Content of a MapServer Mapfile
- * @returns {array}
+ * @param {string} content Content of a MapServer Mapfile
+ * @returns {Object}
  */
-function parse(c) {
+function parse(content) {
+  let result = {};
+  let lineobjects = [];
 
-  let ret = [];
+  // stack to keep track of blocks
+  let blocks = [result];
 
   // replace windows line breaks with linux line breaks
-  let c1 = c.replace(new RegExp('[\r][\n]', 'g'), '\n');
+  content = content.replace(new RegExp("[\r][\n]", "g"), "\n");
 
-  // split string to line array
-  let c2 = c1.split('\n');
+  // split content into lines
+  let lines = content.split("\n");
 
-  for (let i = 0; i < c2.length; i++) {
+  lines.forEach((line, index, lines) => {
 
-    //line object
+    // line object
     let lo = {};
 
-    // line
-    let l = c2[i];
+    // line content
+    lo.content = line.trim();
 
-    // trim line
-    let l1 = l.trim();
+    // remove qutes (TODO: may need to preserve? fuse with switchQotes.js)
+    lo.content = lo.content.replace(/"/g, "");
 
-    // set line number
-    lo.num = i + 1;
-
-    // set original line
-    lo.content = l1;
-
-    // check empty line
-    if (l1 === '') {
-      lo.isEmpty = true;
-    } else {
-      lo.isEmpty = false;
-
-      // check line comment
-      if (l1.startsWith('#')) {
-        lo.isComment = true;
-        lo.comment = lo.content.substring(1,lo.content.length).trim();
-      } else {
-        lo.isComment = false;
-
-        // Check included comments
-        lo = Object.assign(lo, checkComment(l1));
-
-        // check key value
-        lo = Object.assign(lo, checkKeyValue(lo.contentWithoutComment));
-
-        // check block key
-        lo = Object.assign(lo, checkBlockKey(lo));
-        
-    
-      }
+    // omit empty lines and comments
+    if (lo.content === "" || lo.content.startsWith("#")) {
+      console.warn(`Omited line [${index + 1}]: ${lo.content}`);
+      return;
     }
 
-    //console.log(lo);
+    // check included comments
+    lo = Object.assign(lo, checkComment(lo.content));
 
-    ret.push(lo);
-  }
+    // check key value
+    lo = Object.assign(lo, checkKeyValue(lo.contentWithoutComment));
 
-  checkBlockEndSum(ret);
-  determineDepth(ret);
+    // check block key
+    lo = Object.assign(lo, checkBlockKey(lo));
 
-  return ret;
+    // store lineobjects
+    lineobjects.push(lo);
+
+    // increase ergonomics (mapfile is case insensitive)
+    lo.key = lo.key.toLowerCase();
+
+    // handle block keys
+    if (lo.isBlockKey) {
+      parseBlockKey(lo, index, lines, blocks);
+      return;
+    }
+
+    // handle block end
+    if (lo.key === "end") {
+      // pop current block
+      blocks.pop();
+      return;
+    }
+
+    // insert key value pair
+    let current_block = blocks[blocks.length - 1];
+    if (lo.key in current_block) {
+      console.warn(`Duplicate key on line [${i + 1}]: ${lo.content}`);
+      console.error("Overwriting existing key! consider an array!");
+    }
+    current_block[lo.key] = lo.value;
+  });
+
+  checkBlockEndSum(lineobjects);
+  determineDepth(lineobjects);
+
+  // insert MAP block if not existent for consistency
+  result = !("map" in result) ? {map: result} : result
+
+  return result;
 }
 
 module.exports = parse;

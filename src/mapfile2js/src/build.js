@@ -1,16 +1,12 @@
-
-
-
-const determineTabs = require(__dirname + '/build/determineTabs.js');
-const determineKeyValueSpaces = require(__dirname + '/build/determineKeyValueSpaces.js');
-
+const determineTabs = require(`${__dirname}/build/determineTabs.js`);
+const determineKeyValueSpaces = require(`${__dirname}/build/determineKeyValueSpaces.js`);
 
 const defaultOptions = {
-  "tabSize": 2,
-  "lineBreak": "\n",
-  "comments": true,
-  "commentPrefix": " ",
-  "emptyLines": true
+  tabSize: 2,
+  lineBreak: "\n",
+  comments: true,
+  commentPrefix: " ",
+  emptyLines: true,
 };
 
 /**
@@ -29,12 +25,12 @@ function build(obj, options) {
   let opt = Object.assign(defaultOptions, options);
 
   // mapfile content
-  let map = '';
+  let map = "";
 
   // determine one tab with spaces
-  let tab = '';
+  let tab = "";
   for (let i = 0; i < opt.tabSize; i++) {
-    tab += ' ';
+    tab += " ";
   }
 
   //determine key-value-spaces
@@ -42,7 +38,6 @@ function build(obj, options) {
 
   //iterate over all lines
   obj.forEach((line) => {
-
     //Add empty lines
     if (line.isEmpty) {
       if (opt.emptyLines) {
@@ -52,7 +47,8 @@ function build(obj, options) {
       //Add comment lines
       if (line.isComment) {
         if (opt.comments) {
-          map += determineTabs(line, tab) + '#' + opt.commentPrefix + line.comment + opt.lineBreak;
+          map +=
+            `${determineTabs(line, tab)}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
         }
       } else {
         //Add key
@@ -71,7 +67,8 @@ function build(obj, options) {
                 map += line.keyValueSpaces + line.value;
                 if (opt.comments) {
                   if (line.comment) {
-                    map += tab + '#' + opt.commentPrefix + line.comment + opt.lineBreak;
+                    map +=
+                      `${tab}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
                   } else {
                     map += opt.lineBreak;
                   }
@@ -82,17 +79,12 @@ function build(obj, options) {
                 //Without comments
                 map += line.keyValueSpaces + line.value + opt.lineBreak;
               }
-
             }
           }
         }
-
-
       }
     }
-
   });
-
 
   return map;
 }
