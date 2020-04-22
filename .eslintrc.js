@@ -117,6 +117,7 @@ module.exports = {
                     "timeStamp",
                     "context",
                     "log",
+                    "error",
                 ]
             }
         ],

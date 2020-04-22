@@ -12,7 +12,7 @@ function determineDepth(obj) {
       depth++;
     } else {
       if (line.key) {
-        if (line.key.toUpperCase() === "END") {
+        if (line.key.toUpperCase() === 'END') {
           depth--;
           line.depth = depth;
         }

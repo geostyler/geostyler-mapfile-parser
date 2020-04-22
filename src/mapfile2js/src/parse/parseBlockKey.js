@@ -7,47 +7,44 @@
  */
 
 // there can be multiple layer, class and style block siblings
-const multi_block_keys = ["layer", "class", "style"];
+const multiBlockKeys = ['layer', 'class', 'style'];
 
-function parseBlockKey(lo, index, lines, blocks) {
-  const current_block = blocks[blocks.length - 1];
+function parseBlockKey(lineObject, index, currentBlock) {
 
   // can not handle block lines
-  if (lo.isBlockLine) {
-    console.warn(`Block line [${i + 1}]: ${lo.content}`);
-    console.error("Not able to deal with block line yet!");
+  if (lineObject.isBlockLine) {
+    console.warn(`Block line [${index + 1}]: ${lineObject.content}`);
+    console.error('Not able to deal with block line yet!');
     return;
   }
 
   // work around projection imitating a block
-  if (lo.key.toUpperCase() === "PROJECTION") {
-    current_block[lo.key] = lines[index + 1].trim().replace(/"/g, "");
-    lines.splice(index + 1, 2); // hack to jump over end, fails if projection is multiline
+  if (lineObject.key.toUpperCase() === 'PROJECTION') {
     return;
   }
 
   // handle multi block keys
-  if (multi_block_keys.includes(lo.key)) {
-    if (!(lo.key in current_block)) {
+  if (multiBlockKeys.includes(lineObject.key)) {
+    if (!(lineObject.key in currentBlock)) {
       // add list
-      current_block[lo.key] = [];
+      currentBlock[lineObject.key] = [];
     }
     // add block to list
-    current_block[lo.key].push({});
+    currentBlock[lineObject.key].push({});
 
-    // push to stack
-    blocks.push(current_block[lo.key][current_block[lo.key].length - 1]);
+    // return new block
+    return currentBlock[lineObject.key][currentBlock[lineObject.key].length - 1];
+
   } else {
     // check for duplicate block key
-    if (lo.key in current_block) {
-      console.error(`Overwriting block! Add '${lo.key}' to multi block keys!`);
+    if (lineObject.key in currentBlock) {
+      console.error(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
     }
     // create block
-    current_block[lo.key] = {};
-    // push to stack
-    blocks.push(current_block[lo.key]);
+    currentBlock[lineObject.key] = {};
+    // return new block
+    return currentBlock[lineObject.key];
   }
-  return;
 }
 
 module.exports = parseBlockKey;

@@ -15,7 +15,7 @@ function checkBlockEndSum(lines) {
         blockCounter++;
       } else {
         if (line.key) {
-          if (line.key.toUpperCase() === "END") {
+          if (line.key.toUpperCase() === 'END') {
             endCounter++;
           }
         }
@@ -23,17 +23,13 @@ function checkBlockEndSum(lines) {
     }
   });
 
-  //endCounter += 1; // account for removed END of PROJECTION
+  // endCounter += 1; // account for removed END of PROJECTION
 
   if (blockCounter !== endCounter) {
     if (blockCounter < endCounter) {
-      throw new Error(
-        `Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`
-      );
+      throw new Error(`Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`);
     } else {
-      throw new Error(
-        `Too few ends (blocks: ${blockCounter}, ends: ${endCounter}).`
-      );
+      throw new Error(`Too few ends (blocks: ${blockCounter}, ends: ${endCounter}).`);
     }
   }
 }

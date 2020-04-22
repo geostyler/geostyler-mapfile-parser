@@ -7,21 +7,21 @@ function determineKeyValueSpaces(obj, tabSize) {
   let lastDepth = 0;
   let spacesIndex = 0;
 
-  let spaces = [];
+  const spaces = [];
 
-  //iterate over all lines
+  // iterate over all lines
   obj.forEach((line) => {
     if (lastDepth !== line.depth) {
       spacesIndex++;
     }
 
-    //key found
+    // key found
     if (line.key) {
-      //value found
+      // value found
       if (line.value) {
-        //block line found
+        // block line found
         if (line.isBlockLine) {
-          line.keyValueSpaces = " ";
+          line.keyValueSpaces = ' ';
         } else {
           if (!spaces[spacesIndex]) {
             spaces[spacesIndex] = {
@@ -29,7 +29,7 @@ function determineKeyValueSpaces(obj, tabSize) {
             };
           }
 
-          //determine maxKeyLength
+          // determine maxKeyLength
           if (spaces[spacesIndex].maxKeyLength < line.key.length) {
             if (spaces[spacesIndex].maxKeyLength < line.key.length) {
               spaces[spacesIndex].maxKeyLength = line.key.length;
@@ -46,24 +46,23 @@ function determineKeyValueSpaces(obj, tabSize) {
   lastDepth = 0;
   spacesIndex = 0;
 
-  //iterate over all lines
+  // iterate over all lines
   obj.forEach((line) => {
     if (lastDepth !== line.depth) {
       spacesIndex++;
     }
 
-    //key found
+    // key found
     if (line.key) {
-      //value found
+      // value found
       if (line.value) {
-        //block line found
+        // block line found
         if (!line.isBlockLine) {
           if (spaces[spacesIndex]) {
-            let numSpaces =
-              spaces[spacesIndex].maxKeyLength - line.key.length + tabSize;
-            line.keyValueSpaces = "";
+            const numSpaces = spaces[spacesIndex].maxKeyLength - line.key.length + tabSize;
+            line.keyValueSpaces = '';
             for (let i = 0; i < numSpaces; i++) {
-              line.keyValueSpaces += " ";
+              line.keyValueSpaces += ' ';
             }
           }
         }

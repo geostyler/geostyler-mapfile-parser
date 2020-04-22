@@ -5,7 +5,7 @@
  * @returns {string} Returns a string of spaces
  */
 function determineTabs(line, tab) {
-  let tabs = "";
+  let tabs = '';
   for (let i = 0; i < line.depth; i++) {
     tabs += tab;
   }

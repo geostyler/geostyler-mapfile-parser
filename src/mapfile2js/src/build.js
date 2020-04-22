@@ -3,9 +3,9 @@ const determineKeyValueSpaces = require(`${__dirname}/build/determineKeyValueSpa
 
 const defaultOptions = {
   tabSize: 2,
-  lineBreak: "\n",
+  lineBreak: '\n',
   comments: true,
-  commentPrefix: " ",
+  commentPrefix: ' ',
   emptyLines: true,
 };
 
@@ -22,53 +22,51 @@ const defaultOptions = {
  */
 function build(obj, options) {
   // options
-  let opt = Object.assign(defaultOptions, options);
+  const opt = Object.assign(defaultOptions, options);
 
   // mapfile content
-  let map = "";
+  let map = '';
 
   // determine one tab with spaces
-  let tab = "";
+  let tab = '';
   for (let i = 0; i < opt.tabSize; i++) {
-    tab += " ";
+    tab += ' ';
   }
 
-  //determine key-value-spaces
+  // determine key-value-spaces
   determineKeyValueSpaces(obj, opt.tabSize);
 
-  //iterate over all lines
+  // iterate over all lines
   obj.forEach((line) => {
-    //Add empty lines
+    // Add empty lines
     if (line.isEmpty) {
       if (opt.emptyLines) {
         map += opt.lineBreak;
       }
     } else {
-      //Add comment lines
+      // Add comment lines
       if (line.isComment) {
         if (opt.comments) {
-          map +=
-            `${determineTabs(line, tab)}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
+          map += `${determineTabs(line, tab)}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
         }
       } else {
-        //Add key
+        // Add key
         if (line.key) {
-          //Key only
+          // Key only
           if (line.isKeyOnly) {
             map += determineTabs(line, tab) + line.key + opt.lineBreak;
           } else {
-            //Key with value
+            // Key with value
             map += determineTabs(line, tab) + line.key;
 
-            //Add value
+            // Add value
             if (line.value) {
               if (line.includesComment) {
-                //Add comment
+                // Add comment
                 map += line.keyValueSpaces + line.value;
                 if (opt.comments) {
                   if (line.comment) {
-                    map +=
-                      `${tab}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
+                    map += `${tab}#${opt.commentPrefix}${line.comment}${opt.lineBreak}`;
                   } else {
                     map += opt.lineBreak;
                   }
@@ -76,7 +74,7 @@ function build(obj, options) {
                   map += opt.lineBreak;
                 }
               } else {
-                //Without comments
+                // Without comments
                 map += line.keyValueSpaces + line.value + opt.lineBreak;
               }
             }

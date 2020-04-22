@@ -1,7 +1,4 @@
-const regExpHexColor = new RegExp(
-  "[\"']#[0-9a-f]{6}[\"']|[\"']#[0-9a-f]{3}[\"']",
-  "gi"
-);
+const regExpHexColor = new RegExp('["\']#[0-9a-f]{6}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
 
 /**
  *
@@ -9,32 +6,32 @@ const regExpHexColor = new RegExp(
  * @returns {object} {"includesComment": true, "comment": "comment string", "contentWithoutComment": "string without comment"}
  */
 function checkComment(line) {
-  let lo = {
+  const lo = {
     includesComment: false,
-    comment: "",
+    comment: '',
     contentWithoutComment: line,
   };
 
   // check if the comment character is included
-  if (line.includes("#")) {
+  if (line.includes('#')) {
     // remove all hex colors
-    let withoutHex = line.replace(regExpHexColor, "");
+    const withoutHex = line.replace(regExpHexColor, '');
 
     // check if comment is included
-    if (withoutHex.includes("#")) {
+    if (withoutHex.includes('#')) {
       lo.includesComment = true;
 
       let foundComment = false;
-      let comment = "";
+      let comment = '';
       for (let j = 0; j < withoutHex.length; j++) {
         if (foundComment) {
           comment += withoutHex.charAt(j);
         }
-        if (withoutHex.charAt(j) === "#") {
+        if (withoutHex.charAt(j) === '#') {
           foundComment = true;
         }
       }
-      lo.contentWithoutComment = line.replace(`#${comment}`, "").trim();
+      lo.contentWithoutComment = line.replace(`#${comment}`, '').trim();
       lo.comment = comment.trim();
     }
   }

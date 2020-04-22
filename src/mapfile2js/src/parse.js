@@ -12,76 +12,88 @@ const determineDepth = require(`${__dirname}/parse/determineDepth.js`);
  */
 function parse(content) {
   let result = {};
-  let lineobjects = [];
+  const lineObjects = [];
 
   // stack to keep track of blocks
-  let blocks = [result];
+  const blocks = [result];
 
   // replace windows line breaks with linux line breaks
-  content = content.replace(new RegExp("[\r][\n]", "g"), "\n");
+  content = content.replace(/[\r][\n]/g, '\n');
 
   // split content into lines
-  let lines = content.split("\n");
+  const lines = content.split('\n');
 
-  lines.forEach((line, index, lines) => {
-
+  lines.forEach((line, index) => {
     // line object
-    let lo = {};
+    let lineObject = {};
 
     // line content
-    lo.content = line.trim();
+    lineObject.content = line.trim();
 
     // remove qutes (TODO: may need to preserve? fuse with switchQotes.js)
-    lo.content = lo.content.replace(/"/g, "");
+    lineObject.content = lineObject.content.replace(/"/g, '');
 
     // omit empty lines and comments
-    if (lo.content === "" || lo.content.startsWith("#")) {
-      console.warn(`Omited line [${index + 1}]: ${lo.content}`);
+    if (lineObject.content === '' || lineObject.content.startsWith('#')) {
+      console.warn(`Omited line [${index + 1}]: ${lineObject.content}`);
       return;
     }
 
     // check included comments
-    lo = Object.assign(lo, checkComment(lo.content));
+    lineObject = Object.assign(lineObject, checkComment(lineObject.content));
 
     // check key value
-    lo = Object.assign(lo, checkKeyValue(lo.contentWithoutComment));
+    lineObject = Object.assign(lineObject, checkKeyValue(lineObject.contentWithoutComment));
 
     // check block key
-    lo = Object.assign(lo, checkBlockKey(lo));
+    lineObject = Object.assign(lineObject, checkBlockKey(lineObject));
 
     // store lineobjects
-    lineobjects.push(lo);
+    lineObjects.push(lineObject);
 
     // increase ergonomics (mapfile is case insensitive)
-    lo.key = lo.key.toLowerCase();
+    lineObject.key = lineObject.key.toLowerCase();
+
+    // current block
+    const currentBlock = blocks[blocks.length - 1];
 
     // handle block keys
-    if (lo.isBlockKey) {
-      parseBlockKey(lo, index, lines, blocks);
+    if (lineObject.isBlockKey) {
+      const newBlock = parseBlockKey(lineObject, index, currentBlock);
+      if (newBlock) {
+        blocks.push(newBlock);
+      }
+      
       return;
     }
 
     // handle block end
-    if (lo.key === "end") {
+    if (lineObject.key === 'end' && !('projection' in currentBlock)) {
       // pop current block
       blocks.pop();
       return;
     }
 
-    // insert key value pair
-    let current_block = blocks[blocks.length - 1];
-    if (lo.key in current_block) {
-      console.warn(`Duplicate key on line [${i + 1}]: ${lo.content}`);
-      console.error("Overwriting existing key! consider an array!");
+    // work around projection imitating a block
+    if (lineObject.key.toLowerCase().includes('init=')) {
+      currentBlock.projection = lineObject.key.trim().replace(/"/g, '');
+
+      return;
     }
-    current_block[lo.key] = lo.value;
+
+    // insert key value pair
+    if (lineObject.key in currentBlock) {
+      console.warn(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
+      console.error('Overwriting existing key! consider an array!');
+    }
+    currentBlock[lineObject.key] = lineObject.value;
   });
 
-  checkBlockEndSum(lineobjects);
-  determineDepth(lineobjects);
+  checkBlockEndSum(lineObjects);
+  determineDepth(lineObjects);
 
   // insert MAP block if not existent for consistency
-  result = !("map" in result) ? {map: result} : result
+  result = !('map' in result) ? { map: result } : result;
 
   return result;
 }
