@@ -1,4 +1,4 @@
-import {parse} from './mapfile2js/parse';
+import { parse } from './mapfile2js/parse';
 import {
   StyleParser,
   Style,
@@ -10,11 +10,10 @@ import {
   ScaleDenominator,
   LineSymbolizer,
   FillSymbolizer,
-  RasterSymbolizer
+  RasterSymbolizer,
 } from 'geostyler-style';
 
-export type ConstructorParams = {
-};
+export type ConstructorParams = {};
 
 /**
  * This parser can be used with the GeoStyler.
@@ -24,7 +23,6 @@ export type ConstructorParams = {
  * @implements StyleParser
  */
 export class MapfileStyleParser implements StyleParser {
-
   /**
    * The name of the Mapfile Style Parser.
    */
@@ -49,17 +47,19 @@ export class MapfileStyleParser implements StyleParser {
     return layerGroup ? layerGroup : layerName ? layerName : '';
   }
 
-
   /**
    * Get the GeoStyler-Style Filter from an Mapfile Expression.
    *
    * @param {string} mapfileExpression The Mapfile Expression
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromExpression(mapfileExpression: any): Filter | undefined {
+  getFilterFromExpression(mapfileExpression: string): Filter | undefined {
     // TODO: expression tokenizer, lexer, parser ???
+    if (mapfileExpression) {
+      console.warn(`Not able to parse expression: ${mapfileExpression}`);
+    }
 
-    return undefined;
+    return;
   }
 
   /**
@@ -69,15 +69,17 @@ export class MapfileStyleParser implements StyleParser {
    * @return {ScaleDenominator} The GeoStyler-Style ScaleDenominator
    */
   getScaleDenominatorFromClass(mapfileClass: any): ScaleDenominator | undefined {
-    let scaleDenominator: ScaleDenominator = <ScaleDenominator>{};
+    const scaleDenominator: ScaleDenominator = {} as ScaleDenominator;
 
-    scaleDenominator.min = parseInt(mapfileClass.minscaledenom);
-    
+    scaleDenominator.min = parseFloat(mapfileClass.minscaledenom);
+
     scaleDenominator.max = parseFloat(mapfileClass.maxscaledenom);
 
-    return (scaleDenominator.min || scaleDenominator.max)
-      ? scaleDenominator
-      : undefined;
+    if (scaleDenominator.min || scaleDenominator.max) {
+      return scaleDenominator;
+    } else {
+      return;
+    }
   }
 
   /**
@@ -114,7 +116,6 @@ export class MapfileStyleParser implements StyleParser {
     return markSymbolizer;
   }
 
-
   /**
    * Get the GeoStyler-Style PointSymbolizer from an Mapfile Style.
    *
@@ -142,9 +143,9 @@ export class MapfileStyleParser implements StyleParser {
    * @return {LineSymbolizer} The GeoStyler-Style LineSymbolizer
    */
   getLineSymbolizerFromMapfileStyle(styleParameters: any): LineSymbolizer {
-    let lineSymbolizer: LineSymbolizer = <LineSymbolizer>{
-      kind: 'Line'
-    };
+    const lineSymbolizer: LineSymbolizer = {
+      kind: 'Line',
+    } as LineSymbolizer;
 
     lineSymbolizer.color = styleParameters.color;
 
@@ -156,26 +157,23 @@ export class MapfileStyleParser implements StyleParser {
 
     lineSymbolizer.width = parseFloat(styleParameters.width);
 
-
     const linejoin = styleParameters.linejoin;
-    if (linejoin === undefined) {
-      lineSymbolizer.join = 'round';  //  mapserver default
+    if (!linejoin) {
+      lineSymbolizer.join = 'round'; //  mapserver default
     } else if (linejoin !== 'none') {
       lineSymbolizer.join = linejoin;
     }
 
     const linecap = styleParameters.linecap;
-    if (linecap !== undefined) {
-      lineSymbolizer.cap = linecap;
-    }
+    lineSymbolizer.cap = linecap;
 
     const pattern = styleParameters.pattern;
-    if (pattern !== undefined) {
-      lineSymbolizer.dasharray = pattern.split(' ').map((a: string) => parseFloat(a))
+    if (pattern) {
+      lineSymbolizer.dasharray = pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
     const initialgap = styleParameters.initialgap;
-    if (initialgap !== undefined) {
+    if (initialgap) {
       lineSymbolizer.dashOffset = parseFloat(initialgap);
     }
 
@@ -200,9 +198,9 @@ export class MapfileStyleParser implements StyleParser {
    * @return {FillSymbolizer} The GeoStyler-Style FillSymbolizer
    */
   getFillSymbolizerFromMapfileStyle(styleParameters: any): FillSymbolizer {
-    let fillSymbolizer: FillSymbolizer = <FillSymbolizer>{
-      kind: 'Fill'
-    };
+    const fillSymbolizer: FillSymbolizer = {
+      kind: 'Fill',
+    } as FillSymbolizer;
 
     fillSymbolizer.color = styleParameters.color;
 
@@ -219,8 +217,8 @@ export class MapfileStyleParser implements StyleParser {
     fillSymbolizer.outlineOpacity = fillSymbolizer.opacity;
 
     const pattern = styleParameters.pattern;
-    if (pattern !== undefined) {
-      fillSymbolizer.outlineDasharray = pattern.split(' ').map((a: string) => parseFloat(a))
+    if (pattern) {
+      fillSymbolizer.outlineDasharray = pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
     // TODO: const graphicFill;
@@ -240,11 +238,11 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} styleParameters The Mapfile Style
    */
   getRasterSymbolizerFromMapfileStyle(styleParameters: any): RasterSymbolizer {
-    let rasterSymbolizer: RasterSymbolizer = <RasterSymbolizer>{
-      kind: 'Raster'
-    };
+    const rasterSymbolizer: RasterSymbolizer = {
+      kind: 'Raster',
+    } as RasterSymbolizer;
 
-    rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;  // scale?
+    rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100; // scale?
 
     return rasterSymbolizer;
   }
@@ -256,38 +254,37 @@ export class MapfileStyleParser implements StyleParser {
    * @return {Symbolizer[]} The GeoStyler-Style Symbolizer Array
    */
   getSymbolizersFromStyle(mapfileStyle: any, mapfileLayerType: any): Symbolizer[] {
-
     const symbolizers = [] as Symbolizer[];
     mapfileStyle.forEach((styleParameters: any) => {
       let symbolizer: any;
       switch (mapfileLayerType) {
-        case 'point':
-          symbolizer = this.getPointSymbolizerFromMapfileStyle(styleParameters);
-          break;
-        case 'line':
-          symbolizer = this.getLineSymbolizerFromMapfileStyle(styleParameters);
-          break;
+      case 'point':
+        symbolizer = this.getPointSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      case 'line':
+        symbolizer = this.getLineSymbolizerFromMapfileStyle(styleParameters);
+        break;
         // case 'TextSymbolizer':
         // TODO: Mapfile LABEL
         //   symbolizer = this.getTextSymbolizerFromMapfileLable(labelParameters);
         // break;
-        case 'polygon':
-          symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
-          break;
-        case 'raster':
-          symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
-          break;
-        case 'chart':
-          // maybe not used by swisstopo
-          break;
-        case 'circle':
-          // maybe not used by swisstopo
-          break;
-        case 'query':
-          // maybe not used by swisstopo
-          break;
-        default:
-          throw new Error('Failed to parse SymbolizerKind from MapfileStyle');
+      case 'polygon':
+        symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      case 'raster':
+        symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      case 'chart':
+        // maybe not used by swisstopo
+        break;
+      case 'circle':
+        // maybe not used by swisstopo
+        break;
+      case 'query':
+        // maybe not used by swisstopo
+        break;
+      default:
+        throw new Error('Failed to parse SymbolizerKind from MapfileStyle');
       }
       symbolizers.push(symbolizer);
     });
@@ -302,16 +299,16 @@ export class MapfileStyleParser implements StyleParser {
    * @return {Rule} The GeoStyler-Style Rule
    */
   getRulesFromMapfileObject(mapfileObject: any): Rule[] {
-    const layers = mapfileObject.map.layer;
+    const mapfileLayers = mapfileObject.map.layer;
 
     const rules: Rule[] = [];
-    layers.forEach((layer: any) => {
-      const mapfileLayerType = layer.type.toLowerCase();
-      layer.class.forEach((_class: any) => {
-        const filter: Filter | undefined = this.getFilterFromExpression(_class.expression);
-        const scaleDenominator: ScaleDenominator | undefined = this.getScaleDenominatorFromClass(_class);
-        const symbolizers: Symbolizer[] = this.getSymbolizersFromStyle(_class.style, mapfileLayerType);
-        const name = (layer.group) ? `${layer.group}.${_class.name}` : _class.name;
+    mapfileLayers.forEach((mapfileLayer: any) => {
+      const mapfileLayerType = mapfileLayer.type.toLowerCase();
+      mapfileLayer.class.forEach((mapfileClass: any) => {
+        const filter: Filter | undefined = this.getFilterFromExpression(mapfileClass.expression);
+        const scaleDenominator: ScaleDenominator | undefined = this.getScaleDenominatorFromClass(mapfileClass);
+        const symbolizers: Symbolizer[] = this.getSymbolizersFromStyle(mapfileClass.style, mapfileLayerType);
+        const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
         const rule = { name } as Rule;
         if (filter) {
           rule.filter = filter;
@@ -324,7 +321,6 @@ export class MapfileStyleParser implements StyleParser {
         }
         rules.push(rule);
       });
-
     });
 
     return rules;
@@ -341,10 +337,9 @@ export class MapfileStyleParser implements StyleParser {
     const name = this.getStyleNameFromMapfileObject(mapfileObject);
     return {
       name,
-      rules
+      rules,
     };
   }
-
 
   /**
    * The readStyle implementation of the GeoStyler-Style StyleParser interface.
