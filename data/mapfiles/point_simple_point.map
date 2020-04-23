@@ -1,7 +1,7 @@
 LAYER
-  NAME "my_layer"
+  NAME "Simple point"
   TYPE POINT
-  DATA "points.shp"
+  DATA "../data/shapes/points.shp"
   CLASS
     NAME "Test point"
     STYLE

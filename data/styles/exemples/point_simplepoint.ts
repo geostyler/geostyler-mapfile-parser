@@ -1,14 +1,17 @@
 import { Style } from 'geostyler-style';
 
 const pointSimplePoint: Style = {
-  name: 'Simple points',
+  name: 'Simple Point',
   rules: [{
-    name: 'Test point',
+    name: '',
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'Circle',
-      color: '#00FF00',
-      radius: 15
+      color: '#FF0000',
+      radius: 3,
+      fillOpacity: 0.5,
+      strokeColor: '#0000FF',
+      strokeOpacity: 0.7
     }]
   }]
 };

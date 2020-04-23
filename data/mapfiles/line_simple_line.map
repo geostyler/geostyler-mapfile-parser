@@ -1,0 +1,12 @@
+LAYER
+  NAME "Simple line"
+  TYPE LINE
+  DATA "../data/shapes/lines.shp"
+  CLASS
+    NAME "Test line"
+    STYLE
+      COLOR 0 255 0
+      WIDTH 5
+    END
+  END
+END

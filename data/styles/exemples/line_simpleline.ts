@@ -1,13 +1,17 @@
 import { Style } from 'geostyler-style';
 
 const lineSimpleLine: Style = {
-  name: 'Simple lines',
+  name: 'Simple Line',
   rules: [{
-    name: 'Test line',
+    name: '',
     symbolizers: [{
       kind: 'Line',
-      width: 5,
-      color: '#00FF00'
+      color: '#000000',
+      width: 3,
+      dasharray: [13, 37],
+      cap: 'round',
+      join: 'miter',
+      dashOffset: 10
     }]
   }]
 };

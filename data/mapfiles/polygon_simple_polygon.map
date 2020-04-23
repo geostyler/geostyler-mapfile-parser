@@ -1,0 +1,12 @@
+LAYER
+  NAME "Simple polygons"
+  TYPE POLYGON
+  DATA "../data/shapes/polygons.shp"
+  CLASS
+    NAME "Test polygon"
+    STYLE
+      COLOR 0 255 0
+      OUTLINECOLOR 85 85 85
+    END
+  END
+END
