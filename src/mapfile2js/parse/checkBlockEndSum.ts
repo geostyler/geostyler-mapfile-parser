@@ -2,7 +2,7 @@
  *
  * @param {array} lines Array of line objects
  */
-function checkBlockEndSum(lines) {
+export function checkBlockEndSum(lines: Array<any>): void {
   let blockCounter = 0;
   let endCounter = 0;
 
@@ -23,8 +23,6 @@ function checkBlockEndSum(lines) {
     }
   });
 
-  // endCounter += 1; // account for removed END of PROJECTION
-
   if (blockCounter !== endCounter) {
     if (blockCounter < endCounter) {
       throw new Error(`Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`);
@@ -33,5 +31,3 @@ function checkBlockEndSum(lines) {
     }
   }
 }
-
-module.exports = checkBlockEndSum;

@@ -1,6 +1,6 @@
 /**
  * Parse block keys.
- * @param {Object} lo Line Object
+ * @param {Object} lineObject Line Object
  * @param {number} index Current lines index
  * @param {array} lines Array of line strings
  * @param {array} blocks Block stack
@@ -9,8 +9,7 @@
 // there can be multiple layer, class and style block siblings
 const multiBlockKeys = ['layer', 'class', 'style'];
 
-function parseBlockKey(lineObject, index, currentBlock) {
-
+export function parseBlockKey(lineObject: any, index: number, currentBlock: any): object | undefined {
   // can not handle block lines
   if (lineObject.isBlockLine) {
     console.warn(`Block line [${index + 1}]: ${lineObject.content}`);
@@ -34,7 +33,6 @@ function parseBlockKey(lineObject, index, currentBlock) {
 
     // return new block
     return currentBlock[lineObject.key][currentBlock[lineObject.key].length - 1];
-
   } else {
     // check for duplicate block key
     if (lineObject.key in currentBlock) {
@@ -46,5 +44,3 @@ function parseBlockKey(lineObject, index, currentBlock) {
     return currentBlock[lineObject.key];
   }
 }
-
-module.exports = parseBlockKey;

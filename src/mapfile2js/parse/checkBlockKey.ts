@@ -1,13 +1,10 @@
 /**
  *
  * @param {object} lineObject
- * @param {string} lineObject.key
- * @param {string} lineObject.value
- * @param {boolean} lineObject.isKeyOnly
- * @returns {object} { isBlockKey: true, isBlockLine: false }
+ * @returns {object} line object.
  */
-function checkBlockKey(lineObject) {
-  const lo = {};
+export function checkBlockKey(lineObject: any): object {
+  const lo: any = {};
 
   lo.isBlockKey = false;
   lo.isBlockLine = false;
@@ -33,5 +30,3 @@ function checkBlockKey(lineObject) {
 
   return lo;
 }
-
-module.exports = checkBlockKey;

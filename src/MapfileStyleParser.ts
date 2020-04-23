@@ -1,5 +1,4 @@
-const mapfile2js = require('./mapfile2js/index'); // eslint-disable-line
-const parse = mapfile2js.parse;
+import {parse} from './mapfile2js/parse';
 import {
   StyleParser,
   Style

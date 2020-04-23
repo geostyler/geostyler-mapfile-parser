@@ -3,10 +3,10 @@ const regExpHexColor = new RegExp('["\']#[0-9a-f]{6}["\']|["\']#[0-9a-f]{3}["\']
 /**
  *
  * @param {string} line A line of mapfile
- * @returns {object} {"includesComment": true, "comment": "comment string", "contentWithoutComment": "string without comment"}
+ * @returns {object} A line object
  */
-function checkComment(line) {
-  const lo = {
+export function checkComment(line: string): object {
+  const lineObject = {
     includesComment: false,
     comment: '',
     contentWithoutComment: line,
@@ -19,7 +19,7 @@ function checkComment(line) {
 
     // check if comment is included
     if (withoutHex.includes('#')) {
-      lo.includesComment = true;
+      lineObject.includesComment = true;
 
       let foundComment = false;
       let comment = '';
@@ -31,12 +31,10 @@ function checkComment(line) {
           foundComment = true;
         }
       }
-      lo.contentWithoutComment = line.replace(`#${comment}`, '').trim();
-      lo.comment = comment.trim();
+      lineObject.contentWithoutComment = line.replace(`#${comment}`, '').trim();
+      lineObject.comment = comment.trim();
     }
   }
 
-  return lo;
+  return lineObject;
 }
-
-module.exports = checkComment;
