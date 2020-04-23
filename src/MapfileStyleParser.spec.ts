@@ -24,7 +24,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer', () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( '../data/mapfiles/point_simple_point.map', 'utf8');
+      const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
       return styleParser.readStyle(mapfile)
         .then((geoStylerStyle: Style) => {
           expect(geoStylerStyle).toBeDefined();
@@ -34,7 +34,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile LineSymbolizer', () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( '../data/mapfiles/line_simple_line.map', 'utf8');
+      const mapfile = fs.readFileSync('./data/mapfiles/line_simple_line.map', 'utf8');
       return styleParser.readStyle(mapfile)
         .then((geoStylerStyle: Style) => {
           expect(geoStylerStyle).toBeDefined();
@@ -44,7 +44,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PolygonSymbolizer', () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( '../mapfiles/polygon_simple_polygon.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/polygon_simple_polygon.map', 'utf8');
       return styleParser.readStyle(mapfile)
         .then((geoStylerStyle: Style) => {
           expect(geoStylerStyle).toBeDefined();
