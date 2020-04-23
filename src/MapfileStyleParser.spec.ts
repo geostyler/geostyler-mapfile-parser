@@ -22,7 +22,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a MapFile PointSymbolizer', () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './mapfiles/simple.map', 'utf8');
+      const mapfile = fs.readFileSync( '../mapfiles/simple.map', 'utf8');
       return styleParser.readStyle(mapfile)
         .then((geoStylerStyle: Style) => {
           expect(geoStylerStyle).toBeDefined();
