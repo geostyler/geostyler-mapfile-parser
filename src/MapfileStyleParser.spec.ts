@@ -8,7 +8,7 @@ import point_st_sample_point_style_tags_single_filter_list from '../data/styles/
 import point_st_sample_point_style_tags_single_filter_regex from '../data/styles/point_st_sample_point_style_tags_single_filter_regex';
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
-import raster_simpleraster from '../data/styles/raster_simple_raster';
+import raster_simple_raster from '../data/styles/raster_simple_raster';
 
 it('MapfileStyleParser is defined', () => {
   expect(MapfileStyleParser).toBeDefined();
