@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
-  name: 'Complex points',
+  name: 'Complex point',
   rules: [{
     name: 'st_full_tags_points',
     symbolizers: [{

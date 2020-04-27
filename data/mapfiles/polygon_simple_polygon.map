@@ -1,5 +1,5 @@
 LAYER
-  NAME "Simple polygons"
+  NAME "Simple polygon"
   TYPE POLYGON
   DATA "../shapes/polygons.shp"
   CLASS

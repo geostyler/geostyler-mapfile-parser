@@ -89,7 +89,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_regex);
     });
-  });
+   });
 
   describe('#writeStyle', () => {
     it('is defined', () => {

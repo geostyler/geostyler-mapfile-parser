@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
-  name: 'Simple points',
+  name: 'Simple point',
   rules: [{
     filter: [
       '*=', ['FN_strMatches', 'Test point 1', '/^(A|B)Anyword$/'], true
