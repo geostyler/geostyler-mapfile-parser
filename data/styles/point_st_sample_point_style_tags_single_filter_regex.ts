@@ -4,9 +4,7 @@ const pointStyle: Style = {
   name: 'Simple points',
   rules: [{
     filter: [
-      '*=',
-      ['FN_strMatches', 'Test point 1', '/^(A|B)Anyword$/'],
-      true
+      '*=', ['FN_strMatches', 'Test point 1', '/^(A|B)Anyword$/'], true
     ],
     name: 'Test point',
     symbolizers: [{

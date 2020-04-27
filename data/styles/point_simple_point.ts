@@ -2,7 +2,8 @@ import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
   name: 'Simple points',
-  rules: [{
+  rules: [
+  {
     name: 'Test point',
     symbolizers: [{
       kind: 'Mark',
@@ -11,6 +12,6 @@ const pointStyle: Style = {
       radius: 15
     }]
   }]
-};
+}
 
 export default pointStyle;
