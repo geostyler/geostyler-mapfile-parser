@@ -1,7 +1,7 @@
 LAYER
   NAME "Simple line"
   TYPE LINE
-  DATA "../data/shapes/lines.shp"
+  DATA "../shapes/lines.shp"
   CLASS
     NAME "Test line"
     STYLE

@@ -1,7 +1,7 @@
 LAYER
   NAME "Simple polygons"
   TYPE POLYGON
-  DATA "../data/shapes/polygons.shp"
+  DATA "../shapes/polygons.shp"
   CLASS
     NAME "Test polygon"
     STYLE

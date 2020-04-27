@@ -8,6 +8,8 @@ LAYER
       SYMBOL "circle"
       COLOR 0 255 0
       SIZE 15
+      ANGLE 360
+      OPACITY 100
     END
   END
 END

@@ -1,6 +1,6 @@
 import { Style } from 'geostyler-style';
 
-const lineSimpleLine: Style = {
+const lineStyle: Style = {
   name: 'Simple lines',
   rules: [{
     name: 'Test line',
@@ -12,4 +12,4 @@ const lineSimpleLine: Style = {
   }]
 };
 
-export default lineSimpleLine;
+export default lineStyle;

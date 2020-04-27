@@ -1,6 +1,6 @@
 import { Style } from 'geostyler-style';
 
-const polygonSimplePolygon: Style = {
+const polygonStyle: Style = {
   name: 'Simple polygons',
   rules: [{
     name: 'Test polygon',
@@ -12,4 +12,4 @@ const polygonSimplePolygon: Style = {
   }]
 };
 
-export default polygonSimplePolygon;
+export default polygonStyle;

@@ -1,0 +1,41 @@
+LAYER
+    CLASSITEM "OBJECTVAL"
+    DATA "bund/swisstopo/swissnames/sn25"
+    GROUP "Swissnames"
+    MAXSCALEDENOM 50000
+    NAME "st_full_tags_points"
+    STATUS OFF
+    TYPE POINT
+    UNITS METERS
+    METADATA
+     "wms_enable_request" "*"
+        "wms_srs" "EPSG:21781 EPSG:2056 EPSG:4326 EPSG:3857 EPSG:3034 EPSG:3035 EPSG:4258 EPSG:31287 EPSG:25832 EPSG:25833 EPSG:31467 EPSG:32632 EPSG:32633"
+        "wms_title" "SwissNames25_points"
+        "wms_extent" "100000 50000 850000 400000"
+    END
+    CLASS
+      EXPRESSION /^(H|G)Gemeinde$/
+      NAME "HGemeinde_GGemeinde"
+      STYLE
+        ANGLE 360
+        COLOR 0 0 0
+        OPACITY 100
+        SIZE 5
+        SYMBOL "circle"
+      END
+    END
+    CLASS
+      EXPRESSION {Weiler,Streusiedl,Einzelhaus,Flurname}
+      NAME "Weiler_Streusiedl_Einzelhaus_Flurname"
+      STYLE
+        ANGLE 360
+        COLOR 0 0 0
+        OPACITY 100
+        SIZE 5
+        SYMBOL "circle"
+      END
+    END
+    PROJECTION
+        "init=epsg:21781"
+  END
+END

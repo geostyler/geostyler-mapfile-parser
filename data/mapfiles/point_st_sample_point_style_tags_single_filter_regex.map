@@ -1,13 +1,17 @@
 LAYER
+  CLASSITEM "OBJECTVAL"
   NAME "Simple point"
   TYPE POINT
   DATA "../shapes/points.shp"
   CLASS
+    EXPRESSION /^(A|B)Anyword$/
     NAME "Test point"
     STYLE
+      ANGLE 360
+      COLOR 0 0 0
+      OPACITY 100
+      SIZE 5
       SYMBOL "circle"
-      COLOR 0 255 0
-      SIZE 15
     END
   END
 END
