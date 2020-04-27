@@ -1,0 +1,12 @@
+LAYER
+  NAME "Simple raster"
+  TYPE RASTER
+  DATA "../rasters/raster.tif"
+  STATUS DEFAULT
+  CLASS
+    NAME "Test raster"
+    STYLE
+      OPACITY 50
+    END
+  END
+END
