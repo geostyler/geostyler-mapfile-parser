@@ -240,6 +240,23 @@ export class MapfileStyleParser implements StyleParser {
 
     markSymbolizer.strokeOpacity = markSymbolizer.opacity;
 
+    // hack for demo!
+    const wellKnownName = styleParameters.symbol;
+    switch (wellKnownName) {
+    case 'circle':
+    case 'square':
+    case 'triangle':
+    case 'star':
+    case 'cross':
+    case 'x': {
+      const wkn = wellKnownName.charAt(0).toUpperCase() + wellKnownName.slice(1);
+      markSymbolizer.wellKnownName = wkn as WellKnownName;
+      break;
+    }
+    default:
+      break;
+    }
+
     return markSymbolizer;
   }
 
