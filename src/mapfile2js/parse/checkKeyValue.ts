@@ -1,5 +1,5 @@
 function removeQuotes(str: string): string {
-  if ((str.startsWith('\'') && str.endsWith('\'')) || (str.startsWith('"') && str.endsWith('"'))) {
+  if (/^['"].+['"]$/.test(str)) {
     return str.substring(1, str.length - 1);
   }
 
@@ -18,8 +18,12 @@ export function checkKeyValue(line: string): object {
     lineObject.isKeyOnly = false;
 
     const lineParts = line.split(/\s/);
-    lineObject.key = removeQuotes(lineParts[0]);
-    lineObject.value = removeQuotes(line.replace(lineParts[0], '').trim());
+
+    const key = removeQuotes(lineParts[0]);
+    lineObject.key = key;
+    const value = line.replace(lineParts[0], '').trim();
+    // do not mess with expressions, quotes have meaning
+    lineObject.value = key.toUpperCase() === 'EXPRESSION' ? value : removeQuotes(value);
   } else {
     // key only
     lineObject.isKeyOnly = true;
