@@ -14,9 +14,27 @@ LAYER
   END
   CLASS
     NAME "Test point 2"
-    EXPRESSION "5"
+    EXPRESSION "2"
     STYLE
-      SYMBOL "circle"
+      SYMBOL "triangle"
+      COLOR 0 0 255
+      SIZE 10
+    END
+  END
+  CLASS
+    NAME "Test point 3"
+    EXPRESSION "3"
+    STYLE
+      SYMBOL "square"
+      COLOR 0 0 255
+      SIZE 10
+    END
+  END
+  CLASS
+    NAME "Test point 4"
+    EXPRESSION "4"
+    STYLE
+      SYMBOL "cross"
       COLOR 0 0 255
       SIZE 10
     END

@@ -19,12 +19,36 @@ const pointStyle: Style = {
     name: 'Test point 2',
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'Triangle',
       color: '#0000FF',
       radius: 10
     }],
     filter: [
-      "==", "category", 5
+      "==", "category", 2
+    ]
+  },
+  {
+    name: 'Test point 3',
+    symbolizers: [{
+      kind: 'Mark',
+      wellKnownName: 'Square',
+      color: '#0000FF',
+      radius: 10
+    }],
+    filter: [
+      "==", "category", 3
+    ]
+  },
+  {
+    name: 'Test point 4',
+    symbolizers: [{
+      kind: 'Mark',
+      wellKnownName: 'Cross',
+      color: '#0000FF',
+      radius: 10
+    }],
+    filter: [
+      "==", "category", 4
     ]
   }]
 }
