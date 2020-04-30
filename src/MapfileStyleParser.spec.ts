@@ -3,8 +3,6 @@ import MapfileStyleParser from './MapfileStyleParser';
 import { ComparisonFilter, Filter, Style } from 'geostyler-style';
 import { SldStyleParser } from 'geostyler-sld-parser';
 
-// import point_simplepoint from '../data/styles/point_simplepoint';
-
 it('MapfileStyleParser is defined', () => {
   expect(MapfileStyleParser).toBeDefined();
 });
@@ -33,7 +31,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
     it('can translate Mapfile to SLD', async () => {
       const mapfile = fs.readFileSync('./mapfiles/simple.map', 'utf8');
       const geostylerStyle = styleParser.readStyle(mapfile);
-      let sldStyleParser = new SldStyleParser();
+      const sldStyleParser = new SldStyleParser();
       return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
         expect(sldStyle).toEqual(expect.any(String));
       });
@@ -47,7 +45,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can parse simple expression', () => {
       const mapfileExpression = '( "[attribute_name]" == "string_literal" )';
-      let geoStylerFilter: Filter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
+      const geoStylerFilter: Filter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
       expect(geoStylerFilter).toEqual(['==', 'attribute_name', 'string_literal'] as ComparisonFilter);
     });
   });

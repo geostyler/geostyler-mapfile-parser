@@ -18,7 +18,6 @@ import {
   NegationFilter,
   CombinationFilter,
 } from 'geostyler-style';
-import { assert } from 'console';
 
 export type ConstructorParams = {};
 
@@ -60,26 +59,24 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} mapfileClass The Mapfile Class
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromClassItem(mapfileClass: any): Filter | undefined {
+  getFilterFromClassItem(mapfileClass: any): Filter | null {
     const classItem: string = mapfileClass.classitem;
-    assert(mapfileClass.classitem, 'Mapfile CLASSITEM undefined!');
+    console.assert(mapfileClass.classitem, 'Mapfile CLASSITEM undefined!');
     const expression: string = mapfileClass.expression;
     switch (expression.charAt(0)) {
     case '"':
       return ['==' as ComparisonOperator, mapfileClass.classitemclassItem, expression];
     case '/':
       return ['FN_strMatches', classItem, expression];
-      break;
     case '{':
       return [
         'FN_strMatches',
         classItem,
         `/${expression.substring(1, expression.length - 1).replace(',', '|')}/`,
       ];
-    default:
-      break;
     }
-    return;
+    console.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
+    return null;
   }
 
   /**
@@ -90,7 +87,7 @@ export class MapfileStyleParser implements StyleParser {
    * @param {string} value The Mapfile Expression Value
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromAttributeValueComparison(attribute: string, operator: string, value: string): Filter {
+  getFilterFromAttributeValueComparison(attribute: string, operator: string, value: string): Filter | null {
     // substitude operator variations (may be rewritten using a map)
     operator = operator
       .replace(/^=$/, '==')
@@ -123,7 +120,7 @@ export class MapfileStyleParser implements StyleParser {
     }
     default:
       console.error(`Unknow comparison operator: ${operator}`);
-      return [] as Filter; // TODO: raise error or return undefined!
+      return null;
     }
   }
 
@@ -133,9 +130,7 @@ export class MapfileStyleParser implements StyleParser {
    * @param {string} mapfileExpression The Mapfile Expression
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromMapfileExpression(mapfileExpression: string): Filter {
-    const filter: Filter = [];
-
+  getFilterFromMapfileExpression(mapfileExpression: string): Filter | null {
     // remove surrounding parantheses
     if (/^\(.+\)$/.test(mapfileExpression)) {
       mapfileExpression = mapfileExpression.replace(/(^\(\s*|\s*\)$)/g, '');
@@ -143,33 +138,8 @@ export class MapfileStyleParser implements StyleParser {
 
     // capture nested expressions
     if (/^\(/.test(mapfileExpression)) {
-      // split up expression
-      const nestedExpressions: Array<string> = [];
-      let index = 0;
-      let fromIndex = 0;
-      let parantheseCount = 0;
-
-      for (const char of mapfileExpression) {
-        switch (char) {
-        case '(':
-          fromIndex = parantheseCount === 0 ? index : fromIndex;
-          parantheseCount++;
-          break;
-        case ')':
-          parantheseCount--;
-          if (parantheseCount === 0) {
-            const operators = nestedExpressions[0]
-              ? mapfileExpression.substring(nestedExpressions[0].length, fromIndex)
-              : mapfileExpression.substring(0, fromIndex);
-            const negationOperator = operators.replace(/\s*(AND|&&|OR|\|\|)\s*/, '');
-            nestedExpressions.push(negationOperator + mapfileExpression.substring(fromIndex, index + 1));
-          }
-          break;
-        default:
-          break;
-        }
-        index++;
-      }
+      // split up nested expression
+      const nestedExpressions = this.splitNestedExpression(mapfileExpression);
 
       // extract operator
       let operator = mapfileExpression.substring(
@@ -187,12 +157,12 @@ export class MapfileStyleParser implements StyleParser {
 
     // capture negation
     if (/^(!|NOT)/.test(mapfileExpression)) {
-      filter[0] = '!' as NegationOperator;
       mapfileExpression = mapfileExpression.replace(/^(!|NOT)\s*/, '');
 
-      filter[1] = this.getFilterFromMapfileExpression(mapfileExpression);
-
-      return filter as NegationFilter;
+      return [
+        '!' as NegationOperator,
+        this.getFilterFromMapfileExpression(mapfileExpression),
+      ] as NegationFilter;
     }
 
     // get filter from common expression "[attribute] operator value"
@@ -207,7 +177,6 @@ export class MapfileStyleParser implements StyleParser {
       const valueMatch = mapfileExpression.match(/^['"]?([^)'"]+)['"]?\s*/);
       mapfileExpression = mapfileExpression.replace(/^['"]?[^)'"]+['"]?\s*/, '');
 
-      
       if (attributeMatch && operator && valueMatch) {
         return this.getFilterFromAttributeValueComparison(attributeMatch[1], operator, valueMatch[1]);
       } else {
@@ -217,9 +186,9 @@ export class MapfileStyleParser implements StyleParser {
 
     // TODO: implement logical combination expression relying on operator precedence
 
-    assert(mapfileExpression.length === 0, `Mapfile expression leftovers: ${mapfileExpression}`);
+    console.assert(mapfileExpression.length === 0, `Mapfile expression leftovers: ${mapfileExpression}`);
 
-    return filter;
+    return null;
   }
 
   /**
@@ -228,10 +197,10 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} mapfileClass The Mapfile Class
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromMapfileClass(mapfileClass: any): Filter | undefined {
+  getFilterFromMapfileClass(mapfileClass: any): Filter | null {
     const expression: string = mapfileClass.expression;
     if (!expression) {
-      return;
+      return null;
     }
 
     // assert expression contains no string functions, arithmetic operations or spatial components
@@ -239,7 +208,7 @@ export class MapfileStyleParser implements StyleParser {
       console.error(`Not able to parse string function: ${expression}`);
     } else if (/round \(| \+ | - | \* | \/ | \^ | % /.test(expression)) {
       console.error(`Not able to parse arithmetic operator or function: ${expression}`);
-      return;
+      return null;
     } else if (
       [
         'intersects (',
@@ -258,14 +227,17 @@ export class MapfileStyleParser implements StyleParser {
       ].some((spatialComponent) => expression.includes(spatialComponent))
     ) {
       console.error(`Not able to parse spatial expression: ${expression}`);
-      return;
+      return null;
     } else if (expression.includes('´')) {
       console.error(`Not able to parse temporal expression: ${expression}`);
-      return;
+      return null;
     }
 
     // assert expression does not contain escaped quotes
-    assert(!/\\'|\\"/.test(expression), `Mapfile expression may contain escaped quote: ${expression}`);
+    console.assert(
+      !/\\'|\\"/.test(expression),
+      `Mapfile expression may contain escaped quote: ${expression}`
+    );
 
     // get filter from expression value targeting CLASSITEM
     if (/^["/{]/.test(expression)) {
@@ -273,7 +245,7 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     // assert expression starts and ends with a bracket
-    assert(/^\(.+\)$/.test(expression), `Malformed expression! ${expression}`);
+    console.assert(/^\(.+\)$/.test(expression), `Malformed expression! ${expression}`);
 
     // get filter by expression parsing
     return this.getFilterFromMapfileExpression(expression);
@@ -286,7 +258,7 @@ export class MapfileStyleParser implements StyleParser {
    * @return {ScaleDenominator} The GeoStyler-Style ScaleDenominator
    */
   getScaleDenominatorFromClass(mapfileClass: any): ScaleDenominator | undefined {
-    const scaleDenominator: ScaleDenominator = {} as ScaleDenominator;
+    const scaleDenominator = {} as ScaleDenominator;
 
     scaleDenominator.min = parseFloat(mapfileClass.minscaledenom);
 
@@ -306,9 +278,7 @@ export class MapfileStyleParser implements StyleParser {
    * @return {MarkSymbolizer} The GeoStyler-Style MarkSymbolizer
    */
   getMarkSymbolizerFromMapfileStyle(styleParameters: any): MarkSymbolizer {
-    const markSymbolizer: MarkSymbolizer = {
-      kind: 'Mark',
-    } as MarkSymbolizer;
+    const markSymbolizer = { kind: 'Mark' } as MarkSymbolizer;
 
     markSymbolizer.color = styleParameters.color;
 
@@ -330,7 +300,7 @@ export class MapfileStyleParser implements StyleParser {
 
     markSymbolizer.strokeOpacity = markSymbolizer.opacity;
 
-    // hack for demo!
+    // TODO: Convert hack for demo to proper SYMBOL handling!
     const wellKnownName = styleParameters.symbol;
     switch (wellKnownName) {
     case 'circle':
@@ -343,8 +313,6 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.wellKnownName = wkn as WellKnownName;
       break;
     }
-    default:
-      break;
     }
 
     return markSymbolizer;
@@ -377,9 +345,7 @@ export class MapfileStyleParser implements StyleParser {
    * @return {LineSymbolizer} The GeoStyler-Style LineSymbolizer
    */
   getLineSymbolizerFromMapfileStyle(styleParameters: any): LineSymbolizer {
-    const lineSymbolizer: LineSymbolizer = {
-      kind: 'Line',
-    } as LineSymbolizer;
+    const lineSymbolizer = { kind: 'Line' } as LineSymbolizer;
 
     lineSymbolizer.color = styleParameters.color;
 
@@ -432,9 +398,7 @@ export class MapfileStyleParser implements StyleParser {
    * @return {FillSymbolizer} The GeoStyler-Style FillSymbolizer
    */
   getFillSymbolizerFromMapfileStyle(styleParameters: any): FillSymbolizer {
-    const fillSymbolizer: FillSymbolizer = {
-      kind: 'Fill',
-    } as FillSymbolizer;
+    const fillSymbolizer = { kind: 'Fill' } as FillSymbolizer;
 
     fillSymbolizer.color = styleParameters.color;
 
@@ -472,9 +436,7 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} styleParameters The Mapfile Style
    */
   getRasterSymbolizerFromMapfileStyle(styleParameters: any): RasterSymbolizer {
-    const rasterSymbolizer: RasterSymbolizer = {
-      kind: 'Raster',
-    } as RasterSymbolizer;
+    const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
     rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100; // scale?
 
@@ -542,11 +504,9 @@ export class MapfileStyleParser implements StyleParser {
       const mapfileLayerType: string = mapfileLayer.type;
 
       mapfileLayer.class.forEach((mapfileClass: any) => {
-        const filter: Filter | undefined = this.getFilterFromMapfileClass(mapfileClass);
-        const scaleDenominator: ScaleDenominator | undefined = this.getScaleDenominatorFromClass(
-          mapfileClass
-        );
-        const symbolizers: Symbolizer[] = this.getSymbolizersFromStyle(mapfileClass.style, mapfileLayerType);
+        const filter = this.getFilterFromMapfileClass(mapfileClass);
+        const scaleDenominator = this.getScaleDenominatorFromClass(mapfileClass);
+        const symbolizers = this.getSymbolizersFromStyle(mapfileClass.style, mapfileLayerType);
         const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
 
         const rule = { name } as Rule;
@@ -619,6 +579,43 @@ export class MapfileStyleParser implements StyleParser {
         reject(error);
       }
     });
+  }
+
+
+  /**
+   * Splits up a Mapfile Expression into its two top level Expressions
+   *
+   * @param {string} mapfileExpression A Mapfile Expression.
+   * @return {Array<string>} The two top level expressions.
+   */
+  private splitNestedExpression(mapfileExpression: string): Array<string> {
+    // split up nested logical combination expression leveraging parantheses
+    const nestedExpressions: Array<string> = [];
+    
+    let index = 0;
+    let fromIndex = 0;
+    let parantheseCount = 0;
+    
+    for (const char of mapfileExpression) {
+      switch (char) {
+      case '(':
+        fromIndex = parantheseCount === 0 ? index : fromIndex;
+        parantheseCount++;
+        break;
+      case ')':
+        parantheseCount--;
+        if (parantheseCount === 0) {
+          const operators: string = nestedExpressions[0]
+            ? mapfileExpression.substring(nestedExpressions[0].length, fromIndex)
+            : mapfileExpression.substring(0, fromIndex);
+          const negationOperator: string = operators.replace(/\s*(AND|&&|OR|\|\|)\s*/, '');
+          nestedExpressions.push(negationOperator + mapfileExpression.substring(fromIndex, index + 1));
+        }
+        break;
+      }
+      index++;
+    }
+    return nestedExpressions;
   }
 }
 
