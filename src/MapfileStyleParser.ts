@@ -1,4 +1,5 @@
 import { parse } from './mapfile2js/parse';
+import { rgbToHex } from './Useful';
 import {
   StyleParser,
   Style,
@@ -93,7 +94,7 @@ export class MapfileStyleParser implements StyleParser {
       kind: 'Mark',
     } as MarkSymbolizer;
 
-    markSymbolizer.color = styleParameters.color;
+    markSymbolizer.color = rgbToHex(styleParameters.color);
 
     if (!markSymbolizer.color) {
       markSymbolizer.opacity = 0;
