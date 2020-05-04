@@ -1,0 +1,13 @@
+LAYER
+  NAME "Simple label"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  CLASS
+    NAME "Test label"
+    LABEL
+      FONT "Verdana"
+      COLOR 0 255 0
+      SIZE 9
+    END
+  END
+END
