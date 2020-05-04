@@ -1,0 +1,14 @@
+LAYER
+  NAME "Simple point"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  CLASS
+    NAME "Test point"
+    EXPRESSION ( "[attribute]" = 'value' )
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 255 0
+      SIZE 15
+    END
+  END
+END

@@ -1,14 +1,17 @@
 LAYER
-  NAME "my_layer"
+  NAME "Simple point"
   TYPE POINT
-  DATA "points.shp"
+  DATA "../shapes/points.shp"
   CLASS
     NAME "Test point"
-    EXPRESSION ( "[attribute]" = 'value' )
     STYLE
       SYMBOL "circle"
       COLOR 0 255 0
       SIZE 15
+      ANGLE 360
+      OPACITY 100
+      OUTLINECOLOR 0 0 0
+      WIDTH 1
     END
   END
 END

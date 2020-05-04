@@ -1,0 +1,42 @@
+LAYER
+  NAME "Simple point"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  CLASSITEM "category"
+  CLASS
+    NAME "Test point 1"
+    EXPRESSION "1"
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 255 0
+      SIZE 15
+    END
+  END
+  CLASS
+    NAME "Test point 2"
+    EXPRESSION "2"
+    STYLE
+      SYMBOL "triangle"
+      COLOR 0 0 255
+      SIZE 10
+    END
+  END
+  CLASS
+    NAME "Test point 3"
+    EXPRESSION "3"
+    STYLE
+      SYMBOL "square"
+      COLOR 0 0 255
+      SIZE 10
+    END
+  END
+  CLASS
+    NAME "Test point 4"
+    EXPRESSION "4"
+    STYLE
+      SYMBOL "cross"
+      COLOR 0 0 255
+      SIZE 10
+    END
+  END
+END
