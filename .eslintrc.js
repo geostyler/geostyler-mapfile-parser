@@ -66,7 +66,7 @@ module.exports = {
         "camelcase": "error",
         "comma-dangle": "off",
         "curly": "error",
-        "default-case": "error",
+        "default-case": "off",
         "dot-notation": "error",
         "eol-last": "error",
         "eqeqeq": [

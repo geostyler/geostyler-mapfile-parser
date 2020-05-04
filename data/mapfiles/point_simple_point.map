@@ -4,6 +4,7 @@ LAYER
   DATA "../shapes/points.shp"
   CLASS
     NAME "Test point"
+    EXPRESSION ( "[attribute]" = 'value' )
     STYLE
       SYMBOL "circle"
       COLOR 0 255 0

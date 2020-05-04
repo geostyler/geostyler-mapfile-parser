@@ -10,6 +10,8 @@ import point_st_sample_point_style_tags_single_filter_regex from '../data/styles
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
+import { ComparisonFilter, Filter, Style } from 'geostyler-style';
+import { SldStyleParser } from 'geostyler-sld-parser';
 
 it('MapfileStyleParser is defined', () => {
   expect(MapfileStyleParser).toBeDefined();
@@ -33,6 +35,22 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_point);
+    // it('can read a MapFile PointSymbolizer', () => {
+    //   expect.assertions(2);
+    //   const mapfile = fs.readFileSync('./mapfiles/simple.map', 'utf8');
+    //   return styleParser.readStyle(mapfile).then((geoStylerStyle: Style) => {
+    //     expect(geoStylerStyle).toBeDefined();
+    //     expect(geoStylerStyle).toEqual(point_simplepoint);
+    //   });
+    // });
+
+    it('can translate Mapfile to SLD', async () => {
+      const mapfile = fs.readFileSync('./mapfiles/simple.map', 'utf8');
+      const geostylerStyle = styleParser.readStyle(mapfile);
+      const sldStyleParser = new SldStyleParser();
+      return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
+        expect(sldStyle).toEqual(expect.any(String));
+      });
     });
 
     it('can read a simple MapFile LineSymbolizer', async () => {
@@ -92,10 +110,21 @@ describe('MapfileStyleParser implements StyleParser', () => {
     }); */
    });
 
+  describe('#getFilterFromMapfileExpression', () => {
+    it('is defined', () => {
+      expect(styleParser.getFilterFromMapfileExpression).toBeDefined();
+    });
+
+    it('can parse simple expression', () => {
+      const mapfileExpression = '( "[attribute_name]" == "string_literal" )';
+      const geoStylerFilter: Filter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
+      expect(geoStylerFilter).toEqual(['==', 'attribute_name', 'string_literal'] as ComparisonFilter);
+    });
+  });
+
   describe('#writeStyle', () => {
     it('is defined', () => {
       expect(styleParser.writeStyle).toBeDefined();
     });
   });
-
 });
