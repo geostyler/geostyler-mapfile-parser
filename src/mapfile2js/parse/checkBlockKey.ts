@@ -1,13 +1,21 @@
+import { KeyValueLineObject } from './checkKeyValue';
+
+
+interface BlockObject {
+  isBlockKey: boolean;
+  isBlockLine: boolean;
+}
+
 /**
  *
  * @param {object} lineObject
  * @returns {object} line object.
  */
-export function checkBlockKey(lineObject: any): object {
-  const lo: any = {};
-
-  lo.isBlockKey = false;
-  lo.isBlockLine = false;
+export function checkBlockKey(lineObject: KeyValueLineObject): BlockObject {
+  const lo: BlockObject = {
+    isBlockKey: false,
+    isBlockLine: false
+  };
 
   if (lineObject.isKeyOnly) {
     // END is no block

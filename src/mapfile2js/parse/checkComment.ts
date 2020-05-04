@@ -1,12 +1,18 @@
 const regExpHexColor = new RegExp('["\']#[0-9a-f]{6}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
 
+interface LineObject {
+  includesComment: boolean;
+  comment: string;
+  contentWithoutComment: string;
+}
+
 /**
  *
  * @param {string} line A line of mapfile
- * @returns {object} A line object
+ * @returns {LineObject} A line object
  */
-export function checkComment(line: string): object {
-  const lineObject = {
+export function checkComment(line: string): LineObject {
+  const lineObject: LineObject = {
     includesComment: false,
     comment: '',
     contentWithoutComment: line,
