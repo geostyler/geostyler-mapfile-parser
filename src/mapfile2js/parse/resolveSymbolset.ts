@@ -21,7 +21,12 @@ function substituteSymbols(obj: object): void {
  */
 export function resolveSymbolset(mapfileObject: any): any {
 
-  const symbolsetPath = mapfileObject.map.symbolset;
+  let symbolsetPath = mapfileObject.map.symbolset;
+
+  // fallback to mapserver defaults if not specified
+  if (!symbolsetPath) {
+    symbolsetPath = `${__dirname}/symbols.sym`;
+  }
 
   if (typeof symbolsetPath !== 'string') {
     return mapfileObject;
