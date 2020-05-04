@@ -2,10 +2,11 @@ import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
 import point_simple_point from '../data/styles/point_simple_point';
-import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
+/* import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
 import point_st_sample_point_style_tags from '../data/styles/point_st_sample_point_style_tags';
 import point_st_sample_point_style_tags_single_filter_list from '../data/styles/point_st_sample_point_style_tags_single_filter_list';
 import point_st_sample_point_style_tags_single_filter_regex from '../data/styles/point_st_sample_point_style_tags_single_filter_regex';
+*/
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
@@ -57,7 +58,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_simple_raster);
     });
-
+/*
     it('can read a simple MapFile PointSymbolizer with many classes', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point_many_classes_filters.map', 'utf8');
@@ -88,7 +89,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_regex);
-    });
+    }); */
    });
 
   describe('#writeStyle', () => {

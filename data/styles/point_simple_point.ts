@@ -9,7 +9,7 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Circle',
       color: '#00FF00',
-      radius: 15
+      radius: 7.5
     }]
   }]
 }
