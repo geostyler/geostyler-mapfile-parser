@@ -35,7 +35,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
+      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_point.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_point);

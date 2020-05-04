@@ -6,6 +6,7 @@ const lineStyle: Style = {
     name: 'Test line',
     symbolizers: [{
       kind: 'Line',
+      join: 'round', // mapserver default
       width: 5,
       color: '#00FF00'
     }]

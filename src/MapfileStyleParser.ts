@@ -285,21 +285,31 @@ export class MapfileStyleParser implements StyleParser {
 
     if (!markSymbolizer.color) {
       markSymbolizer.opacity = 0;
-    } else {
+    } else if (styleParameters.opacity) {
       markSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
     }
 
     // markSymbolizer.fillOpacity = TODO from symbol?;
+    if (styleParameters.angle) {
+      markSymbolizer.rotate = parseFloat(styleParameters.angle);
+    }
+    
+    if (styleParameters.size) {
+      markSymbolizer.radius = parseFloat(styleParameters.size) / 2;
+    }
 
-    markSymbolizer.rotate = parseFloat(styleParameters.angle);
-
-    markSymbolizer.radius = parseFloat(styleParameters.size) / 2;
-
-    markSymbolizer.strokeColor = rgbToHex(styleParameters.color);
-
-    markSymbolizer.strokeWidth = styleParameters.width;
-
-    markSymbolizer.strokeOpacity = markSymbolizer.opacity;
+    if (styleParameters.outlinecolor) {
+      markSymbolizer.strokeColor = rgbToHex(styleParameters.outlinecolor);
+    }
+    
+    if (styleParameters.width) {
+      markSymbolizer.strokeWidth = styleParameters.width;
+    }
+    
+    if (markSymbolizer.opacity) {
+      markSymbolizer.strokeOpacity = markSymbolizer.opacity;
+    }
+    
 
     // TODO: Convert hack for demo to proper SYMBOL handling!
     const wellKnownName = styleParameters.symbol;
@@ -348,15 +358,19 @@ export class MapfileStyleParser implements StyleParser {
   getLineSymbolizerFromMapfileStyle(styleParameters: any): LineSymbolizer {
     const lineSymbolizer = { kind: 'Line' } as LineSymbolizer;
 
-    lineSymbolizer.color = rgbToHex(styleParameters.color);
-
+    if (styleParameters.color) {
+      lineSymbolizer.color = rgbToHex(styleParameters.color);
+    }
+    
     if (!lineSymbolizer.color) {
       lineSymbolizer.opacity = 0;
-    } else {
+    } else if (styleParameters.opacity) {
       lineSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
     }
 
-    lineSymbolizer.width = parseFloat(styleParameters.width);
+    if (styleParameters.width) {
+      lineSymbolizer.width = parseFloat(styleParameters.width);
+    }
 
     const linejoin = styleParameters.linejoin;
     if (!linejoin) {
@@ -365,12 +379,12 @@ export class MapfileStyleParser implements StyleParser {
       lineSymbolizer.join = linejoin;
     }
 
-    const linecap = styleParameters.linecap;
-    lineSymbolizer.cap = linecap;
-
-    const pattern = styleParameters.pattern;
-    if (pattern) {
-      lineSymbolizer.dasharray = pattern.split(' ').map((a: string) => parseFloat(a));
+    if (styleParameters.linecap) {
+      lineSymbolizer.cap = styleParameters.linecap;
+    }
+    
+    if (styleParameters.pattern) {
+      lineSymbolizer.dasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
     const initialgap = styleParameters.initialgap;
@@ -405,19 +419,24 @@ export class MapfileStyleParser implements StyleParser {
 
     if (!fillSymbolizer.color) {
       fillSymbolizer.opacity = 0;
-    } else {
+    } else if (styleParameters.opacity) {
       fillSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
     }
 
-    fillSymbolizer.outlineColor = rgbToHex(styleParameters.outlinecolor);
-
-    fillSymbolizer.outlineWidth = parseFloat(styleParameters.outlinewidth);
-
-    fillSymbolizer.outlineOpacity = fillSymbolizer.opacity;
-
-    const pattern = styleParameters.pattern;
-    if (pattern) {
-      fillSymbolizer.outlineDasharray = pattern.split(' ').map((a: string) => parseFloat(a));
+    if (styleParameters.outlinecolor) {
+      fillSymbolizer.outlineColor = rgbToHex(styleParameters.outlinecolor);
+    }
+    
+    if (styleParameters.outlinewidth) {
+      fillSymbolizer.outlineWidth = parseFloat(styleParameters.outlinewidth);
+    }
+    
+    if (fillSymbolizer.opacity) {
+      fillSymbolizer.outlineOpacity = fillSymbolizer.opacity;
+    }
+    
+    if (styleParameters.pattern) {
+      fillSymbolizer.outlineDasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
     // TODO: const graphicFill;
