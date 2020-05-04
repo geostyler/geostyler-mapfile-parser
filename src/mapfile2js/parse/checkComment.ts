@@ -1,4 +1,4 @@
-const regExpHexColor = new RegExp('["\']#[0-9a-f]{6}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
+const regExpHexColor = new RegExp('["\']#[0-9a-f]{6,8}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
 
 interface LineObject {
   includesComment: boolean;
