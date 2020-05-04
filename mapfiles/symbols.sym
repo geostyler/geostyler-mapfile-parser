@@ -1,0 +1,271 @@
+SYMBOLSET
+  SYMBOL
+     NAME "circle"
+     TYPE ellipse
+     POINTS
+       1 1
+     END # end of POINTS
+     FILLED true
+     #ANCHORPOINT 0.5 0.5
+  END
+
+  SYMBOL
+    NAME "postal"
+    TYPE PIXMAP
+    IMAGE "symbols/postal.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "police"
+    TYPE PIXMAP
+    IMAGE "symbols/police.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "busstop"
+    TYPE PIXMAP
+    IMAGE "symbols/busstop.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "parking"
+    TYPE PIXMAP
+    IMAGE "symbols/parking.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "fillingstation"
+    TYPE PIXMAP
+    IMAGE "symbols/fillingstation.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "firemen"
+    TYPE PIXMAP
+    IMAGE "symbols/firemen.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "hospital"
+    TYPE PIXMAP
+    IMAGE "symbols/hospital-2.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "bar"
+    TYPE PIXMAP
+    IMAGE "symbols/bar.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "dancinghall"
+    TYPE PIXMAP
+    IMAGE "symbols/dancinghall.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "cinema"
+    TYPE PIXMAP
+    IMAGE "symbols/cinema.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "coffee_marron"
+    TYPE PIXMAP
+    IMAGE "symbols/coffee_marron.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "coffee"
+    TYPE PIXMAP
+    IMAGE "symbols/coffee.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "fastfood"
+    TYPE PIXMAP
+    IMAGE "symbols/fastfood.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "restaurant"
+    TYPE PIXMAP
+    IMAGE "symbols/restaurant.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "youthhostel"
+    TYPE PIXMAP
+    IMAGE "symbols/youthhostel.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "hostel_0star"
+    TYPE PIXMAP
+    IMAGE "symbols/hostel_0star.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "bed_breakfast1-2"
+    TYPE PIXMAP
+    IMAGE "symbols/bed_breakfast1-2.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "hotel_0star"
+    TYPE PIXMAP
+    IMAGE "symbols/hotel_0star.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "information"
+    TYPE PIXMAP
+    IMAGE "symbols/information.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "casino"
+    TYPE PIXMAP
+    IMAGE "symbols/casino-2.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "bicycle_rental"
+    TYPE PIXMAP
+    IMAGE "symbols/cycling.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "boat_rental"
+    TYPE PIXMAP
+    IMAGE "symbols/sailing.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "winery"
+    TYPE PIXMAP
+    IMAGE "symbols/winebar.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "brewery"
+    TYPE PIXMAP
+    IMAGE "symbols/brewery.png"
+    ANCHORPOINT 0.5 1
+  END
+
+ SYMBOL
+    NAME "viewpoint"
+    TYPE PIXMAP
+    IMAGE "symbols/viewpoint.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+    NAME "museum"
+    TYPE PIXMAP
+    IMAGE "symbols/museum.png"
+    ANCHORPOINT 0.5 1
+  END
+
+ SYMBOL
+    NAME "zoo"
+    TYPE PIXMAP
+    IMAGE "symbols/zoo.png"
+    ANCHORPOINT 0.5 1
+  END
+
+ SYMBOL
+    NAME "atm"
+    TYPE PIXMAP
+    IMAGE "symbols/atm-2.png"
+    ANCHORPOINT 0.5 1
+  END
+
+ SYMBOL
+    NAME "bank"
+    TYPE PIXMAP
+    IMAGE "symbols/bank.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+     NAME "church"
+     TYPE PIXMAP
+     IMAGE "symbols/church.png"
+     ANCHORPOINT 0.5 1
+  END
+
+ SYMBOL
+    NAME "mosquee"
+    TYPE PIXMAP
+    IMAGE "symbols/mosquee.png"
+    ANCHORPOINT 0.5 1
+  END
+
+  SYMBOL
+     NAME "hatch"
+     TYPE hatch
+  END
+
+  SYMBOL
+     NAME "trait"
+     TYPE vector
+     POINTS
+       0 0
+       1 0
+     END
+  END
+
+  SYMBOL
+     NAME "cross"
+     TYPE vector
+     POINTS
+        2.0 0.0
+        2.0 4.0
+        -99 -99
+        0.0 2.0
+        4.0 2.0
+     END
+  END
+
+  SYMBOL
+      NAME "arrow-start"
+      TYPE vector
+      FILLED true
+      POINTS
+        0 0.4
+        3 0.4
+        3 0
+        5 0.8
+        3 1.6
+        3 1.2
+        0 1.2
+        0 0.4
+      END # POINTS
+      #ANCHORPOINT 0 0.5
+  END # SYMBOL
+END

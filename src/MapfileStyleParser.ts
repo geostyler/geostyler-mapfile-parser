@@ -315,16 +315,17 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     // TODO: Convert hack for demo to proper SYMBOL handling!
-    const wellKnownName = styleParameters.symbol;
-    switch (wellKnownName) {
-    case 'circle':
+    const symbolType = styleParameters.symbol.type.toLowerCase();
+    switch (symbolType) {
+    case 'ellipse': {
+      markSymbolizer.wellKnownName = 'circle' as WellKnownName;
+      break;
+    }
     case 'square':
     case 'triangle':
     case 'star':
     case 'cross':
     case 'x': {
-      const wkn = wellKnownName.charAt(0).toUpperCase() + wellKnownName.slice(1);
-      markSymbolizer.wellKnownName = wkn as WellKnownName;
       break;
     }
     }
@@ -577,6 +578,7 @@ export class MapfileStyleParser implements StyleParser {
     return new Promise<Style>((resolve, reject) => {
       try {
         const mapfileObject: object = parse(mapfileString);
+        console.log(JSON.stringify(mapfileObject, null, 2));
         const geoStylerStyle: Style = this.mapfileObjectToGeoStylerStyle(mapfileObject);
         // console.log(JSON.stringify(geoStylerStyle, null, 2));
         resolve(geoStylerStyle);
