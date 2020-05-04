@@ -295,7 +295,7 @@ export class MapfileStyleParser implements StyleParser {
 
     markSymbolizer.radius = parseFloat(styleParameters.size) / 2;
 
-    markSymbolizer.strokeColor = styleParameters.color;
+    markSymbolizer.strokeColor = rgbToHex(styleParameters.color);
 
     markSymbolizer.strokeWidth = styleParameters.width;
 
@@ -348,7 +348,7 @@ export class MapfileStyleParser implements StyleParser {
   getLineSymbolizerFromMapfileStyle(styleParameters: any): LineSymbolizer {
     const lineSymbolizer = { kind: 'Line' } as LineSymbolizer;
 
-    lineSymbolizer.color = styleParameters.color;
+    lineSymbolizer.color = rgbToHex(styleParameters.color);
 
     if (!lineSymbolizer.color) {
       lineSymbolizer.opacity = 0;
@@ -401,7 +401,7 @@ export class MapfileStyleParser implements StyleParser {
   getFillSymbolizerFromMapfileStyle(styleParameters: any): FillSymbolizer {
     const fillSymbolizer = { kind: 'Fill' } as FillSymbolizer;
 
-    fillSymbolizer.color = styleParameters.color;
+    fillSymbolizer.color = rgbToHex(styleParameters.color);
 
     if (!fillSymbolizer.color) {
       fillSymbolizer.opacity = 0;
@@ -409,7 +409,7 @@ export class MapfileStyleParser implements StyleParser {
       fillSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
     }
 
-    fillSymbolizer.outlineColor = styleParameters.outlinecolor;
+    fillSymbolizer.outlineColor = rgbToHex(styleParameters.outlinecolor);
 
     fillSymbolizer.outlineWidth = parseFloat(styleParameters.outlinewidth);
 

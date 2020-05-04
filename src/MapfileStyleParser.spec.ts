@@ -1,8 +1,13 @@
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
+import { ComparisonFilter, Filter, Style } from 'geostyler-style';
+import { SldStyleParser } from 'geostyler-sld-parser';
+
 import point_simple_point from '../data/styles/point_simple_point';
-/* import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
+import point_simple_point_label from '../data/styles/point_simple_point_label';
+/*
+import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
 import point_st_sample_point_style_tags from '../data/styles/point_st_sample_point_style_tags';
 import point_st_sample_point_style_tags_single_filter_list from '../data/styles/point_st_sample_point_style_tags_single_filter_list';
 import point_st_sample_point_style_tags_single_filter_regex from '../data/styles/point_st_sample_point_style_tags_single_filter_regex';
@@ -10,8 +15,7 @@ import point_st_sample_point_style_tags_single_filter_regex from '../data/styles
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
-import { ComparisonFilter, Filter, Style } from 'geostyler-style';
-import { SldStyleParser } from 'geostyler-sld-parser';
+
 
 it('MapfileStyleParser is defined', () => {
   expect(MapfileStyleParser).toBeDefined();
@@ -35,24 +39,8 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_point);
-    // it('can read a MapFile PointSymbolizer', () => {
-    //   expect.assertions(2);
-    //   const mapfile = fs.readFileSync('./mapfiles/simple.map', 'utf8');
-    //   return styleParser.readStyle(mapfile).then((geoStylerStyle: Style) => {
-    //     expect(geoStylerStyle).toBeDefined();
-    //     expect(geoStylerStyle).toEqual(point_simplepoint);
-    //   });
-    // });
-
-    it('can translate Mapfile to SLD', async () => {
-      const mapfile = fs.readFileSync('./mapfiles/simple.map', 'utf8');
-      const geostylerStyle = styleParser.readStyle(mapfile);
-      const sldStyleParser = new SldStyleParser();
-      return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
-        expect(sldStyle).toEqual(expect.any(String));
-      });
     });
-
+ 
     it('can read a simple MapFile LineSymbolizer', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync('./data/mapfiles/line_simple_line.map', 'utf8');
@@ -75,6 +63,14 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_simple_raster);
+    });
+
+    it('can read a simple MapFile Label', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(point_simple_point_label);
     });
 /*
     it('can read a simple MapFile PointSymbolizer with many classes', async () => {
@@ -107,8 +103,17 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_regex);
-    }); */
-   });
+    });
+  */
+ it('can translate Mapfile to SLD', async () => {
+   const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
+   const geostylerStyle = styleParser.readStyle(mapfile);
+   const sldStyleParser = new SldStyleParser();
+   return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
+     expect(sldStyle).toEqual(expect.any(String));
+  });
+  });
+});
 
   describe('#getFilterFromMapfileExpression', () => {
     it('is defined', () => {

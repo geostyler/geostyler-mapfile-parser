@@ -7,6 +7,8 @@ LAYER
     STYLE
       COLOR 0 255 0
       OUTLINECOLOR 85 85 85
+      OPACITY 70
+      WITH 2
     END
   END
 END
