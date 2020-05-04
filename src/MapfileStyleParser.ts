@@ -318,7 +318,7 @@ export class MapfileStyleParser implements StyleParser {
     const symbolType = styleParameters.symbol.type.toLowerCase();
     switch (symbolType) {
     case 'ellipse': {
-      markSymbolizer.wellKnownName = 'circle' as WellKnownName;
+      markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
       break;
     }
     case 'square':
@@ -578,7 +578,7 @@ export class MapfileStyleParser implements StyleParser {
     return new Promise<Style>((resolve, reject) => {
       try {
         const mapfileObject: object = parse(mapfileString);
-        console.log(JSON.stringify(mapfileObject, null, 2));
+        // console.log(JSON.stringify(mapfileObject, null, 2));
         const geoStylerStyle: Style = this.mapfileObjectToGeoStylerStyle(mapfileObject);
         // console.log(JSON.stringify(geoStylerStyle, null, 2));
         resolve(geoStylerStyle);
