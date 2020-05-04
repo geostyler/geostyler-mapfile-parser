@@ -32,7 +32,7 @@ export function parse(content: string): object {
 
     // omit empty lines and comments
     if (lineObject.content === '' || lineObject.content.startsWith('#')) {
-      console.warn(`Omited line [${index + 1}]: ${lineObject.content}`);
+      // console.warn(`Omited line [${index + 1}]: ${lineObject.content}`);
       return;
     }
 

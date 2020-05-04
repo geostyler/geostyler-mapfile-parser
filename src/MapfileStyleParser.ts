@@ -58,22 +58,27 @@ export class MapfileStyleParser implements StyleParser {
    * Get the GeoStyler-Style Filter from an Mapfile EXPRESSION and CLASSITEM.
    *
    * @param {object} mapfileClass The Mapfile Class
+   * @param {string} mapfileClassItem The Mapfile Class
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromClassItem(mapfileClass: any): Filter | null {
-    const classItem: string = mapfileClass.classitem;
-    console.assert(mapfileClass.classitem, 'Mapfile CLASSITEM undefined!');
+  getFilterFromClassItem(mapfileClass: any, mapfileClassItem: string): Filter | null {
+    console.assert(mapfileClassItem, 'Mapfile CLASSITEM undefined!');
+
     const expression: string = mapfileClass.expression;
     switch (expression.charAt(0)) {
     case '"':
-      return ['==' as ComparisonOperator, mapfileClass.classitemclassItem, expression];
+      return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
     case '/':
-      return ['FN_strMatches', classItem, expression];
+      return ['*=', ['FN_strMatches', mapfileClassItem, expression], true];
     case '{':
       return [
-        'FN_strMatches',
-        classItem,
-        `/${expression.substring(1, expression.length - 1).replace(',', '|')}/`,
+        '*=',
+        [
+          'FN_strMatches',
+          mapfileClassItem,
+          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/`,
+        ],
+        true,
       ];
     }
     console.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
@@ -104,12 +109,12 @@ export class MapfileStyleParser implements StyleParser {
     switch (operator) {
     case '~': {
       const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-      return ['FN_strMatches', attribute, valueOrNumber];
+      return ['*=', ['FN_strMatches', attribute, valueOrNumber], true];
     }
     case '~*':
-      return ['FN_strMatches', attribute, `${value}i`];
+      return ['*=', ['FN_strMatches', attribute, `${value}i`], true];
     case 'IN':
-      return ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`];
+      return ['*=', ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`], true];
     case '==':
     case '!=':
     case '<':
@@ -198,7 +203,7 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} mapfileClass The Mapfile Class
    * @return {Filter} The GeoStyler-Style Filter
    */
-  getFilterFromMapfileClass(mapfileClass: any): Filter | null {
+  getFilterFromMapfileClass(mapfileClass: any, mapfileLayerClassItem: string): Filter | null {
     const expression: string = mapfileClass.expression;
     if (!expression) {
       return null;
@@ -242,7 +247,7 @@ export class MapfileStyleParser implements StyleParser {
 
     // get filter from expression value targeting CLASSITEM
     if (/^["/{]/.test(expression)) {
-      return this.getFilterFromClassItem(mapfileClass);
+      return this.getFilterFromClassItem(mapfileClass, mapfileLayerClassItem);
     }
 
     // assert expression starts and ends with a bracket
@@ -293,23 +298,21 @@ export class MapfileStyleParser implements StyleParser {
     if (styleParameters.angle) {
       markSymbolizer.rotate = parseFloat(styleParameters.angle);
     }
-    
+
     if (styleParameters.size) {
       markSymbolizer.radius = parseFloat(styleParameters.size) / 2;
     }
 
     if (styleParameters.outlinecolor) {
       markSymbolizer.strokeColor = rgbToHex(styleParameters.outlinecolor);
+      if (markSymbolizer.opacity) {
+        markSymbolizer.strokeOpacity = markSymbolizer.opacity;
+      }
     }
-    
+
     if (styleParameters.width) {
-      markSymbolizer.strokeWidth = styleParameters.width;
+      markSymbolizer.strokeWidth = parseFloat(styleParameters.width);
     }
-    
-    if (markSymbolizer.opacity) {
-      markSymbolizer.strokeOpacity = markSymbolizer.opacity;
-    }
-    
 
     // TODO: Convert hack for demo to proper SYMBOL handling!
     const wellKnownName = styleParameters.symbol;
@@ -361,7 +364,7 @@ export class MapfileStyleParser implements StyleParser {
     if (styleParameters.color) {
       lineSymbolizer.color = rgbToHex(styleParameters.color);
     }
-    
+
     if (!lineSymbolizer.color) {
       lineSymbolizer.opacity = 0;
     } else if (styleParameters.opacity) {
@@ -382,7 +385,7 @@ export class MapfileStyleParser implements StyleParser {
     if (styleParameters.linecap) {
       lineSymbolizer.cap = styleParameters.linecap;
     }
-    
+
     if (styleParameters.pattern) {
       lineSymbolizer.dasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
@@ -426,15 +429,15 @@ export class MapfileStyleParser implements StyleParser {
     if (styleParameters.outlinecolor) {
       fillSymbolizer.outlineColor = rgbToHex(styleParameters.outlinecolor);
     }
-    
+
     if (styleParameters.outlinewidth) {
       fillSymbolizer.outlineWidth = parseFloat(styleParameters.outlinewidth);
     }
-    
+
     if (fillSymbolizer.opacity) {
       fillSymbolizer.outlineOpacity = fillSymbolizer.opacity;
     }
-    
+
     if (styleParameters.pattern) {
       fillSymbolizer.outlineDasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
@@ -522,9 +525,10 @@ export class MapfileStyleParser implements StyleParser {
 
     mapfileLayers.forEach((mapfileLayer: any) => {
       const mapfileLayerType: string = mapfileLayer.type;
+      const mapfileLayerClassItem: string = mapfileLayer.classitem;
 
       mapfileLayer.class.forEach((mapfileClass: any) => {
-        const filter = this.getFilterFromMapfileClass(mapfileClass);
+        const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
         const scaleDenominator = this.getScaleDenominatorFromClass(mapfileClass);
         const symbolizers = this.getSymbolizersFromStyle(mapfileClass.style, mapfileLayerType);
         const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
@@ -574,7 +578,7 @@ export class MapfileStyleParser implements StyleParser {
       try {
         const mapfileObject: object = parse(mapfileString);
         const geoStylerStyle: Style = this.mapfileObjectToGeoStylerStyle(mapfileObject);
-        console.log(JSON.stringify(geoStylerStyle, null, 2));
+        // console.log(JSON.stringify(geoStylerStyle, null, 2));
         resolve(geoStylerStyle);
       } catch (error) {
         reject(error);
@@ -601,7 +605,6 @@ export class MapfileStyleParser implements StyleParser {
     });
   }
 
-
   /**
    * Splits up a Mapfile Expression into its two top level Expressions
    *
@@ -611,11 +614,11 @@ export class MapfileStyleParser implements StyleParser {
   private splitNestedExpression(mapfileExpression: string): Array<string> {
     // split up nested logical combination expression leveraging parantheses
     const nestedExpressions: Array<string> = [];
-    
+
     let index = 0;
     let fromIndex = 0;
     let parantheseCount = 0;
-    
+
     for (const char of mapfileExpression) {
       switch (char) {
       case '(':

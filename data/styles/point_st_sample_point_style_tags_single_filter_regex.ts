@@ -4,16 +4,16 @@ const pointStyle: Style = {
   name: 'Simple point',
   rules: [{
     filter: [
-      '*=', ['FN_strMatches', 'Test point 1', '/^(A|B)Anyword$/'], true
+      '*=', ['FN_strMatches', 'OBJECTVAL', '/^(A|B)Anyword$/'], true
     ],
     name: 'Test point',
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'Circle',
-      color: '#00FF00',
-      radius: 15,
+      color: '#000000',
+      radius: 2.5,
       rotate: 360,
-      opacity: 100
+      opacity: 1
     }],
   }]
 };

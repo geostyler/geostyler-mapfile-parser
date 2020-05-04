@@ -11,9 +11,9 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Circle',
       color: '#00FF00',
-      radius: 4,
+      radius: 2,
       rotate: 360,
-      opacity: 50
+      opacity: 0.5
     }],
   }]
 };

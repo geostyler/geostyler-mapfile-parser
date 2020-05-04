@@ -1,5 +1,5 @@
 LAYER
-  CLASSITEM "OBJECTVAL"
+  CLASSITEM "Attr"
   NAME "Simple point"
   TYPE POINT
   DATA "../shapes/points.shp"

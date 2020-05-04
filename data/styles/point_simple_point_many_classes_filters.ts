@@ -9,10 +9,10 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Circle',
       color: '#00FF00',
-      radius: 15
+      radius: 7.5
     }],
     filter: [
-      "==", "category", 1
+      "==", "category", "1"
     ]
   },
   {
@@ -21,10 +21,10 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Triangle',
       color: '#0000FF',
-      radius: 10
+      radius: 5
     }],
     filter: [
-      "==", "category", 2
+      "==", "category", "2"
     ]
   },
   {
@@ -33,10 +33,10 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Square',
       color: '#0000FF',
-      radius: 10
+      radius: 5
     }],
     filter: [
-      "==", "category", 3
+      "==", "category", "3"
     ]
   },
   {
@@ -45,10 +45,10 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'Cross',
       color: '#0000FF',
-      radius: 10
+      radius: 5
     }],
     filter: [
-      "==", "category", 4
+      "==", "category", "4"
     ]
   }]
 }
