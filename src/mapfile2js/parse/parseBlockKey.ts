@@ -7,13 +7,14 @@
  */
 
 // there can be multiple layer, class and style block siblings
-const multiBlockKeys = ['layer', 'class', 'style'];
+const multiBlockKeys = ['layer', 'class', 'style', 'symbol'];
+// some blocks are actually just an array
+const arrayBlockKeys = ['points'];
 
 export function parseBlockKey(lineObject: any, index: number, currentBlock: any): object | undefined {
   // can not handle block lines
   if (lineObject.isBlockLine) {
-    console.warn(`Block line [${index + 1}]: ${lineObject.content}`);
-    console.error('Not able to deal with block line yet!');
+    console.error(`Not able to deal with block line yet! Block line [${index + 1}]: ${lineObject.content}`);
     return;
   }
 
@@ -33,6 +34,10 @@ export function parseBlockKey(lineObject: any, index: number, currentBlock: any)
 
     // return new block
     return currentBlock[lineObject.key][currentBlock[lineObject.key].length - 1];
+  } else if (arrayBlockKeys.includes(lineObject.key)) {
+    // create array
+    currentBlock[lineObject.key] = [];
+    return currentBlock[lineObject.key];
   } else {
     // check for duplicate block key
     if (lineObject.key in currentBlock) {
