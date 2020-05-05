@@ -1,0 +1,22 @@
+LAYER
+  NAME "Simple raster"
+  TYPE RASTER
+  DATA "../rasters/raster.tif"
+  STATUS DEFAULT
+  CLASS
+    NAME "0- 100"
+    EXPRESSION ( ( [pixel] > 0 ) AND ( [pixel] <= 100 ) )
+    STYLE
+      COLOR 0 255 0
+      OPACITY 100
+    END
+  END
+  CLASS
+    NAME "100 - 200"
+    EXPRESSION ( ( [pixel] > 100 ) AND ( [pixel] <= 200 ) )
+    STYLE
+      COLOR 0 0 255
+      OPACITY 100
+    END
+  END
+END

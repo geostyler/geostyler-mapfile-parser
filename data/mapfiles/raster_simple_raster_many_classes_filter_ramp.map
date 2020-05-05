@@ -1,0 +1,24 @@
+LAYER
+  NAME "Simple raster"
+  TYPE RASTER
+  DATA "../rasters/raster.tif"
+  STATUS DEFAULT
+  CLASS
+    NAME "0- 100"
+    EXPRESSION ( ( [pixel] > 0 ) AND ( [pixel] <= 100 ) )
+    STYLE
+      COLORRANGE 0 0 0 0 50 0
+      DATARANGE 0 100
+      RANGEITEM "pixel"
+    END
+  END
+  CLASS
+    NAME "100 - 200"
+    EXPRESSION ( ( [pixel] > 100 ) AND ( [pixel] <= 200 ) )
+    STYLE
+      COLORRANGE 0 50 0 0 50 80
+      DATARANGE 101 200
+      RANGEITEM "pixel"
+    END
+  END
+END
