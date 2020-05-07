@@ -8,9 +8,15 @@ function substituteSymbols(obj: object): void {
     if (typeof obj[property] == 'object') {
       substituteSymbols(obj[property]);
     } else if (property === 'symbol') {
-      obj[property] = symbolset.find(element => element.name === obj[property]);
-    } else {
-      continue;
+      if (obj[property] !== '0') {
+        // TODO: distinguish corectly betwen index and name reference
+        const symbol = symbolset.find((element) => element.name === obj[property]);
+        if (symbol) {
+          obj[property] = symbol;
+        } else {
+          obj[property] = symbolset[parseFloat(obj[property])];
+        }
+      }
     }
   }
 }
@@ -20,7 +26,6 @@ function substituteSymbols(obj: object): void {
  * @param {object} mapfileObject Parsed Mapfile Object
  */
 export function resolveSymbolset(mapfileObject: any): any {
-
   let symbolsetPath = mapfileObject.map.symbolset;
 
   // fallback to mapserver defaults if not specified
@@ -41,4 +46,3 @@ export function resolveSymbolset(mapfileObject: any): any {
     Error('Not able to resolve symbolset!');
   }
 }
-

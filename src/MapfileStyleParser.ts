@@ -18,6 +18,8 @@ import {
   CombinationOperator,
   NegationFilter,
   CombinationFilter,
+  IconSymbolizer,
+  TextSymbolizer,
 } from 'geostyler-style';
 
 export type ConstructorParams = {};
@@ -114,7 +116,11 @@ export class MapfileStyleParser implements StyleParser {
     case '~*':
       return ['*=', ['FN_strMatches', attribute, `${value}i`], true];
     case 'IN':
-      return ['*=', ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`], true];
+      return [
+        '*=',
+        ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`],
+        true,
+      ];
     case '==':
     case '!=':
     case '<':
@@ -314,11 +320,14 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.strokeWidth = parseFloat(styleParameters.width);
     }
 
-    // TODO: Convert hack for demo to proper SYMBOL handling!
+    // TODO: Abstract to SVG and drop WellKnownName!
     const symbolType = styleParameters.symbol.type.toLowerCase();
     switch (symbolType) {
     case 'ellipse': {
-      markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+      const xy = styleParameters.symbol.points[0].split(' ');
+      if (xy[0] === xy[1]){
+        markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+      }
       break;
     }
     case 'square':
@@ -334,6 +343,78 @@ export class MapfileStyleParser implements StyleParser {
   }
 
   /**
+   * Get the GeoStyler-Style IconSymbolizer from an Mapfile Style
+   *
+   * @param {object} styleParameters The Mapfile Style
+   * @return {IconSymbolizer} The GeoStyler-Style IconSymbolizer
+   */
+  getIconSymbolizerFromMapfileStyle(styleParameters: any): IconSymbolizer {
+    const iconSymbolizer: IconSymbolizer = {
+      kind: 'Icon',
+      image: styleParameters.symbol.image,
+    } as IconSymbolizer;
+
+    if (styleParameters.opacity) {
+      iconSymbolizer.opacity = styleParameters.opacity;
+    }
+    if (styleParameters.size) {
+      iconSymbolizer.size = parseFloat(styleParameters.size);
+    }
+    if (styleParameters.angle) {
+      iconSymbolizer.rotate = parseFloat(styleParameters.angle);
+    }
+    if (styleParameters.symbol.anchorpoint) {
+      const anchorpoint: Array<number> = styleParameters.symbol.anchorpoint
+        .split(' ')
+        .map((a: string) => Math.round(parseFloat(a) * 2) / 2);
+      const anchorpointMap = {
+        '0.5 0.5': 'center',
+        '0 0.5': 'left',
+        '1 0.5': 'right',
+        '0.5 0': 'top',
+        '0.5 1': 'bottom',
+        '0 0': 'top-left',
+        '1 0': 'top-right',
+        '0 1': 'bottom-left',
+        '1 1': 'bottom-right',
+      };
+      iconSymbolizer.anchor = anchorpointMap[`${anchorpoint[0]} ${anchorpoint[1]}`];
+    }
+
+    return iconSymbolizer;
+  }
+
+  /**
+   * Get the GeoStyler-Style TextSymbolizer from an Mapfile STYLE.
+   *
+   * @param {object} styleParameters The Mapfile Style Parameters
+   * @return {TextSymbolizer} The GeoStyler-Style TextSymbolizer
+   */
+  getTextSymbolizerFromMapfileStyle(styleParameters: any): TextSymbolizer {
+    const textSymbolizer: TextSymbolizer = { kind: 'Text' } as TextSymbolizer;
+
+    const label = styleParameters.symbol.character;
+    if (label) {
+      textSymbolizer.label = label;
+    }
+    if (styleParameters.color) {
+      textSymbolizer.color = styleParameters.color;
+    }
+    if (styleParameters.offset) {
+      textSymbolizer.offset = styleParameters.offset.split(' ').map((a: string) => parseFloat(a));
+    }
+    if (styleParameters.angle) {
+      textSymbolizer.rotate = parseFloat(styleParameters.angle);
+    }
+    if (styleParameters.font) {
+      // TODO: map fonts from FONTSET
+      textSymbolizer.font = [styleParameters.font];
+    }
+
+    return textSymbolizer;
+  }
+
+  /**
    * Get the GeoStyler-Style PointSymbolizer from an Mapfile STYLE.
    *
    * @param {object} styleParameters The Mapfile Style Parameters
@@ -342,14 +423,38 @@ export class MapfileStyleParser implements StyleParser {
   getPointSymbolizerFromMapfileStyle(styleParameters: any): PointSymbolizer {
     let pointSymbolizer = {} as PointSymbolizer;
 
-    // if (externalGraphic) {
-
-    //   pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileSymbolizer);
-
-    // } else {
-
-    pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(styleParameters);
-    // }
+    if (typeof styleParameters.symbol === 'object') {
+      const symbolType = styleParameters.symbol.type;
+      switch (symbolType) {
+      case 'ellipse':
+        // TODO: fixme handle as svg and drop WellKnownMark
+        pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      case 'vector':
+      case 'svg':
+        // TODO: handle as svg
+        break;
+      case 'hatch':
+        // TODO
+        break;
+      case 'pixmap':
+        pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      case 'truetype':
+        pointSymbolizer = this.getTextSymbolizerFromMapfileStyle(styleParameters);
+        break;
+      default:
+        break;
+      }
+    } else if (typeof styleParameters.symbol === 'string') {
+      if (/^['"]?[^[]/.test(styleParameters.symbol)) {
+        styleParameters.symbol = { image: styleParameters.symbol };
+        pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(styleParameters);
+      } else {
+        // TODO: handle attribute pixmaps
+        console.error('Not able to deal with attribute pixmaps');
+      }
+    }
     return pointSymbolizer;
   }
 
@@ -391,19 +496,16 @@ export class MapfileStyleParser implements StyleParser {
       lineSymbolizer.dasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
-    const initialgap = styleParameters.initialgap;
-    if (initialgap) {
-      lineSymbolizer.dashOffset = parseFloat(initialgap);
+    if (styleParameters.initialgap) {
+      lineSymbolizer.dashOffset = parseFloat(styleParameters.initialgap);
     }
 
-    // TODO: derive from Symbol
-    // lineSymbolizer.graphicStroke = this.getPointSymbolizerFromMapfileStyle(
-    //   styleParameters.Stroke[0].GraphicStroke[0]
-    // );
+    if (styleParameters.symbol) {
+      lineSymbolizer.graphicStroke = this.getPointSymbolizerFromMapfileStyle(styleParameters);
+    }
 
-    // lineSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(
-    //   styleParameters.Stroke[0].GraphicFill[0]
-    // );
+    // TODO: does Mapfile offer such a treat?
+    // lineSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(styleParameters);
 
     return lineSymbolizer;
   }
@@ -443,13 +545,9 @@ export class MapfileStyleParser implements StyleParser {
       fillSymbolizer.outlineDasharray = styleParameters.pattern.split(' ').map((a: string) => parseFloat(a));
     }
 
-    // TODO: const graphicFill;
-
-    // if (styleParameters.symbol) {
-    //   fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(
-    //     graphicFill
-    //   );
-    // }
+    if (styleParameters.symbol) {
+      fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(styleParameters);
+    }
 
     return fillSymbolizer;
   }
@@ -468,15 +566,20 @@ export class MapfileStyleParser implements StyleParser {
   }
 
   /**
-   * Get the GeoStyler-Style Symbolizers from an Mapfile STYLE.
+   * Get the GeoStyler-Style Symbolizers from an Mapfile CLASS.
    *
-   * @param {object} mapfileStyle The Mapfile Style
+   * @param {object} mapfileClass The Mapfile Class
    * @param {string} mapfileLayerType The Mapfile Layer Type
+   * @param {string} mapfileLayerLabelItem The Mapfile Layer Label Item
    * @return {Symbolizer[]} The GeoStyler-Style Symbolizer Array
    */
-  getSymbolizersFromStyle(mapfileStyle: any, mapfileLayerType: string): Symbolizer[] {
+  getSymbolizersFromClass(
+    mapfileClass: any,
+    mapfileLayerType: string,
+    mapfileLayerLabelItem: string
+  ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
-    mapfileStyle.forEach((styleParameters: any) => {
+    mapfileClass.style.forEach((styleParameters: any) => {
       let symbolizer: any;
       switch (mapfileLayerType.toLowerCase()) {
       case 'point':
@@ -485,10 +588,6 @@ export class MapfileStyleParser implements StyleParser {
       case 'line':
         symbolizer = this.getLineSymbolizerFromMapfileStyle(styleParameters);
         break;
-        // case 'TextSymbolizer':
-        // TODO: Mapfile LABEL
-        //   symbolizer = this.getTextSymbolizerFromMapfileLable(labelParameters);
-        // break;
       case 'polygon':
         symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
         break;
@@ -496,19 +595,25 @@ export class MapfileStyleParser implements StyleParser {
         symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
         break;
       case 'chart':
-        // maybe not used by swisstopo
+        // TODO
         break;
       case 'circle':
-        // maybe not used by swisstopo
+        // TODO
         break;
       case 'query':
-        // maybe not used by swisstopo
+        // layer can be queried but not drawn
         break;
       default:
         throw new Error('Failed to parse SymbolizerKind from MapfileStyle');
       }
       symbolizers.push(symbolizer);
     });
+
+    if (mapfileClass.label) {
+      // TODO: Mapfile LABEL
+      // symbolizer = this.getTextSymbolizerFromMapfileClass(mapfileClass, mapfileLayerLabelItem);
+      // symbolizers.push(symbolizer);
+    }
 
     return symbolizers;
   }
@@ -527,11 +632,16 @@ export class MapfileStyleParser implements StyleParser {
     mapfileLayers.forEach((mapfileLayer: any) => {
       const mapfileLayerType: string = mapfileLayer.type;
       const mapfileLayerClassItem: string = mapfileLayer.classitem;
+      const mapfileLayerLabelItem: string = mapfileLayer.labelitem;
 
       mapfileLayer.class.forEach((mapfileClass: any) => {
         const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
         const scaleDenominator = this.getScaleDenominatorFromClass(mapfileClass);
-        const symbolizers = this.getSymbolizersFromStyle(mapfileClass.style, mapfileLayerType);
+        const symbolizers = this.getSymbolizersFromClass(
+          mapfileClass,
+          mapfileLayerType,
+          mapfileLayerLabelItem
+        );
         const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
 
         const rule = { name } as Rule;
