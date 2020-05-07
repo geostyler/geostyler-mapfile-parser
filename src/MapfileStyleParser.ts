@@ -325,7 +325,7 @@ export class MapfileStyleParser implements StyleParser {
     switch (symbolType) {
     case 'ellipse': {
       const xy = styleParameters.symbol.points[0].split(' ');
-      if (xy[0] === xy[1]){
+      if (xy[0] === xy[1]) {
         markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
       }
       break;
@@ -382,6 +382,68 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     return iconSymbolizer;
+  }
+
+  /**
+   * Get the GeoStyler-Style TextSymbolizer from an Mapfile LABEL.
+   *
+   * @param {object} mapfileLabel The Mapfile Label Parameters
+   * @return {TextSymbolizer} The GeoStyler-Style TextSymbolizer
+   */
+  getTextSymbolizerFromMapfileLabel(labelParameters: any): TextSymbolizer {
+    const textSymbolizer: TextSymbolizer = { kind: 'Text' } as TextSymbolizer;
+
+    const label = labelParameters.text;
+    if (label) {
+      textSymbolizer.label = label.replace('[', '{{').replace(']', '}}');
+    }
+    if (labelParameters.color) {
+      textSymbolizer.color = rgbToHex(labelParameters.color);
+    }
+    if (labelParameters.offset) {
+      textSymbolizer.offset = labelParameters.offset.split(' ').map((a: string) => parseFloat(a));
+    }
+    if (labelParameters.angle) {
+      textSymbolizer.rotate = parseFloat(labelParameters.angle);
+    }
+
+    if (labelParameters.align) {
+      textSymbolizer.justify = labelParameters.align;
+    }
+
+    if (labelParameters.buffer) {
+      textSymbolizer.padding = parseFloat(labelParameters.buffer);
+    }
+
+    if (labelParameters.position) {
+      const anchorpointMap = {
+        cc: 'center',
+        auto: 'center', // TODO: fixme
+        cl: 'left',
+        cr: 'right',
+        uc: 'top',
+        lc: 'bottom',
+        ul: 'top-left',
+        ur: 'top-right',
+        ll: 'bottom-left',
+        lr: 'bottom-right',
+      };
+      textSymbolizer.anchor = anchorpointMap[labelParameters.position.toLowerCase()];
+    }
+
+    if (labelParameters.font) {
+      // TODO: map fonts from FONTSET
+      textSymbolizer.font = [labelParameters.font];
+    }
+
+    if (labelParameters.size) {
+      // TODO: deal with bitmap font sizes
+      if (!(labelParameters.size in ['tiny', 'small', 'medium', 'large', 'giant'])) {
+        textSymbolizer.size = parseFloat(labelParameters.size);
+      }
+    }
+
+    return textSymbolizer;
   }
 
   /**
@@ -579,40 +641,40 @@ export class MapfileStyleParser implements StyleParser {
     mapfileLayerLabelItem: string
   ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
-    mapfileClass.style.forEach((styleParameters: any) => {
-      let symbolizer: any;
-      switch (mapfileLayerType.toLowerCase()) {
-      case 'point':
-        symbolizer = this.getPointSymbolizerFromMapfileStyle(styleParameters);
-        break;
-      case 'line':
-        symbolizer = this.getLineSymbolizerFromMapfileStyle(styleParameters);
-        break;
-      case 'polygon':
-        symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
-        break;
-      case 'raster':
-        symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
-        break;
-      case 'chart':
-        // TODO
-        break;
-      case 'circle':
-        // TODO
-        break;
-      case 'query':
-        // layer can be queried but not drawn
-        break;
-      default:
-        throw new Error('Failed to parse SymbolizerKind from MapfileStyle');
-      }
-      symbolizers.push(symbolizer);
-    });
+    if (mapfileClass.style) {
+      mapfileClass.style.forEach((styleParameters: any) => {
+        let symbolizer: any;
+        switch (mapfileLayerType.toLowerCase()) {
+        case 'point':
+          symbolizer = this.getPointSymbolizerFromMapfileStyle(styleParameters);
+          break;
+        case 'line':
+          symbolizer = this.getLineSymbolizerFromMapfileStyle(styleParameters);
+          break;
+        case 'polygon':
+          symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
+          break;
+        case 'raster':
+          symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
+          break;
+        case 'query':
+          // layer can be queried but not drawn
+          break;
+        case 'chart':
+        case 'circle':
+        default:
+          throw new Error('Unable to parse Symbolizer from Mapfile');
+        }
+        symbolizers.push(symbolizer);
+      });
+    }
 
+    // TODO: Mapfile LABEL
     if (mapfileClass.label) {
-      // TODO: Mapfile LABEL
-      // symbolizer = this.getTextSymbolizerFromMapfileClass(mapfileClass, mapfileLayerLabelItem);
-      // symbolizers.push(symbolizer);
+      mapfileLayerLabelItem = mapfileClass.text ? mapfileClass.text : mapfileLayerLabelItem;
+      mapfileClass.label.text = mapfileClass.label.text ? mapfileClass.label.text : mapfileLayerLabelItem;
+      const symbolizer = this.getTextSymbolizerFromMapfileLabel(mapfileClass.label);
+      symbolizers.push(symbolizer);
     }
 
     return symbolizers;
