@@ -4,6 +4,7 @@ import { checkBlockKey } from './parse/checkBlockKey';
 import { parseBlockKey } from './parse/parseBlockKey';
 import { checkBlockEndSum } from './parse/checkBlockEndSum';
 import { determineDepth } from './parse/determineDepth';
+import { resolveSymbolset } from './parse/resolveSymbolset';
 
 /**
  * Parses a MapServer Mapfile to a JavaScript object.
@@ -74,7 +75,12 @@ export function parse(content: string): object {
     // work around projection imitating a block
     if (lineObject.key.toLowerCase().includes('init=')) {
       currentBlock.projection = lineObject.key.trim().replace(/"/g, '');
+      return;
+    }
 
+    // some blocks are actually just an array
+    if (Array.isArray(currentBlock)) {
+      currentBlock.push(lineObject.contentWithoutComment);
       return;
     }
 
@@ -86,11 +92,16 @@ export function parse(content: string): object {
     currentBlock[lineObject.key] = lineObject.value;
   });
 
+  // insert MAP block if not existent for consistency
+  result = 'map' in result || 'symbolset' in result ? result : { map: result };
+
   checkBlockEndSum(lineObjects);
   determineDepth(lineObjects);
 
-  // insert MAP block if not existent for consistency
-  result = !('map' in result) ? { map: result } : result;
-
+  // resolve symbolset
+  if (!('symbolset' in result)) {
+    result = resolveSymbolset(result);
+  }
+  
   return result;
 }
