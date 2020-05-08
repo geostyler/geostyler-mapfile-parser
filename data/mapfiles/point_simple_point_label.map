@@ -1,7 +1,11 @@
 LAYER
-  NAME "Simple label"
+  NAME "point_simple_point_label"
   TYPE POINT
   DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_simple_point_label"
+  END
   CLASS
     NAME "Test label"
     LABEL

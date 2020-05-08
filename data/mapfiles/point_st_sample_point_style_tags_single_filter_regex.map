@@ -1,8 +1,12 @@
 LAYER
-  CLASSITEM "OBJECTVAL"
-  NAME "Simple point"
+  NAME "simple_point_style_tags_single_filter_regex"
   TYPE POINT
   DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "simle_point_style_tags_single_filter_regex"
+  END
+  CLASSITEM "OBJECTVAL"
   CLASS
     EXPRESSION /^(A|B)Anyword$/
     NAME "Test point"

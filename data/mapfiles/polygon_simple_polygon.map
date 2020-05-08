@@ -1,7 +1,11 @@
 LAYER
-  NAME "Simple polygon"
+  NAME "polygon_simple_polygon"
   TYPE POLYGON
   DATA "../shapes/polygons.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "polygon_simple_polygon.map"
+  END
   CLASS
     NAME "Test polygon"
     STYLE
