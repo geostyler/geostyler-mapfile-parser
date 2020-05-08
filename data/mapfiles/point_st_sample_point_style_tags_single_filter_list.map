@@ -1,8 +1,12 @@
 LAYER
-  CLASSITEM "Attr"
-  NAME "Simple point"
+  NAME "point_st_sample_point_style_tags_single_filter_list"
   TYPE POINT
   DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_st_sample_point_style_tags_single_filter_list"
+  END
+  CLASSITEM "Attr"
   CLASS
     EXPRESSION {Word1,Word2,Word3}
     NAME "Test point"

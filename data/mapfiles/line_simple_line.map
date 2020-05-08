@@ -1,7 +1,12 @@
 LAYER
-  NAME "Simple line"
+  NAME "line_simple_line"
   TYPE LINE
   DATA "../shapes/lines.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "line_simple_line"
+    "wms_srs" "EPSG:4326"
+  END
   CLASS
     NAME "Test line"
     STYLE

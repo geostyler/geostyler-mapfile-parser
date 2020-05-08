@@ -1,7 +1,11 @@
 LAYER
-  NAME "Simple point"
+  NAME "point_st_sample_point_style_tags"
   TYPE POINT
   DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_st_sample_point_style_tags"
+  END
   CLASS
     NAME "Test point"
     STYLE

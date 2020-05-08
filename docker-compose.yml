@@ -1,0 +1,12 @@
+data:
+  image: geostyler_mapfile_parser_data
+
+mapserver:
+  image: camptocamp/mapserver:7.2
+  volumes_from:
+    - data
+  environment:
+    MS_DEBUGLEVEL: 2
+  ports:
+    - 8380:80
+  stop_signal: SIGKILL
