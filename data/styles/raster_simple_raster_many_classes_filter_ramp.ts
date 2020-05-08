@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const rasterStyle: Style = {
-  name: 'Simple raster',
+  name: 'raster_simple_raster_many_classes_filter_ramp',
   rules: [{
     name: 'Test raster',
     symbolizers: [{
