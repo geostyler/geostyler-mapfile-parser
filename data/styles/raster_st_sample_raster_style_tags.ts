@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const rasterStyle: Style = {
-  'name': 'Simple raster',
+  'name': 'raster_st_sample_raster_style_tags',
   'rules': [{
     'name': 'Test raster',
     'symbolizers': [{

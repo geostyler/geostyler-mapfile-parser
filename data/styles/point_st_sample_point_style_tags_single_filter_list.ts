@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
-  name: 'Simple point',
+  name: 'simple_point_style_tags_single_filter_list',
   rules: [{
     filter: [
       '*=', ['FN_strMatches', 'Attr', '/(Word1|Word2|Word3)/'], true

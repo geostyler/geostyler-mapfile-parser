@@ -4,7 +4,7 @@ LAYER
   DATA "../shapes/points.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "simle_point_style_tags_single_filter_regex"
+    "wms_title" "simple_point_style_tags_single_filter_regex"
   END
   CLASSITEM "OBJECTVAL"
   CLASS
