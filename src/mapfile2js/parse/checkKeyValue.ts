@@ -6,12 +6,22 @@ function removeQuotes(str: string): string {
   return str;
 }
 
+export interface KeyValueLineObject {
+  isKeyOnly: boolean;
+  key: string;
+  value: string;
+}
+
 /**
  *
  * @param {string} line Line without comment
  */
-export function checkKeyValue(line: string): object {
-  const lineObject: any = {};
+export function checkKeyValue(line: string): KeyValueLineObject {
+  const lineObject: KeyValueLineObject = {
+    isKeyOnly: false,
+    key: '',
+    value: ''
+  };
 
   if (line.match(/\s/)) {
     // Check key value
@@ -23,7 +33,9 @@ export function checkKeyValue(line: string): object {
     lineObject.key = key;
     const value = line.replace(lineParts[0], '').trim();
     // do not mess with expressions, quotes have meaning
-    lineObject.value = key.toUpperCase() === 'EXPRESSION' ? value : removeQuotes(value);
+    lineObject.value = key.toUpperCase() === 'EXPRESSION'
+      ? value
+      : removeQuotes(value);
   } else {
     // key only
     lineObject.isKeyOnly = true;
