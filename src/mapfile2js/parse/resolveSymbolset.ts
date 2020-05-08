@@ -30,7 +30,7 @@ export function resolveSymbolset(mapfileObject: any): any {
 
   // fallback to mapserver defaults if not specified
   if (!symbolsetPath) {
-    symbolsetPath = `${__dirname}/symbols.sym`;
+    symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
   }
 
   if (typeof symbolsetPath !== 'string') {
