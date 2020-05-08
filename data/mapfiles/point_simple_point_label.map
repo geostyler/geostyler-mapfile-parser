@@ -9,6 +9,7 @@ LAYER
   CLASS
     NAME "Test label"
     LABEL
+      TEXT "Nisosa"
       FONT "Verdana"
       COLOR 0 255 0
       SIZE 9
