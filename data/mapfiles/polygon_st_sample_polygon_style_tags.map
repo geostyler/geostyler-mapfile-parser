@@ -1,14 +1,18 @@
 LAYER
-  NAME "Simple polygon"
+  NAME "polygon_st_sample_polygon_style_tags"
   TYPE POLYGON
   DATA "../shapes/polygons.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "polygon_st_sample_polygon_style_tags"
+  END
   CLASS
     NAME "Test polygon"
     STYLE
       COLOR 0 255 0
       OUTLINECOLOR 85 85 85
       OPACITY 70
-      WITH 2
+      WIDTH 2
     END
   END
 END

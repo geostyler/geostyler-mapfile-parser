@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const polygonStyle: Style = {
-  name: 'Simple polygon',
+  name: 'polygon_simple_polygon',
   rules: [{
     name: 'Test polygon',
     symbolizers: [{

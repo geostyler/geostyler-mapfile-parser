@@ -1,8 +1,11 @@
 LAYER
-  NAME "Simple raster"
+  NAME "raster_simple_raster"
   TYPE RASTER
   DATA "../rasters/raster.tif"
-  STATUS DEFAULT
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "raster_simple_raster"
+  END
   CLASS
     NAME "Test raster"
     STYLE
