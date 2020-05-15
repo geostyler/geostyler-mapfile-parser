@@ -39,7 +39,7 @@ MAP
     STATUS ON
 
     FONTSET "fonts.conf"
-    #SYMBOLSET "symbol.sym"
+    SYMBOLSET "symbols.sym"
 
     OUTPUTFORMAT
         NAME jpeg
