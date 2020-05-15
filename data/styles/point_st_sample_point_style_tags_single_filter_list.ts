@@ -4,14 +4,14 @@ const pointStyle: Style = {
   name: 'point_st_sample_point_style_tags_single_filter_list',
   rules: [{
     filter: [
-      '*=', ['FN_strMatches', 'Attr', '/(Word1|Word2|Word3)/'], true
+      '*=', ['FN_strMatches', 'name', '/(bus|bank)/'], true
     ],
     name: 'Test point',
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'Circle',
-      color: '#00FF00',
-      radius: 2,
+      color: '#FF0000',
+      radius: 5,
       rotate: 360,
       opacity: 0.5
     }],

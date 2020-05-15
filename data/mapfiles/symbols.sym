@@ -253,6 +253,29 @@ SYMBOLSET
   END
 
   SYMBOL
+     NAME "triangle"
+     TYPE vector
+     POINTS
+        1.0 0.0
+        2.0 2.0
+        0.0 2.0
+        1.0 0.0
+     END
+  END
+
+  SYMBOL
+     NAME "square"
+     TYPE vector
+     POINTS
+        0.0 0.0
+        1.0 0.0
+        1.0 1.0
+        0.0 1.0
+        0.0 0.0
+     END
+  END
+
+  SYMBOL
       NAME "arrow-start"
       TYPE vector
       FILLED true
