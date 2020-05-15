@@ -5,6 +5,9 @@ const pointStyle: Style = {
   rules: [
   {
     name: 'Test label',
+    scaleDenominator: {
+      max: 5000,
+    },
     symbolizers: [{
       kind: 'Text',
       label: 'Nisosa',

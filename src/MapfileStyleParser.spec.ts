@@ -8,6 +8,7 @@ import point_simple_point from '../data/styles/point_simple_point';
 import point_simple_point_label from '../data/styles/point_simple_point_label';
 
 import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
+import point_scale from '../data/styles/point_scale';
 import point_st_sample_point_style_tags from '../data/styles/point_st_sample_point_style_tags';
 import point_st_sample_point_style_tags_single_filter_list from '../data/styles/point_st_sample_point_style_tags_single_filter_list';
 import point_st_sample_point_style_tags_single_filter_regex from '../data/styles/point_st_sample_point_style_tags_single_filter_regex';
@@ -65,12 +66,20 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(raster_simple_raster);
     });
 
-    it('can read a simple MapFile Label', async () => {
+    it('can read a Point MapFile with scales', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/point_scale.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_simple_point_label);
+      expect(geoStylerStyle).toEqual(point_scale);
+    });
+
+    it('can read a PointSymbolizer with style tags', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/point_st_sample_point_style_tags.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags);
     });
 
     // TODO: fixme there are no Square, Triangle and other WellKlnownName equivalents in Mapfiles

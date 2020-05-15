@@ -1,0 +1,47 @@
+LAYER
+  NAME "point_scale"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_scale"
+  END
+  MAXSCALEDENOM 160000
+  CLASS
+    NAME "Max scale from layer (priority)"
+    STYLE
+      MAXSCALEDENOM 7000
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 24
+    END
+  END
+  CLASS
+    NAME "Scales from class"
+    MAXSCALEDENOM 320000
+    MINSCALEDENOM 160000
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 12
+    END
+  END
+  CLASS
+    NAME "Max scale from layer"
+    MINSCALEDENOM 320000
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 6
+    END
+  END
+  CLASS
+    NAME "Scale 0 and max scale from layer (priority)"
+    MAXSCALEDENOM 0
+    MINSCALEDENOM 0
+    STYLE
+      SYMBOL "circle"
+      SIZE 20
+    END
+  END
+END

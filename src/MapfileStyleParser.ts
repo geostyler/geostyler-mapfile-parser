@@ -264,23 +264,72 @@ export class MapfileStyleParser implements StyleParser {
   }
 
   /**
-   * Get the GeoStyler-Style ScaleDenominator from an Mapfile CLASS.
-   *
-   * @param {object} mapfileClass The Mapfile Class
-   * @return {ScaleDenominator} The GeoStyler-Style ScaleDenominator
+   * Get the GeoStyler-Style ScaleDenominator from an Mapfile element (layer, class or style).
+   * Returns null if there is no defined ScaleDenominator in the element.
+   * @param {object} mapfileElement The Mapfile layer, class or style.
+   * @return {ScaleDenominator} The GeoStyler-Style ScaleDenominator or null.
    */
-  getScaleDenominatorFromClass(mapfileClass: any): ScaleDenominator | undefined {
+  getScaleDenominator(mapfileElement: any): ScaleDenominator | null {
     const scaleDenominator = {} as ScaleDenominator;
 
-    scaleDenominator.min = parseFloat(mapfileClass.minscaledenom);
-
-    scaleDenominator.max = parseFloat(mapfileClass.maxscaledenom);
-
-    if (scaleDenominator.min || scaleDenominator.max) {
-      return scaleDenominator;
-    } else {
-      return;
+    const maxScale = parseFloat(mapfileElement.maxscaledenom);
+    if (!isNaN(maxScale)) {
+      scaleDenominator.max = maxScale;
     }
+
+    const minScale = parseFloat(mapfileElement.minscaledenom);
+    if (!isNaN(minScale)) {
+      scaleDenominator.min = minScale;
+    }
+
+    return (scaleDenominator.max !== undefined || scaleDenominator.min !== undefined) ? scaleDenominator : null;
+  }
+
+  /**
+   * Update the given scaleDenominator with the scaleDenominator from the given mapfileElement;
+   *
+   * @param {object} mapfileElement The Mapfile layer, class or style.
+   * @param {ScaleDenominator} scaleDenominator The scaleDenominator to try to override.
+   * @return {scaleDenominator} A ScaleDenominator value or null.
+   */
+  updateScaleDenominator(mapfileElement: any,
+                         scaleDenominator: ScaleDenominator | null): ScaleDenominator | null {
+    const elementScaleDenominator = this.getScaleDenominator(mapfileElement);
+
+    // No child scale - can't update, return the base scaleDenominator.
+    if (!elementScaleDenominator) {
+      return scaleDenominator;
+    }
+
+    // No parent scale - return the child scaleDenominator.
+    if (!scaleDenominator) {
+      return elementScaleDenominator;
+    }
+
+    const mergedScale = {} as ScaleDenominator;
+    // Take max scale only if it's defined and take parent max scale only if it's bigger
+    // (more restrictive) than the children one.
+    if (scaleDenominator.max === undefined && elementScaleDenominator.max !== undefined) {
+      mergedScale.max = elementScaleDenominator.max;
+    } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max === undefined) {
+      mergedScale.max = scaleDenominator.max;
+    } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max !== undefined) {
+      mergedScale.max = (scaleDenominator.max || 0) > (elementScaleDenominator.max || 0) ?
+        scaleDenominator.max : elementScaleDenominator.max;
+    }
+
+    // Take mix scale only if it's defined and take parent min scale only if it's lesser
+    // (more restrictive) than the children one.
+    if (scaleDenominator.min === undefined && elementScaleDenominator.min !== undefined) {
+      mergedScale.min = elementScaleDenominator.min;
+    } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min === undefined) {
+      mergedScale.min = scaleDenominator.min;
+    } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min !== undefined) {
+      mergedScale.min = (scaleDenominator.min || 0) < (elementScaleDenominator.min || 0) ?
+        scaleDenominator.min : elementScaleDenominator.min;
+    }
+
+    return mergedScale;
   }
 
   /**
@@ -589,7 +638,7 @@ export class MapfileStyleParser implements StyleParser {
   getSymbolizersFromClass(
     mapfileClass: any,
     mapfileLayerType: string,
-    mapfileLayerLabelItem: string
+    mapfileLayerLabelItem: string,
   ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
     // Mapfile STYLE
@@ -619,10 +668,14 @@ export class MapfileStyleParser implements StyleParser {
         }
         const baseSymbolizer: any = this.getBaseSymbolizerFromStyle(styleParameters);
         symbolizers.push(Object.assign(symbolizer, baseSymbolizer));
+
+        this.checkWarnDropRule('MINSCALEDENOM', 'STYLE', styleParameters.minscaledenom);
+        this.checkWarnDropRule('MAXSCALEDENOM', 'STYLE', styleParameters.maxscaledenom);
       });
     }
 
     // Mapfile LABEL
+    // FIXME it can have multiple label in a class.
     if (mapfileClass.label) {
       mapfileLayerLabelItem = mapfileClass.text ? mapfileClass.text : mapfileLayerLabelItem;
       mapfileClass.label.text = mapfileClass.label.text ? mapfileClass.label.text : mapfileLayerLabelItem;
@@ -631,6 +684,9 @@ export class MapfileStyleParser implements StyleParser {
         this.getBaseSymbolizerFromStyle(mapfileClass.label)
       );
       symbolizers.push(symbolizer);
+
+      this.checkWarnDropRule('MINSCALEDENOM', 'LABEL', mapfileClass.label.minscaledenom);
+      this.checkWarnDropRule('MAXSCALEDENOM', 'LABEL', mapfileClass.label.maxscaledenom);
     }
 
     return symbolizers;
@@ -651,29 +707,32 @@ export class MapfileStyleParser implements StyleParser {
       const mapfileLayerType: string = mapfileLayer.type;
       const mapfileLayerClassItem: string = mapfileLayer.classitem;
       const mapfileLayerLabelItem: string = mapfileLayer.labelitem;
+      const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
       mapfileLayer.class.forEach((mapfileClass: any) => {
+        const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
         const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
-        const scaleDenominator = this.getScaleDenominatorFromClass(mapfileClass);
+        const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
         const symbolizers = this.getSymbolizersFromClass(
           mapfileClass,
           mapfileLayerType,
-          mapfileLayerLabelItem
+          mapfileLayerLabelItem,
         );
-        const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
 
         const rule = { name } as Rule;
         if (filter) {
           rule.filter = filter;
         }
-        if (scaleDenominator) {
-          rule.scaleDenominator = scaleDenominator;
+        if (classScaleDenominator) {
+          rule.scaleDenominator = classScaleDenominator;
         }
         if (symbolizers) {
           rule.symbolizers = symbolizers;
         }
         rules.push(rule);
       });
+      this.checkWarnDropRule('LABELMINSCALEDENOM', 'LAYER', mapfileLayer.Labelminscaledenom);
+      this.checkWarnDropRule('LABELMAXSCALEDENOM', 'LAYER', mapfileLayer.Labelmaxscaledenom);
     });
 
     return rules;
@@ -769,6 +828,18 @@ export class MapfileStyleParser implements StyleParser {
       index++;
     }
     return nestedExpressions;
+  }
+
+  /**
+   * Generic error message for not supported rules.
+   * @param {string} notSupported The not supported avoided element. Printed in the warning message.
+   * @param {string} mapfileParentElement The mapfile parent element name. Printed in the warning message.
+   * @param {any} mapfileElement the value to test if it existing.
+   */
+  private checkWarnDropRule(notSupported: string, mapfileParentElement: string, mapfileElement: any): void {
+    if (mapfileElement !== undefined) {
+      console.warn(`SLD doesn't support ${notSupported} operator in ${mapfileParentElement}. This rule is dropped.`);
+    }
   }
 }
 
