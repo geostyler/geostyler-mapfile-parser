@@ -6,7 +6,7 @@ LAYER
   METADATA
     "wms_title" "point_simple_point_many_classes_filters"
   END
-  CLASSITEM "category"
+  CLASSITEM "id"
   CLASS
     NAME "Test point 1"
     EXPRESSION "1"
@@ -21,7 +21,7 @@ LAYER
     EXPRESSION "2"
     STYLE
       SYMBOL "triangle"
-      COLOR 0 0 255
+      COLOR 255 0 0
       SIZE 10
     END
   END
@@ -30,13 +30,12 @@ LAYER
     EXPRESSION "3"
     STYLE
       SYMBOL "square"
-      COLOR 0 0 255
+      COLOR 0 255 255
       SIZE 10
     END
   END
   CLASS
-    NAME "Test point 4"
-    EXPRESSION "4"
+    NAME "Test point 4 - default"
     STYLE
       SYMBOL "cross"
       COLOR 0 0 255
