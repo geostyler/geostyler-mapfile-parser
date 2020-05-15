@@ -7,6 +7,7 @@ const pointStyle: Style = {
     name: 'Test label',
     symbolizers: [{
       kind: 'Text',
+      label: 'Nisosa',
       font: ['Verdana'],
       color: '#00FF00',
       size: 9

@@ -101,10 +101,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer with many classes', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point_many_classes_filters.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_simple_point_many_classes_filters);
+      expect(geoStylerStyle).toEqual(point_simple_point_label);
     });
 */
     it('can read a simple sample MapFile PointSymbolizer with style tags', async () => {
