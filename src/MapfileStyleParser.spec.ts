@@ -131,15 +131,20 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_regex);
     });
   
- it('can translate Mapfile to SLD', async () => {
-   const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
-   const geostylerStyle = styleParser.readStyle(mapfile);
-   const sldStyleParser = new SldStyleParser();
-   return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
-     expect(sldStyle).toEqual(expect.any(String));
+    it('can translate all GeoStyler Styles objects into SLD', async () => {
+      const sldStyleParser = new SldStyleParser();
+      const geoStylerStyle = await point_simple_point;
+      const sld = await sldStyleParser.writeStyle(geoStylerStyle);
+      return sldStyleParser.writeStyle(geoStylerStyle)
+      .then(sld => console.log(sld))
+      .catch(error => console.log(error));;
+      });
+
+      //return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
+      //  expect(sldStyle).toEqual(expect.any(String));
+      //});
+    });
   });
-  });
-});
 
   describe('#getFilterFromMapfileExpression', () => {
     it('is defined', () => {

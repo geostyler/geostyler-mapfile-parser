@@ -5,3 +5,6 @@ VOLUME /etc/mapserver
 
 COPY shapes /etc/shapes
 VOLUME /etc/shapes
+
+COPY rasters /etc/rasters
+VOLUME /etc/rasters
