@@ -144,7 +144,6 @@ describe('MapfileStyleParser implements StyleParser', () => {
       //  expect(sldStyle).toEqual(expect.any(String));
       //});
     });
-  });
 
   describe('#getFilterFromMapfileExpression', () => {
     it('is defined', () => {
