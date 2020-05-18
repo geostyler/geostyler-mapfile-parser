@@ -858,7 +858,8 @@ export class MapfileStyleParser implements StyleParser {
    */
   private checkWarnDropRule(notSupported: string, mapfileParentElement: string, mapfileElement: any): void {
     if (mapfileElement !== undefined) {
-      console.warn(`SLD doesn't support ${notSupported} operator in ${mapfileParentElement}. This rule is dropped.`);
+      console.warn(`Geostyler style does not support ${notSupported} operator
+        in ${mapfileParentElement}. This rule is dropped.`);
     }
   }
 }
