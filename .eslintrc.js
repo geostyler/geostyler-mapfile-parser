@@ -84,7 +84,6 @@ module.exports = {
             "Boolean",
             "boolean",
             "Undefined",
-            "undefined"
         ],
         "id-match": "error",
         "max-len": [
