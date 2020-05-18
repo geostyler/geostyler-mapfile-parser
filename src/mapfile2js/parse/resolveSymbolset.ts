@@ -9,7 +9,7 @@ function substituteSymbols(obj: object): void {
       substituteSymbols(obj[property]);
     } else if (property === 'symbol') {
       if (obj[property] !== '0') {
-        // TODO: distinguish corectly betwen index and name reference
+        // TODO: distinguish corectly between index and name reference
         const symbol = symbolset.find((element) => element.name === obj[property]);
         if (symbol) {
           obj[property] = symbol;
