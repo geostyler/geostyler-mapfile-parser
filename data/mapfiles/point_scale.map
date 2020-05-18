@@ -45,3 +45,60 @@ LAYER
     END
   END
 END
+
+LAYER
+  NAME "point_scale_2"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_scale_2"
+  END
+  MINSCALEDENOM 6000
+  CLASS
+    NAME "Min scale from layer (priority)"
+    STYLE
+      MINSCALEDENOM 10000
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 24
+    END
+  END
+  CLASS
+    NAME "Scales from class"
+    MAXSCALEDENOM 0
+    MINSCALEDENOM 3000
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 12
+    END
+  END
+  CLASS
+    NAME "Min scale from layer only"
+    MAXSCALEDENOM 50000
+    STYLE
+      SYMBOL "circle"
+      SIZE 6
+    END
+  END
+END
+
+LAYER
+  NAME "point_scale_3"
+  TYPE POINT
+  DATA "../shapes/points.shp"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "point_scale_3"
+  END
+  CLASS
+    NAME "Min scale from class"
+    MINSCALEDENOM 0
+    STYLE
+      SYMBOL "circle"
+      COLOR 0 0 0
+      SIZE 24
+    END
+  END
+END

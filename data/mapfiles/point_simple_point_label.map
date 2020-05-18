@@ -6,7 +6,6 @@ LAYER
   METADATA
     "wms_title" "point_simple_point_label"
   END
-  MINSCALEDENOM 5000
   CLASS
     NAME "Test label"
     LABEL

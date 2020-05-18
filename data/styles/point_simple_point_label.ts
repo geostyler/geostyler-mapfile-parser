@@ -6,7 +6,6 @@ const pointStyle: Style = {
   {
     name: 'Test label',
     scaleDenominator: {
-      max: 5000,
     },
     symbolizers: [{
       kind: 'Text',

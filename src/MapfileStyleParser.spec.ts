@@ -68,10 +68,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a Point MapFile with scales', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './data/mapfiles/point_scale.map', 'utf8');
-      const geoStylerStyle = await styleParser.readStyle(mapfile);
-      expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_scale);
+      const mapfile = fs.readFileSync( './data/mapfiles/point_scale.map', 'utf8'); // Two layers !
+      const geoStylerStyles = await styleParser.readMultiStyles(mapfile);
+      expect(geoStylerStyles).toBeDefined();
+      expect(geoStylerStyles).toEqual(point_scale);
     });
 
     it('can read a PointSymbolizer with style tags', async () => {
