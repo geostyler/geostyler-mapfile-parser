@@ -1,4 +1,4 @@
-import { parseMapfile, Mapfile, MapfileLayer, MapfileClass, MapfileLabel, MapfileStyle } from './mapfile2js/parse';
+import { parseMapfile } from './mapfile2js/parse';
 import { rgbToHex } from './Useful';
 import {
   StyleParser,
@@ -21,6 +21,7 @@ import {
   IconSymbolizer,
   TextSymbolizer,
 } from 'geostyler-style';
+import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel} from './mapfile2js/mapfileTypes';
 
 export type ConstructorParams = {};
 
@@ -612,17 +613,17 @@ export class MapfileStyleParser implements StyleParser {
    * @param {MapfileStyle | MapfileLabel} styleParameters The Mapfile Style
    * @return {Symbolizer} The GeoStyler-Style Symbolizer Parameters
    */
-  getBaseSymbolizerFromMapfileStyle(styleParameters: any): Symbolizer {
+  getBaseSymbolizerFromMapfileStyle(styleParameters: MapfileStyle | MapfileLabel): Symbolizer {
     const symbolizer: any = {};
 
     if (styleParameters.color) {
       symbolizer.color = rgbToHex(styleParameters.color);
     }
-    if (styleParameters.opacity) {
-      symbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
+    if ('opacity' in styleParameters) {
+      symbolizer.opacity = styleParameters.opacity / 100;
     }
     if (styleParameters.angle) {
-      symbolizer.rotate = parseFloat(styleParameters.angle);
+      symbolizer.rotate = styleParameters.angle * 1;
     }
     return symbolizer;
   }
@@ -643,7 +644,7 @@ export class MapfileStyleParser implements StyleParser {
     const symbolizers = [] as Symbolizer[];
     // Mapfile STYLE
     if (mapfileClass.styles) {
-      mapfileClass.styles.forEach((mapfileStyle: MapfileStyle) => {
+      mapfileClass.styles.forEach((mapfileStyle) => {
         let symbolizer: any;
         switch (mapfileLayerType.toLowerCase()) {
         case 'point':
@@ -677,11 +678,11 @@ export class MapfileStyleParser implements StyleParser {
     // Mapfile LABEL
     if (mapfileClass.labels) {
       mapfileLayerLabelItem = mapfileClass.text ? mapfileClass.text : mapfileLayerLabelItem;
-      mapfileClass.labels.forEach((label: MapfileLabel) => {
-        label.text = label.text ? label.text : mapfileLayerLabelItem;
+      mapfileClass.labels.forEach((mapfileLabel) => {
+        mapfileLabel.text = mapfileLabel.text ? mapfileLabel.text : mapfileLayerLabelItem;
         const symbolizer = Object.assign(
-          this.getTextSymbolizerFromMapfileStyle(label),
-          this.getBaseSymbolizerFromMapfileStyle(label)
+          this.getTextSymbolizerFromMapfileStyle(mapfileLabel),
+          this.getBaseSymbolizerFromMapfileStyle(mapfileLabel)
         );
         symbolizers.push(symbolizer);
       });
