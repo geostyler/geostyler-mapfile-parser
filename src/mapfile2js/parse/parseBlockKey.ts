@@ -1,17 +1,18 @@
+import { LineObject } from '../parse';
+
+// there can be multiple layer, class and style block siblings
+const multiBlockKeys = { layer: 'layers', class: 'classes', label: 'labels', style: 'styles', symbol: 'symbols' };
+// some blocks are actually just an array
+const arrayBlockKeys = ['points'];
+
 /**
  * Parse block keys.
- * @param {Object} lineObject Line Object
+ * @param {LineObject} lineObject Line Object
  * @param {number} index Current lines index
  * @param {array} lines Array of line strings
  * @param {array} blocks Block stack
  */
-
-// there can be multiple layer, class and style block siblings
-const multiBlockKeys = ['layer', 'class', 'style', 'symbol'];
-// some blocks are actually just an array
-const arrayBlockKeys = ['points'];
-
-export function parseBlockKey(lineObject: any, index: number, currentBlock: any): object | undefined {
+export function parseBlockKey(lineObject: LineObject, index: number, currentBlock: any): object | undefined {
   // can not handle block lines
   if (lineObject.isBlockLine) {
     console.error(`Not able to deal with block line yet! Block line [${index + 1}]: ${lineObject.content}`);
@@ -24,16 +25,17 @@ export function parseBlockKey(lineObject: any, index: number, currentBlock: any)
   }
 
   // handle multi block keys
-  if (multiBlockKeys.includes(lineObject.key)) {
-    if (!(lineObject.key in currentBlock)) {
+  if (lineObject.key in multiBlockKeys) {
+    const pluralKey = multiBlockKeys[lineObject.key];
+    if (!(pluralKey in currentBlock)) {
       // add list
-      currentBlock[lineObject.key] = [];
+      currentBlock[pluralKey] = [];
     }
     // add block to list
-    currentBlock[lineObject.key].push({});
+    currentBlock[pluralKey].push({});
 
     // return new block
-    return currentBlock[lineObject.key][currentBlock[lineObject.key].length - 1];
+    return currentBlock[pluralKey][currentBlock[pluralKey].length - 1];
   } else if (arrayBlockKeys.includes(lineObject.key)) {
     // create array
     currentBlock[lineObject.key] = [];

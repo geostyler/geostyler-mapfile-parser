@@ -1,14 +1,16 @@
+import { LineObject } from '../parse';
+
 /**
  * Determines the depth of every line of mapfile.
- * @param {array} lineObjects Array of line objects
+ * @param {LineObject[]} lineObjects Array of line objects
  */
-export function determineDepth(lineObjects: Array<any>): object {
+export function determineDepth(lineObjects: Array<LineObject>): object {
   let depth = 0;
 
   lineObjects.forEach((lineObject) => {
     lineObject.depth = depth;
 
-    if (lineObject.isBlockKey) {
+    if (!lineObject.isBlockKey) {
       depth++;
     } else {
       if (lineObject.key) {

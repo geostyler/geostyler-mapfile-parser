@@ -1,44 +1,30 @@
-const regExpHexColor = new RegExp('["\']#[0-9a-f]{6,8}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
+import { LineObject } from '../parse';
 
-interface LineObject {
-  includesComment: boolean;
-  comment: string;
-  contentWithoutComment: string;
-}
+const regExpHexColor = new RegExp('["\']#[0-9a-f]{6,8}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
 
 /**
  *
- * @param {string} line A line of mapfile
+ * @param {LineObject} lineObject A line object of a mapfile
  * @returns {LineObject} A line object
  */
-export function checkComment(line: string): LineObject {
-  const lineObject: LineObject = {
-    includesComment: false,
-    comment: '',
-    contentWithoutComment: line,
-  };
+export function checkComment(lineObject: LineObject): LineObject {
+  lineObject.contentWithoutComment = lineObject.content;
 
   // check if the comment character is included
-  if (line.includes('#')) {
+  if (lineObject.content.includes('#')) {
     // remove all hex colors
-    const withoutHex = line.replace(regExpHexColor, '');
+    const contentWithoutHex = lineObject.content.replace(regExpHexColor, '');
 
     // check if comment is included
-    if (withoutHex.includes('#')) {
-      lineObject.includesComment = true;
-
-      let foundComment = false;
+    if (contentWithoutHex.includes('#')) {
       let comment = '';
-      for (let j = 0; j < withoutHex.length; j++) {
-        if (foundComment) {
-          comment += withoutHex.charAt(j);
-        }
-        if (withoutHex.charAt(j) === '#') {
-          foundComment = true;
+      for (const char of contentWithoutHex) {
+        if (char === '#' || comment.length > 0) {
+          comment += char;
         }
       }
-      lineObject.contentWithoutComment = line.replace(`#${comment}`, '').trim();
-      lineObject.comment = comment.trim();
+      lineObject.contentWithoutComment = lineObject.content.replace(comment, '').trim();
+      lineObject.comment = comment.substring(1).trim();
     }
   }
 
