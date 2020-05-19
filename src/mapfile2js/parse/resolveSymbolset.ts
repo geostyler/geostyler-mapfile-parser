@@ -1,20 +1,24 @@
 import * as fs from 'fs';
-import { parse } from '../parse';
+import { parseSymbolset } from '../parse';
+import { MapfileSymbol, Mapfile } from '../mapfileTypes';
 
-let symbolset: Array<any> = [];
+let mapfileSymbols: Array<MapfileSymbol>;
 
-function substituteSymbols(obj: object): void {
+function substituteSymbols(obj: any): void {
   for (const property in obj) {
     if (typeof obj[property] == 'object') {
       substituteSymbols(obj[property]);
     } else if (property === 'symbol') {
-      if (obj[property] !== '0') {
-        // TODO: distinguish corectly between index and name reference
-        const symbol = symbolset.find((element) => element.name === obj[property]);
+      if (obj[property] === '0') {
+        // eslint-disable-next-line id-blacklist
+        obj[property] = undefined;
+      } else {
+        // TODO: distinguish corectly betwen index and name reference
+        const symbol = mapfileSymbols.find((element) => element.name === obj[property]);
         if (symbol) {
           obj[property] = symbol;
         } else {
-          obj[property] = symbolset[parseFloat(obj[property])];
+          obj[property] = mapfileSymbols[parseFloat(obj[property])];
         }
       }
     }
@@ -23,10 +27,10 @@ function substituteSymbols(obj: object): void {
 
 /**
  *
- * @param {object} mapfileObject Parsed Mapfile Object
+ * @param {Mapfile} mapfile Parsed Mapfile Object
  */
-export function resolveSymbolset(mapfileObject: any): any {
-  let symbolsetPath = mapfileObject.map.symbolset;
+export function resolveSymbolset(mapfile: Mapfile): Mapfile {
+  let symbolsetPath = mapfile.map.symbolset;
 
   // fallback to mapserver defaults if not specified
   if (!symbolsetPath) {
@@ -34,15 +38,15 @@ export function resolveSymbolset(mapfileObject: any): any {
   }
 
   if (typeof symbolsetPath !== 'string') {
-    return mapfileObject;
+    return mapfile;
   }
   const symbolsetContent = fs.readFileSync(symbolsetPath, 'utf-8');
   if (symbolsetContent) {
-    const result = parse(symbolsetContent) as any;
-    symbolset = result.symbolset.symbol;
-    substituteSymbols(mapfileObject);
-    return mapfileObject;
+    const mapfileSymbolset = parseSymbolset(symbolsetContent);
+    mapfileSymbols = mapfileSymbolset.symbols;
+    substituteSymbols(mapfile);
   } else {
     Error('Not able to resolve symbolset!');
   }
+  return mapfile;
 }

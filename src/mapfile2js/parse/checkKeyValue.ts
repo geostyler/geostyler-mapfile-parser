@@ -1,3 +1,5 @@
+import { LineObject } from '../parse';
+
 function removeQuotes(str: string): string {
   if (/^['"].+['"]$/.test(str)) {
     return str.substring(1, str.length - 1);
@@ -6,40 +8,23 @@ function removeQuotes(str: string): string {
   return str;
 }
 
-export interface KeyValueLineObject {
-  isKeyOnly: boolean;
-  key: string;
-  value: string;
-}
-
 /**
  *
- * @param {string} line Line without comment
+ * @param {LineObject} lineObject Line without comment
  */
-export function checkKeyValue(line: string): KeyValueLineObject {
-  const lineObject: KeyValueLineObject = {
-    isKeyOnly: false,
-    key: '',
-    value: ''
-  };
-
-  if (line.match(/\s/)) {
+export function checkKeyValue(lineObject: LineObject): LineObject {
+  if (lineObject.contentWithoutComment.match(/\s/)) {
     // Check key value
-    lineObject.isKeyOnly = false;
+    const lineParts = lineObject.contentWithoutComment.split(/\s/);
 
-    const lineParts = line.split(/\s/);
+    lineObject.key = removeQuotes(lineParts[0]).toLowerCase();
 
-    const key = removeQuotes(lineParts[0]);
-    lineObject.key = key;
-    const value = line.replace(lineParts[0], '').trim();
+    const value = lineObject.contentWithoutComment.replace(lineParts[0], '').trim();
     // do not mess with expressions, quotes have meaning
-    lineObject.value = key.toUpperCase() === 'EXPRESSION'
-      ? value
-      : removeQuotes(value);
+    lineObject.value = lineObject.key.toUpperCase() === 'EXPRESSION' ? value : removeQuotes(value);
   } else {
     // key only
-    lineObject.isKeyOnly = true;
-    lineObject.key = line;
+    lineObject.key = lineObject.contentWithoutComment.toLowerCase();
   }
 
   return lineObject;

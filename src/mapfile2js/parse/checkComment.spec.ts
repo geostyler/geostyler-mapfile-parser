@@ -1,10 +1,5 @@
 import { checkComment } from './checkComment';
-
-const expectedReturnShape = {
-  includesComment: expect.any(Boolean),
-  comment: expect.any(String),
-  contentWithoutComment: expect.any(String)
-}
+import { LineObject } from '../parse';
 
 describe('checkComment', () => {
   it('is defined', () => {
@@ -14,27 +9,21 @@ describe('checkComment', () => {
     expect(checkComment).toBeInstanceOf(Function);
   });
   it('returns a line object', () => {
-    const got = checkComment('');
-    expect(got).toMatchObject(expectedReturnShape);
+    const got = checkComment({ content: '' } as LineObject);
+    expect(got).toMatchObject({} as LineObject);
   });
   it('detects an inline comment', () => {
-    const got = checkComment('END # foo comment');
-    expect(got).toMatchObject(expectedReturnShape);
-    expect(got.includesComment).toEqual(true);
+    const got = checkComment({ content: 'END # foo comment' } as LineObject);
     expect(got.comment).toEqual('foo comment');
     expect(got.contentWithoutComment).toEqual('END');
   });
   it('works on lines with hex colors wo/ an inline comment', () => {
-    const got = checkComment('COLOR "#BADA55"');
-    expect(got).toMatchObject(expectedReturnShape);
-    expect(got.includesComment).toEqual(false);
-    expect(got.comment).toEqual('');
+    const got = checkComment({ content: 'COLOR "#BADA55"' } as LineObject);
+    expect(got.comment).toEqual(undefined);
     expect(got.contentWithoutComment).toEqual('COLOR "#BADA55"');
   });
   it('works on lines with hex colors w/ an inline comment', () => {
-    const got = checkComment('COLOR "#DEADBEEF" # baz comment');
-    expect(got).toMatchObject(expectedReturnShape);
-    expect(got.includesComment).toEqual(true);
+    const got = checkComment({ content: 'COLOR "#DEADBEEF" # baz comment' } as LineObject);
     expect(got.comment).toEqual('baz comment');
     expect(got.contentWithoutComment).toEqual('COLOR "#DEADBEEF"');
   });

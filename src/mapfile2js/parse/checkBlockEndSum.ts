@@ -1,8 +1,10 @@
+import { LineObject } from '../parse';
+
 /**
  *
- * @param {array} lines Array of line objects
+ * @param {LineObject[]} lines Array of line objects
  */
-export function checkBlockEndSum(lines: Array<any>): void {
+export function checkBlockEndSum(lines: LineObject[]): void {
   let blockCounter = 0;
   let endCounter = 0;
 

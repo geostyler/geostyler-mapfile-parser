@@ -5,85 +5,76 @@ import { parseBlockKey } from './parse/parseBlockKey';
 import { checkBlockEndSum } from './parse/checkBlockEndSum';
 import { determineDepth } from './parse/determineDepth';
 import { resolveSymbolset } from './parse/resolveSymbolset';
+import { Mapfile, MapfileSymbolset } from './mapfileTypes';
+
+export interface LineObject {
+  content: string;
+  comment: string;
+  contentWithoutComment: string;
+  key: string;
+  value: string;
+  isBlockKey: boolean;
+  isBlockLine: boolean;
+  depth: number;
+}
+
 
 /**
- * Parses a MapServer Mapfile to a JavaScript object.
- * @param {string} content Content of a MapServer Mapfile
- * @returns {Object}
+ * Parses the Mapfile content into a JavaScript object.
+ * @param {string} content Content of a Mapfile
+ * @returns {object} the parsed object
  */
-export function parse(content: string): object {
-  let result = {};
-  const lineObjects: Array<any> = [];
-
+function parseContent(content: string): object {
+  const result = {};
+  
+  const lineObjects: Array<LineObject> = [];
   // stack to keep track of blocks
-  const blocks = [result];
-
+  const blocks: Array<any> = [result];
   // replace windows line breaks with linux line breaks
   content = content.replace(/[\r\n]/g, '\n');
-
   // split content into lines
   const lines = content.split('\n');
-
   lines.forEach((line, index) => {
     // line object
-    let lineObject: any = {};
-
-    // line content
-    lineObject.content = line.trim();
-
-    // omit empty lines and comments
+    let lineObject: LineObject = { content: line.trim() } as any;
+    // ommit empty lines and comments
     if (lineObject.content === '' || lineObject.content.startsWith('#')) {
-      // console.warn(`Omitted line [${index + 1}]: ${lineObject.content}`);
       return;
     }
-
     // check included comments
-    lineObject = Object.assign(lineObject, checkComment(lineObject.content));
-
+    lineObject = Object.assign(lineObject, checkComment(lineObject));
     // check key value
-    lineObject = Object.assign(lineObject, checkKeyValue(lineObject.contentWithoutComment));
-
+    lineObject = Object.assign(lineObject, checkKeyValue(lineObject));
     // check block key
     lineObject = Object.assign(lineObject, checkBlockKey(lineObject));
-
     // store lineobjects
     lineObjects.push(lineObject);
-
-    // increase ergonomics (mapfile is case insensitive)
-    lineObject.key = lineObject.key.toLowerCase();
-
     // current block
     const currentBlock: any = blocks[blocks.length - 1];
-
     // handle block keys
     if (lineObject.isBlockKey) {
       const newBlock = parseBlockKey(lineObject, index, currentBlock);
       if (newBlock) {
-        blocks.push(newBlock);
+        blocks.push(newBlock as any);
       }
-
       return;
     }
-
     // handle block end
-    if (lineObject.key === 'end' && !('projection' in currentBlock)) {
+    if (lineObject.key.toUpperCase() === 'END' && !('projection' in currentBlock)) {
       // pop current block
       blocks.pop();
       return;
     }
-
     // work around projection imitating a block
     if (lineObject.key.toLowerCase().includes('init=')) {
       currentBlock.projection = lineObject.key.trim().replace(/"/g, '');
       return;
     }
-
     // some blocks are actually just an array
     if (Array.isArray(currentBlock)) {
       currentBlock.push(lineObject.contentWithoutComment);
       return;
     }
-
     // insert key value pair
     if (lineObject.key in currentBlock) {
       console.warn(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
@@ -92,16 +83,41 @@ export function parse(content: string): object {
     currentBlock[lineObject.key] = lineObject.value;
   });
 
-  // insert MAP block if not existent for consistency
-  result = 'map' in result || 'symbolset' in result ? result : { map: result };
-
+  // basic syntax checks
   checkBlockEndSum(lineObjects);
   determineDepth(lineObjects);
 
-  // resolve symbolset
-  if (!('symbolset' in result)) {
-    result = resolveSymbolset(result);
-  }
-  
   return result;
+}
+
+
+/**
+ * Parses a MapServer Mapfile to a JavaScript object.
+ * @param {string} content Content of a MapServer Mapfile
+ * @returns {Mapfile} the parsed Mapfile
+ */
+export function parseMapfile(content: string): Mapfile {
+
+  let result = parseContent(content);
+
+  // add map bock for consistency if not exists
+  result = ('map' in result)? result : { map: result };
+    
+  // resolve symbolset
+  const mapfile = resolveSymbolset(result as Mapfile);
+  
+  return mapfile;
+}
+
+
+/**
+ * Parses a MapServer Symbolsetfile to a JavaScript object.
+ * @param {string} content Content of a MapServer Mapfile
+ * @returns {MapfileSymbolset} the parsed Symbolset
+ */
+export function parseSymbolset(content: string): MapfileSymbolset {
+
+  const result: any = parseContent(content);
+  
+  return result.symbolset as MapfileSymbolset;
 }
