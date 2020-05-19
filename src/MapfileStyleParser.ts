@@ -613,6 +613,35 @@ export class MapfileStyleParser implements StyleParser {
   }
 
   /**
+   * Get the GeoStyler-Style RasterSymbolizer from an Mapfile STYLE.
+   *
+   * @param {object} styleParameters The Mapfile Style Parameters
+   * @return {RasterSymbolizer} The GeoStyler-Style RasterSymbolizer
+   */
+  getRasterSymbolizerFromMapfileStyle(styleParameters: any): RasterSymbolizer {
+    const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
+
+    if (styleParameters.opacity) {
+      rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
+    }
+    
+    if (styleParameters.resamplingMethod) {
+      const resamplingMethod = styleParameters.resamplingMethod;
+      switch (resamplingMethod.toLowerCase()) {
+        case 'average':
+          rasterSymbolizer.resampling = 'linear';
+          break;
+        case 'nearest':
+          rasterSymbolizer.resampling = 'nearest';
+          break;
+      }
+    }
+
+    return rasterSymbolizer;
+  }
+
+
+  /**
    * Get the GeoStyler-Style Basic Symbolizer Parameter from an Mapfile STYLE.
    *
    * @param {object} styleParameters The Mapfile Style
@@ -662,7 +691,7 @@ export class MapfileStyleParser implements StyleParser {
           symbolizer = this.getFillSymbolizerFromMapfileStyle(styleParameters);
           break;
         case 'raster':
-          symbolizer = { kind: 'Raster' } as RasterSymbolizer;
+          symbolizer = this.getRasterSymbolizerFromMapfileStyle(styleParameters);
           break;
         case 'query':
           // layer can be queried but not drawn
