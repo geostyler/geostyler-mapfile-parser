@@ -21,7 +21,7 @@ import {
   IconSymbolizer,
   TextSymbolizer,
 } from 'geostyler-style';
-import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel} from './mapfile2js/mapfileTypes';
+import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
 
 export type ConstructorParams = {};
 
@@ -48,12 +48,12 @@ export class MapfileStyleParser implements StyleParser {
    * Get the name for the Style from the Mapfile LAYER. Returns the GROUP value of the LAYER
    * if defined or the NAME value of the LAYER if defined or an empty string.
    *
-   * @param {Mapfile} mapfile The Mapfile object representation (created with mapfile2js)
+   * @param {MapfileLayer} mapfileLayer The Mapfile Layer object representation (created with mapfile2js)
    * @return {string} The name to be used for the GeoStyler Style Style
    */
-  getStyleNameFromMapfile(mapfile: Mapfile): string {
-    const layerGroup = mapfile.map.layers[0].group;
-    const layerName = mapfile.map.layers[0].name;
+  getStyleNameFromMapfileLayer(mapfileLayer: MapfileLayer): string {
+    const layerGroup = mapfileLayer.group;
+    const layerName = mapfileLayer.name;
     return layerGroup ? layerGroup : layerName ? layerName : '';
   }
 
@@ -273,17 +273,21 @@ export class MapfileStyleParser implements StyleParser {
   getScaleDenominator(mapfileElement: MapfileLayer | MapfileClass | MapfileStyle): ScaleDenominator | null {
     const scaleDenominator = {} as ScaleDenominator;
 
-    const maxScale = parseFloat(mapfileElement.maxscaledenom);
-    if (!isNaN(maxScale)) {
-      scaleDenominator.max = maxScale;
+    // TODO: fixme, should this fetch the layers layermaxscaledenom too?
+    if ('maxscaledenom' in mapfileElement) {
+      if (mapfileElement.maxscaledenom) {
+        scaleDenominator.max = mapfileElement.maxscaledenom * 1;
+      }
     }
 
-    const minScale = parseFloat(mapfileElement.minscaledenom);
-    if (!isNaN(minScale)) {
-      scaleDenominator.min = minScale;
+    // TODO: fixme, should this fetch the layers layerminscaledenom too?
+    if ('minscaledenom' in mapfileElement) {
+      if (mapfileElement.minscaledenom) {
+        scaleDenominator.min = mapfileElement.minscaledenom * 1;
+      }
     }
 
-    return (scaleDenominator.max !== undefined || scaleDenominator.min !== undefined) ? scaleDenominator : null;
+    return scaleDenominator.max !== undefined || scaleDenominator.min !== undefined ? scaleDenominator : null;
   }
 
   /**
@@ -293,8 +297,10 @@ export class MapfileStyleParser implements StyleParser {
    * @param {ScaleDenominator} scaleDenominator The scaleDenominator to try to override.
    * @return {scaleDenominator} A ScaleDenominator value or null.
    */
-  updateScaleDenominator(mapfileElement: MapfileLayer | MapfileClass | MapfileStyle,
-                         scaleDenominator: ScaleDenominator | null): ScaleDenominator | null {
+  updateScaleDenominator(
+    mapfileElement: MapfileLayer | MapfileClass | MapfileStyle,
+    scaleDenominator: ScaleDenominator | null
+  ): ScaleDenominator | null {
     const elementScaleDenominator = this.getScaleDenominator(mapfileElement);
 
     // No child scale - can't update, return the base scaleDenominator.
@@ -315,8 +321,10 @@ export class MapfileStyleParser implements StyleParser {
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max === undefined) {
       mergedScale.max = scaleDenominator.max;
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max !== undefined) {
-      mergedScale.max = (scaleDenominator.max || 0) > (elementScaleDenominator.max || 0) ?
-        scaleDenominator.max : elementScaleDenominator.max;
+      mergedScale.max =
+        (scaleDenominator.max || 0) > (elementScaleDenominator.max || 0)
+          ? scaleDenominator.max
+          : elementScaleDenominator.max;
     }
 
     // Take mix scale only if it's defined and take parent min scale only if it's lesser
@@ -326,8 +334,10 @@ export class MapfileStyleParser implements StyleParser {
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min === undefined) {
       mergedScale.min = scaleDenominator.min;
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min !== undefined) {
-      mergedScale.min = (scaleDenominator.min || 0) < (elementScaleDenominator.min || 0) ?
-        scaleDenominator.min : elementScaleDenominator.min;
+      mergedScale.min =
+        (scaleDenominator.min || 0) < (elementScaleDenominator.min || 0)
+          ? scaleDenominator.min
+          : elementScaleDenominator.min;
     }
 
     return mergedScale;
@@ -639,7 +649,7 @@ export class MapfileStyleParser implements StyleParser {
   getSymbolizersFromClass(
     mapfileClass: MapfileClass,
     mapfileLayerType: string,
-    mapfileLayerLabelItem: string,
+    mapfileLayerLabelItem: string
   ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
     // Mapfile STYLE
@@ -670,8 +680,8 @@ export class MapfileStyleParser implements StyleParser {
         const baseSymbolizer: any = this.getBaseSymbolizerFromMapfileStyle(mapfileStyle);
         symbolizers.push(Object.assign(symbolizer, baseSymbolizer));
 
-        this.checkWarnDropRule('MINSCALEDENOM', 'STYLE', styleParameters.minscaledenom);
-        this.checkWarnDropRule('MAXSCALEDENOM', 'STYLE', styleParameters.maxscaledenom);
+        this.checkWarnDropRule('MINSCALEDENOM', 'STYLE', mapfileStyle.minscaledenom);
+        this.checkWarnDropRule('MAXSCALEDENOM', 'STYLE', mapfileStyle.maxscaledenom);
       });
     }
 
@@ -685,10 +695,10 @@ export class MapfileStyleParser implements StyleParser {
           this.getBaseSymbolizerFromMapfileStyle(mapfileLabel)
         );
         symbolizers.push(symbolizer);
-      });
 
-      this.checkWarnDropRule('MINSCALEDENOM', 'LABEL', mapfileClass.label.minscaledenom);
-      this.checkWarnDropRule('MAXSCALEDENOM', 'LABEL', mapfileClass.label.maxscaledenom);
+        this.checkWarnDropRule('MINSCALEDENOM', 'LABEL', mapfileLabel.minscaledenom);
+        this.checkWarnDropRule('MAXSCALEDENOM', 'LABEL', mapfileLabel.maxscaledenom);
+      });
     }
 
     return symbolizers;
@@ -707,15 +717,11 @@ export class MapfileStyleParser implements StyleParser {
     const mapfileLayerLabelItem: string = mapfileLayer.labelitem;
     const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
-    mapfileLayer.class.forEach((mapfileClass: any) => {
+    mapfileLayer.classes.forEach((mapfileClass: any) => {
       const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
       const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
       const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
-      const symbolizers = this.getSymbolizersFromClass(
-        mapfileClass,
-        mapfileLayerType,
-        mapfileLayerLabelItem,
-      );
+      const symbolizers = this.getSymbolizersFromClass(mapfileClass, mapfileLayerType, mapfileLayerLabelItem);
 
       const rule = { name } as Rule;
       if (filter) {
@@ -730,8 +736,8 @@ export class MapfileStyleParser implements StyleParser {
       rules.push(rule);
     });
 
-    this.checkWarnDropRule('LABELMINSCALEDENOM', 'LAYER', mapfileLayer.Labelminscaledenom);
-    this.checkWarnDropRule('LABELMAXSCALEDENOM', 'LAYER', mapfileLayer.Labelmaxscaledenom);
+    this.checkWarnDropRule('LABELMINSCALEDENOM', 'LAYER', mapfileLayer.labelminscaledenom);
+    this.checkWarnDropRule('LABELMAXSCALEDENOM', 'LAYER', mapfileLayer.labelmaxscaledenom);
 
     return rules;
   }
@@ -751,6 +757,7 @@ export class MapfileStyleParser implements StyleParser {
     };
   }
 
+
   /**
    * The readStyle implementation of the GeoStyler-Style StyleParser interface.
    * It reads one mapfile LAYER as a string and returns a Promise.
@@ -763,8 +770,8 @@ export class MapfileStyleParser implements StyleParser {
   readStyle(mapfileString: string): Promise<Style> {
     return new Promise<Style>((resolve, reject) => {
       try {
-        const mapfileObject: Mapfile = parseMapfile(mapfileString);
-        const mapfileLayers = mapfileObject.map.layers || [];
+        const mapfile: Mapfile = parseMapfile(mapfileString);
+        const mapfileLayers = mapfile.map.layers || [];
         if (mapfileLayers.length > 1) {
           throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyle instead.');
         }
@@ -785,8 +792,8 @@ export class MapfileStyleParser implements StyleParser {
   readMultiStyles(mapfileString: string): Promise<Style[]> {
     return new Promise<Style[]>((resolve, reject) => {
       try {
-        const mapfileObject: any = parse(mapfileString);
-        const mapfileLayers = mapfileObject?.map?.layer || [];
+        const mapfile: Mapfile = parseMapfile(mapfileString);
+        const mapfileLayers = mapfile.map.layers || [];
         const geoStylerStyles: Style[] = mapfileLayers.map((layer: any) => {
           return this.mapfileLayerToGeoStylerStyle(layer);
         });

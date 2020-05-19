@@ -37,6 +37,8 @@ interface MapFileWeb {
 }
 
 export interface MapfileLayer {
+  labelmaxscaledenom: number;
+  labelminscaledenom: number;
   type: string;
   classitem: string;
   labelitem: string;
@@ -112,6 +114,8 @@ interface MapFileFeature {
 }
 
 export interface MapfileLabel {
+  maxscaledenom: number;
+  minscaledenom: number;
   text: string;
   angle: number;
   color: string;
@@ -144,6 +148,8 @@ export interface MapfileStyle {
   color: string;
   opacity: number;
   angle: number;
+  minscaledenom: number;
+  maxscaledenom: number;
 }
 
 interface MapFileLeader {
