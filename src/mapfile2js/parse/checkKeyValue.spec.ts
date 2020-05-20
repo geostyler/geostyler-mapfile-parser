@@ -1,5 +1,5 @@
 import { checkKeyValue} from './checkKeyValue';
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 
 describe('checkKeyValue', () => {

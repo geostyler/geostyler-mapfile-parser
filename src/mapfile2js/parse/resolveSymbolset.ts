@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { parseSymbolset } from '../parse';
+import { parseSymbolset } from '../parseMapfile';
 import { MapfileSymbol, Mapfile } from '../mapfileTypes';
 
 let mapfileSymbols: Array<MapfileSymbol>;

@@ -1,4 +1,4 @@
-import { parseMapfile } from './mapfile2js/parse';
+import { parseMapfile } from './mapfile2js/parseMapfile';
 import { rgbToHex } from './Useful';
 import {
   StyleParser,
@@ -377,8 +377,8 @@ export class MapfileStyleParser implements StyleParser {
     const symbolType = mapfileStyle.symbol.type.toLowerCase();
     switch (symbolType) {
     case 'ellipse': {
-      const xy = mapfileStyle.symbol.points[0].split(' ');
-      if (xy[0] === xy[1]) {
+      const xy = mapfileStyle.symbol.points.split(' ');
+      if (xy[0] === xy[1] && xy.length === 2) {
         markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
       }
       break;

@@ -110,7 +110,7 @@ export interface MapfileClass {
 }
 
 interface MapFileFeature {
-  points: MapFilePoint[];
+  points: string; 
 }
 
 export interface MapfileLabel {
@@ -144,7 +144,10 @@ export interface MapfileStyle {
   symbol: MapfileSymbol;
   outlinecolor: string;
   outlinewidth: number;
-  pattern: string;
+  /**
+   * Used to define a dash pattern for line work (lines, polygon outlines, hatch lines, …).
+   */
+  pattern: string; 
   color: string;
   opacity: number;
   angle: number;
@@ -155,5 +158,3 @@ export interface MapfileStyle {
 interface MapFileLeader {
   style: MapfileStyle;
 }
-
-interface MapFilePoint {}
