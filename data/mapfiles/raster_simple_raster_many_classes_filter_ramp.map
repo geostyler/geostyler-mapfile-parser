@@ -3,6 +3,7 @@ LAYER
   TYPE RASTER
   DATA "../rasters/raster.tif"
   STATUS DEFAULT
+  CLASSITEM "[pixel]"
   CLASS
     NAME "0- 100"
     EXPRESSION ( ( [pixel] > 0 ) AND ( [pixel] <= 100 ) )
