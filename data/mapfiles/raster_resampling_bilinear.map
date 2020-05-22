@@ -1,0 +1,17 @@
+LAYER
+  NAME "raster_simple_raster"
+  TYPE RASTER
+  PROCESSING "RESAMPLE=BILINEAR"
+  DATA "../rasters/raster.tif"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "raster_simple_raster"
+    "wms_srs" "EPSG:4326"
+  END
+  CLASS
+    NAME "Test raster"
+    STYLE
+      OPACITY 100
+    END
+  END
+END

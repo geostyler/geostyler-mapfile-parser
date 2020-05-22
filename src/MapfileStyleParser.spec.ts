@@ -19,6 +19,7 @@ import raster_simple_raster_many_classes_filter_intervals from '../data/styles/r
 import raster_simple_raster_many_classes_filter_values from '../data/styles/raster_simple_raster_many_classes_filter_values';
 import raster_simple_raster_many_classes_filter_ramp from '../data/styles/raster_simple_raster_many_classes_filter_ramp';
 import raster_resampling_average from '../data/styles/raster_resampling_average';
+import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
 import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
 
 
@@ -102,6 +103,14 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(raster_resampling_average);
     });
     
+    it('can resample a simple MapFile RasterSymbolizer (bilinear)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_bilinear.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_bilinear);
+    });
+
     it('can resample a simple MapFile RasterSymbolizer (nearest)', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_nearest.map', 'utf8');
