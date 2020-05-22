@@ -17,8 +17,7 @@ export function rgbToHex(s: string): string {
  * @return {string[]} The same colors as an array of strings in hexadecimal format
 */
 export default function rgbRangeToHexArray(s: string): string[] {
-  const rgbRange = s.split(' ').map(Number);
-  const lowerBoundColor = '#' + ((1 << 24) + (rgbRange[0] << 16) + (rgbRange[1] << 8) + rgbRange[2]).toString(16).toUpperCase().slice(1);
-  const upperBoundColor = '#' + ((1 << 24) + (rgbRange[3] << 16) + (rgbRange[4] << 8) + rgbRange[5]).toString(16).toUpperCase().slice(1);
+  const lowerBoundColor = rgbToHex(s.split(' ').slice(1, 3).join(' '))
+  const upperBoundColor = rgbToHex(s.split(' ').slice(4, 6).join(' '))
   return [lowerBoundColor, upperBoundColor]
 }

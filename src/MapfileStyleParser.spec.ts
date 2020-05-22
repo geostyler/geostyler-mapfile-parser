@@ -15,6 +15,11 @@ import point_st_sample_point_style_tags_single_filter_regex from '../data/styles
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
+import raster_simple_raster_many_classes_filter_intervals from '../data/styles/raster_simple_raster_many_classes_filter_intervals';
+import raster_simple_raster_many_classes_filter_values from '../data/styles/raster_simple_raster_many_classes_filter_values';
+import raster_simple_raster_many_classes_filter_ramp from '../data/styles/raster_simple_raster_many_classes_filter_ramp';
+import raster_resampling_average from '../data/styles/raster_resampling_average';
+import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
 
 
 it('MapfileStyleParser is defined', () => {
@@ -64,7 +69,47 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_simple_raster);
     });
+/*
+    it('can read a simple MapFile RasterSymbolizer with many classes intervals', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_raster_many_classes_filter_intervals.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_raster_many_classes_filter_intervals);
+    });
 
+    it('can read a simple MapFile RasterSymbolizer with many classes values', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_raster_many_classes_filter_values.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_raster_many_classes_filter_values);
+    });
+
+    it('can read a simple MapFile RasterSymbolizer with many classes ramp', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_raster_many_classes_filter_ramp.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_raster_many_classes_filter_ramp);
+    });
+
+    it('can resample a simple MapFile RasterSymbolizer (average)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_average.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_average);
+    });
+    
+    it('can resample a simple MapFile RasterSymbolizer (nearest)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_nearest.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_nearest);
+    });
+*/
     it('can read a simple MapFile Label', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
