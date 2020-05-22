@@ -629,7 +629,7 @@ export class MapfileStyleParser implements StyleParser {
     if (styleParameters.opacity) {
       rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
     }
-/*
+    /*
     if (styleParameters.resamplingMethod) {
       const resamplingMethod = styleParameters.resamplingMethod;
       switch (resamplingMethod.toLowerCase()) {
@@ -641,7 +641,7 @@ export class MapfileStyleParser implements StyleParser {
           break;
       }
     }
-*/
+    */
     return rasterSymbolizer;
   }
 
