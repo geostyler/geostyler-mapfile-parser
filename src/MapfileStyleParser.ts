@@ -373,25 +373,38 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.strokeWidth = mapfileStyle.width * 1;
     }
 
-    // TODO: Abstract to SVG and drop WellKnownName!
     const symbolType = mapfileStyle.symbol.type.toLowerCase();
-    switch (symbolType) {
-    case 'ellipse': {
-      const xy = mapfileStyle.symbol.points.split(' ');
-      if (xy[0] === xy[1] && xy.length === 2) {
-        markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+    const points = mapfileStyle.symbol.points.split(' ').map((item) => parseFloat(item));
+    if (symbolType === 'ellipse') {
+      if (!(points[0] === points[1] && points.length === 2)) {
+        console.warn('Custom Elipse not supported by MarkerSymbolyzer, fallback to \'Circle\'!');
       }
-      break;
+      markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+    } else {
+      switch (points) {
+      case [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0]:
+        markSymbolizer.wellKnownName = 'Square' as WellKnownName;
+        break;
+      case [1.0, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0]:
+        markSymbolizer.wellKnownName = 'Triangle' as WellKnownName;
+        break;
+      case [2.0, 0.0, 2.0, 4.0, -99, -99, 0.0, 2.0, 4.0, 2.0]:
+        markSymbolizer.wellKnownName = 'Cross' as WellKnownName;
+        break;
+      default:
+        {
+          console.warn(
+            `Custom Symbol not supported by MarkerSymbolyzer, fallback to 'X':\n${JSON.stringify(
+              mapfileStyle.symbol,
+              null,
+              2
+            )}`
+          );
+          markSymbolizer.wellKnownName = 'X' as WellKnownName;
+        }
+        break;
+      }
     }
-    case 'square':
-    case 'triangle':
-    case 'star':
-    case 'cross':
-    case 'x': {
-      break;
-    }
-    }
-
     return markSymbolizer;
   }
 
@@ -501,10 +514,9 @@ export class MapfileStyleParser implements StyleParser {
       const symbolType = mapfileStyle.symbol.type;
       switch (symbolType) {
       case 'ellipse':
-        // TODO: fixme handle as svg and drop WellKnownMark
+      case 'vector':
         pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(mapfileStyle);
         break;
-      case 'vector':
       case 'svg':
         // TODO: handle as svg
         break;
@@ -756,7 +768,6 @@ export class MapfileStyleParser implements StyleParser {
       rules,
     };
   }
-
 
   /**
    * The readStyle implementation of the GeoStyler-Style StyleParser interface.
