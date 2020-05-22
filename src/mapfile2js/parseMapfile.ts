@@ -7,6 +7,12 @@ import { determineDepth } from './parse/determineDepth';
 import { resolveSymbolset } from './parse/resolveSymbolset';
 import { Mapfile, MapfileSymbolset } from './mapfileTypes';
 
+// some blocks are actually a key value pair
+const pseudoBlockKeys = ['projection', 'pattern', 'points'];
+
+/**
+ * Object representation of a Mapfile line.
+ */
 export interface LineObject {
   content: string;
   comment: string;
@@ -17,9 +23,6 @@ export interface LineObject {
   isBlockLine: boolean;
   depth: number;
 }
-
-// some blocks are actually a key value pair
-const pseudoBlockKeys = ['projection', 'pattern', 'points'];
 
 /**
  * Parses a Mapfile line into a JavaScript object.
@@ -86,8 +89,8 @@ function parseContent(content: string): object {
       return;
     }
 
-    // handle block keys
-    if (lineObject.isBlockKey) {
+    // handle block & list keys
+    if (lineObject.isBlockKey || ['formatoption', 'include'].includes(lineObject.key)) {
       const newBlock = parseBlockKey(lineObject, currentBlock);
       if (newBlock) {
         blocks.push(newBlock as any);
@@ -144,6 +147,9 @@ export function parseMapfile(content: string): Mapfile {
  */
 export function parseSymbolset(content: string): MapfileSymbolset {
   const result: any = parseContent(content);
+
+  // A Mapfile symbolset begins with SYMBOLSET and ends with END
+  console.assert('symbolset' in result);
 
   return result.symbolset as MapfileSymbolset;
 }

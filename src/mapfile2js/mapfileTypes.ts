@@ -1,26 +1,26 @@
 /**
- * The Mapfile is the root interface of a Mapfile.
- */
-export interface Mapfile {
-  map: MapfileMap;
-}
-
-/**
  * The MapfileSymbolset is the root interface of a Symbolset.
  */
 export interface MapfileSymbolset {
   symbols: MapfileSymbol[];
 }
 
+/**
+ * The Mapfile is the root interface of a Mapfile.
+ */
+export interface Mapfile {
+  map: MapfileMap;
+}
+
 interface MapfileMap {
-  web: MapFileWeb;
+  web: MapfileWeb;
   layers: MapfileLayer[];
-  reference: MapFileReference;
-  projection: MapFileProjection;
-  querymap: MapFileQueryMap;
-  scalebar: MapFileScaleBar;
+  reference: MapfileReference;
+  projection: MapfileProjection;
+  querymap: MapfileQueryMap;
+  scalebar: MapfileScaleBar;
   symbols: string[] | MapfileSymbol[];
-  legend: MapFileLegend;
+  legend: MapfileLegend;
   /**
    * Filename of the symbolset to use. Can be a path relative to the mapfile, or a full path.
    */
@@ -29,11 +29,15 @@ interface MapfileMap {
    * Filename of fontset file to use. Can be a path relative to the mapfile, or a full path.
    */
   fontset?: string;
+  /**
+   * A map file may have zero, one or more OUTPUTFORMAT object declarations
+   */
+  outputformats?: MapfileOutputformat[];
 }
 
-interface MapFileWeb {
-  validation: MapFileValidation;
-  metadata: MapFileMetadata;
+interface MapfileWeb {
+  validation: MapfileValidation;
+  metadata: MapfileMetadata;
 }
 
 export interface MapfileLayer {
@@ -44,25 +48,25 @@ export interface MapfileLayer {
   labelitem: string;
   name: string;
   group: string;
-  cluster: MapFileCluster;
-  validation: MapFileValidation;
-  grid: MapFileGrid;
-  projection: MapFileProjection;
-  scaletoken: MapFileScaleToken;
-  composite: MapFileComposite;
-  join: MapFileJoin;
-  metadata: MapFileMetadata;
+  cluster: MapfileCluster;
+  validation: MapfileValidation;
+  grid: MapfileGrid;
+  projection: MapfileProjection;
+  scaletoken: MapfileScaleToken;
+  composite: MapfileComposite;
+  join: MapfileJoin;
+  metadata: MapfileMetadata;
   classes: MapfileClass[];
-  feature: MapFileFeature;
+  feature: MapfileFeature;
 }
 
-interface MapFileReference {}
+interface MapfileReference {}
 
-interface MapFileProjection {}
+interface MapfileProjection {}
 
-interface MapFileQueryMap {}
+interface MapfileQueryMap {}
 
-interface MapFileScaleBar {
+interface MapfileScaleBar {
   label: MapfileLabel;
 }
 
@@ -77,25 +81,25 @@ export interface MapfileSymbol {
   name: string;
 }
 
-interface MapFileLegend {
+interface MapfileLegend {
   label: MapfileLabel;
 }
 
-interface MapFileValidation {}
+interface MapfileValidation {}
 
-interface MapFileMetadata {}
+interface MapfileMetadata {}
 
-interface MapFileCluster {}
+interface MapfileCluster {}
 
-interface MapFileGrid {}
+interface MapfileGrid {}
 
-interface MapFileScaleToken {
-  values: MapFileScaleTokenValue[];
+interface MapfileScaleToken {
+  values: MapfileScaleTokenValue[];
 }
 
-interface MapFileComposite {}
+interface MapfileComposite {}
 
-interface MapFileJoin {}
+interface MapfileJoin {}
 
 export interface MapfileClass {
   minscaledenom?: number;
@@ -104,12 +108,12 @@ export interface MapfileClass {
   expression: string;
   name: string;
   styles: MapfileStyle[];
-  validation: MapFileValidation;
-  leader: MapFileLeader;
+  validation: MapfileValidation;
+  leader: MapfileLeader;
   labels: MapfileLabel[];
 }
 
-interface MapFileFeature {
+interface MapfileFeature {
   points: string; 
 }
 
@@ -121,7 +125,7 @@ export interface MapfileLabel {
   color: string;
 }
 
-interface MapFileScaleTokenValue {}
+interface MapfileScaleTokenValue {}
 
 export interface MapfileStyle {
   /**
@@ -155,6 +159,16 @@ export interface MapfileStyle {
   maxscaledenom: number;
 }
 
-interface MapFileLeader {
+interface MapfileLeader {
   style: MapfileStyle;
+}
+
+
+interface MapfileOutputformat {
+  name: string;
+  driver: string;
+  mimetype: string;
+  imagemode: string;
+  extension: string;
+  fromatoptions: string[];
 }

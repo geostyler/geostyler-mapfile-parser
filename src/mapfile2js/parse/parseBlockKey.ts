@@ -7,6 +7,9 @@ const multiBlockKeys = {
   label: 'labels',
   style: 'styles',
   symbol: 'symbols',
+  outputformat: 'outputformats',
+  formatoption: 'formatoptions',
+  include: 'includes',
 };
 
 /**
@@ -16,7 +19,7 @@ const multiBlockKeys = {
  * @param {array} blocks Block stack
  */
 export function parseBlockKey(lineObject: LineObject, currentBlock: any): object | undefined {
-  // handle block lines
+  // test for unhadled block lines
   if (lineObject.isBlockLine) {
     console.error(`Not able to deal with the following Block line: ${lineObject.content}`);
     return;
@@ -28,10 +31,13 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): object
     if (!(pluralKey in currentBlock)) {
       currentBlock[pluralKey] = []; // add list
     }
-    // add block to list
-    currentBlock[pluralKey].push({});
-    // return new block
-    return currentBlock[pluralKey][currentBlock[pluralKey].length - 1];
+    if (lineObject.isBlockKey) {
+      currentBlock[pluralKey].push({}); // add block to list
+      return currentBlock[pluralKey][currentBlock[pluralKey].length - 1]; // return new block
+    } else {
+      currentBlock[pluralKey].push(lineObject.value); // formatoptions & includes
+      return undefined;
+    }
   } else {
     // check for duplicate block key
     if (lineObject.key in currentBlock || multiBlockKeys[lineObject.key] in currentBlock) {

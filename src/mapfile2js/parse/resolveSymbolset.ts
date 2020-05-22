@@ -35,11 +35,12 @@ export function resolveSymbolset(mapfile: Mapfile): Mapfile {
   // fallback to mapserver defaults if not specified
   if (!symbolsetPath) {
     symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
+  } else if (!fs.existsSync(symbolsetPath)) {
+    console.error(`Non existent symbolset path: ${symbolsetPath}`);
+    symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
   }
 
-  if (typeof symbolsetPath !== 'string') {
-    return mapfile;
-  }
+  // resolve symbolset
   const symbolsetContent = fs.readFileSync(symbolsetPath, 'utf-8');
   if (symbolsetContent) {
     const mapfileSymbolset = parseSymbolset(symbolsetContent);
