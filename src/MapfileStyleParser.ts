@@ -623,11 +623,11 @@ export class MapfileStyleParser implements StyleParser {
    * @param {object} styleParameters The Mapfile Style Parameters
    * @return {RasterSymbolizer} The GeoStyler-Style RasterSymbolizer
    */
-  getRasterSymbolizerFromMapfileStyle(styleParameters: any): RasterSymbolizer {
+  getRasterSymbolizerFromMapfileStyle(styleParameters: MapfileStyle ): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
     if (styleParameters.opacity) {
-      rasterSymbolizer.opacity = parseFloat(styleParameters.opacity) / 100;
+      rasterSymbolizer.opacity = styleParameters.opacity / 100;
     }
     /*
     if (styleParameters.resamplingMethod) {

@@ -69,7 +69,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_simple_raster);
     });
-/*
+    /*
     it('can read a simple MapFile RasterSymbolizer with many classes intervals', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_raster_many_classes_filter_intervals.map', 'utf8');
@@ -109,7 +109,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_nearest);
     });
-*/
+    */
     it('can read a simple MapFile Label', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
