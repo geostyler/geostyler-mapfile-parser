@@ -1,5 +1,5 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
-import { rgbToHex } from './Useful';
+import { rgbToHex, isSquare, isTriangle, isCross } from './Useful';
 import {
   StyleParser,
   Style,
@@ -377,33 +377,29 @@ export class MapfileStyleParser implements StyleParser {
     const points = mapfileStyle.symbol.points.split(' ').map((item) => parseFloat(item));
     if (symbolType === 'ellipse') {
       if (!(points[0] === points[1] && points.length === 2)) {
-        console.warn('Custom Elipse not supported by MarkerSymbolyzer, fallback to \'Circle\'!');
+        console.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
       }
       markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
     } else {
-      switch (points) {
-      case [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0]:
+      if (isSquare(points)) {
         markSymbolizer.wellKnownName = 'Square' as WellKnownName;
-        break;
-      case [1.0, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0]:
-        markSymbolizer.wellKnownName = 'Triangle' as WellKnownName;
-        break;
-      case [2.0, 0.0, 2.0, 4.0, -99, -99, 0.0, 2.0, 4.0, 2.0]:
-        markSymbolizer.wellKnownName = 'Cross' as WellKnownName;
-        break;
-      default:
-        {
-          console.warn(
-            `Custom Symbol not supported by MarkerSymbolyzer, fallback to 'X':\n${JSON.stringify(
-              mapfileStyle.symbol,
-              null,
-              2
-            )}`
-          );
-          markSymbolizer.wellKnownName = 'X' as WellKnownName;
-        }
-        break;
       }
+      if (isTriangle(points)) {
+        markSymbolizer.wellKnownName = 'Triangle' as WellKnownName;
+      }
+      if (isCross(points)) {
+        markSymbolizer.wellKnownName = 'Cross' as WellKnownName;
+      }
+    }
+    if (!markSymbolizer.wellKnownName) {
+      console.warn(
+        `Custom symbol not supported by MarkerSymbolyzer, fallback to 'X':\n${JSON.stringify(
+          mapfileStyle.symbol,
+          null,
+          2
+        )}`
+      );
+      markSymbolizer.wellKnownName = 'X' as WellKnownName;
     }
     return markSymbolizer;
   }
