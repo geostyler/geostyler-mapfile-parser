@@ -1,4 +1,4 @@
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 const regExpHexColor = new RegExp('["\']#[0-9a-f]{6,8}["\']|["\']#[0-9a-f]{3}["\']', 'gi');
 

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { parseSymbolset } from '../parse';
+import { parseSymbolset } from '../parseMapfile';
 import { MapfileSymbol, Mapfile } from '../mapfileTypes';
 
 let mapfileSymbols: Array<MapfileSymbol>;
@@ -33,13 +33,15 @@ export function resolveSymbolset(mapfile: Mapfile): Mapfile {
   let symbolsetPath = mapfile.map.symbolset;
 
   // fallback to mapserver defaults if not specified
+  const fallbackPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
   if (!symbolsetPath) {
-    symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
+    symbolsetPath = fallbackPath;
+  } else if (!fs.existsSync(symbolsetPath)) {
+    console.error(`Non existent symbolset path: ${symbolsetPath}`);
+    symbolsetPath = fallbackPath;
   }
 
-  if (typeof symbolsetPath !== 'string') {
-    return mapfile;
-  }
+  // resolve symbolset
   const symbolsetContent = fs.readFileSync(symbolsetPath, 'utf-8');
   if (symbolsetContent) {
     const mapfileSymbolset = parseSymbolset(symbolsetContent);
