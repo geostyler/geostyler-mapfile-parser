@@ -33,11 +33,12 @@ export function resolveSymbolset(mapfile: Mapfile): Mapfile {
   let symbolsetPath = mapfile.map.symbolset;
 
   // fallback to mapserver defaults if not specified
+  const fallbackPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
   if (!symbolsetPath) {
-    symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
+    symbolsetPath = fallbackPath;
   } else if (!fs.existsSync(symbolsetPath)) {
     console.error(`Non existent symbolset path: ${symbolsetPath}`);
-    symbolsetPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
+    symbolsetPath = fallbackPath;
   }
 
   // resolve symbolset
