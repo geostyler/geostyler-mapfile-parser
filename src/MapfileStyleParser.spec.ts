@@ -24,6 +24,7 @@ import raster_rgbrange_to_hexarray from '../data/styles/raster_rgbrange_to_hexar
 import raster_resampling_average from '../data/styles/raster_resampling_average';
 import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
 import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
+import { rgbToHex, rgbRangeToHexArray } from './Useful';
 
 
 it('MapfileStyleParser is defined', () => {
@@ -195,6 +196,23 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(raster_resampling_nearest);
     });
     */
+
+   it('can convert a RGB color to hexdecimal format', async () => {
+    expect.assertions(2);
+    const rgb = '0 0 0';
+    const hex = rgbToHex(rgb);
+    expect(hex).toBeDefined();
+    expect(hex).toEqual('#000000');
+  });
+
+  it('can convert a RGB color range to hexdecimal array format', async () => {
+    expect.assertions(2);
+    const rgbRange = '0 0 0 255 255 255';
+    const hexArray = rgbRangeToHexArray(rgbRange);
+    expect(hexArray).toBeDefined();
+    expect(hexArray).toEqual(['#000000', '#FFFFFF']);
+  });
+
  it('can translate Mapfile to SLD', async () => {
    const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
    const geostylerStyle = styleParser.readStyle(mapfile);
