@@ -16,8 +16,8 @@ export function rgbToHex(s: string): string {
  * @param {string} s The strings representing the range of colors in RGB in the Mapfile file
  * @return {string[]} The same colors as an array of strings in hexadecimal format
 */
-export default function rgbRangeToHexArray(s: string): string[] {
-  const lowerBoundColor = rgbToHex(s.split(' ').slice(1, 3).join(' '));
-  const upperBoundColor = rgbToHex(s.split(' ').slice(4, 6).join(' '));
+export function rgbRangeToHexArray(s: string): string[] {
+  const lowerBoundColor = rgbToHex(s.split(' ').slice(0, 3).join(' '));
+  const upperBoundColor = rgbToHex(s.split(' ').slice(3, 6).join(' '));
   return [lowerBoundColor, upperBoundColor];
 }
