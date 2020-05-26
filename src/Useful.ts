@@ -77,7 +77,7 @@ export function isTriangle(points: number[]): boolean {
     if (points[i + 1] === points[i + 3]) {
       const pointsTwice = points.slice(0, 6).concat(points.slice(0, 6));
       const middle = (points[i] + points[i + 2]) / 2;
-      // The remaining corner should be vetically alligned with the middle and point upwards
+      // The remaining corner should be vetically aligned with the middle and point upwards
       if (middle === pointsTwice[i + 4] && pointsTwice[i + 4] < points[i + 1]) {
         console.log('triangle 2', middle);
         return true;

@@ -13,7 +13,7 @@ function substituteSymbols(obj: any): void {
         // eslint-disable-next-line id-blacklist
         obj[property] = undefined;
       } else {
-        // TODO: distinguish corectly betwen index and name reference
+        // TODO: distinguish corectly between index and name reference
         const symbol = mapfileSymbols.find((element) => element.name === obj[property]);
         if (symbol) {
           obj[property] = symbol;
