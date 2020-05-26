@@ -1,10 +1,11 @@
 LAYER
-  NAME "point_simple_point_many_classes_filters"
+  NAME "point_simple_many_classes_filters"
   TYPE POINT
   DATA "../shapes/points.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "point_simple_point_many_classes_filters"
+    "wms_title" "point_simple_many_classes_filters"
+    "wms_srs" "EPSG:4326"
   END
   CLASSITEM "id"
   CLASS

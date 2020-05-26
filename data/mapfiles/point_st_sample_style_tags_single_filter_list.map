@@ -1,10 +1,11 @@
 LAYER
-  NAME "point_st_sample_point_style_tags_single_filter_list"
+  NAME "point_st_sample_style_tags_single_filter_list"
   TYPE POINT
   DATA "../shapes/points.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "point_st_sample_point_style_tags_single_filter_list"
+    "wms_title" "point_st_sample_style_tags_single_filter_list"
+    "wms_srs" "EPSG:4326"
   END
   CLASSITEM "name"
   CLASS

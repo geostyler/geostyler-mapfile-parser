@@ -1,11 +1,11 @@
 LAYER
-  NAME "point_simple_point"
+  NAME "point_st_sample_style_tags"
   TYPE POINT
   DATA "../shapes/points.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "point_simple_point"
-    "wms_srs" "EPSG:4326"    
+    "wms_title" "point_st_sample_style_tags"
+    "wms_srs" "EPSG:4326"
   END
   CLASS
     NAME "Test point"
@@ -13,6 +13,10 @@ LAYER
       SYMBOL "circle"
       COLOR 0 255 0
       SIZE 15
+      ANGLE 360
+      OPACITY 100
+      OUTLINECOLOR 0 0 0
+      WIDTH 1
     END
   END
 END

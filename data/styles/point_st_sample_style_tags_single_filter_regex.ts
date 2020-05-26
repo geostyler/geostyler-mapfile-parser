@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
-  name: 'point_st_sample_point_style_tags_single_filter_regex',
+  name: 'point_st_sample_style_tags_single_filter_regex',
   rules: [{
     filter: [
       '*=', ['FN_strMatches', 'name', '/bus/'], true

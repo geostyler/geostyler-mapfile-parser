@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const rasterStyle: Style = {
-  'name': 'raster_simple_raster',
+  'name': 'raster_resampling_bilinear',
   'rules': [{
     'name': 'Test raster',
     'symbolizers': [{

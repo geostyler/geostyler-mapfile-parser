@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const rasterStyle: Style = {
-  name: 'raster_simple_raster_many_classes_filter_ramp',
+  name: 'raster_rgbrange_to_hexarray',
   rules: [{
     name: 'Test raster',
     symbolizers: [{
@@ -10,14 +10,11 @@ const rasterStyle: Style = {
         type: 'ramp',
         colorMapEntries: [{
           color: '#000000',
-          quantity: 0
+          quantity: 370
         }, {
-          color: '#003200',
-          quantity: 100,
+          color: '#FFFFFF',
+          quantity: 3557,
           opacity: 1
-        }, {
-          color: '#003250',
-          quantity: 200
         }]
       },
     }]

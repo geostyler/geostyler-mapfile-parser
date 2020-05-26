@@ -1,11 +1,15 @@
 LAYER
-  NAME "Simple raster"
+  NAME "raster_simple_many_classes_filter_values"
   TYPE RASTER
   DATA "../rasters/raster.tif"
   STATUS DEFAULT
+  METADATA
+    "wms_title" "raster_simple_many_classes_filter_values"
+    "wms_srs" "EPSG:4326"
+  END
   CLASSITEM "[pixel]"
   CLASS
-    NAME "0"
+    NAME "Expression 0"
     EXPRESSION "0"
     STYLE
       COLOR 0 255 0
@@ -13,7 +17,7 @@ LAYER
     END
   END
   CLASS
-    NAME "1"
+    NAME "Expression 1"
     EXPRESSION "1"
     STYLE
       COLOR 0 0 255

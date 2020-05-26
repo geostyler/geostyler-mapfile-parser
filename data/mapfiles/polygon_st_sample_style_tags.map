@@ -1,10 +1,11 @@
 LAYER
-  NAME "polygon_st_sample_polygon_style_tags"
+  NAME "polygon_st_sample_style_tags"
   TYPE POLYGON
   DATA "../shapes/polygons.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "polygon_st_sample_polygon_style_tags"
+    "wms_title" "polygon_st_sample_style_tags"
+    "wms_srs" "EPSG:4326"
   END
   CLASS
     NAME "Test polygon"

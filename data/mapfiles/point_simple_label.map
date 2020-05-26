@@ -1,10 +1,11 @@
 LAYER
-  NAME "point_simple_point_label"
+  NAME "point_simple_label"
   TYPE POINT
   DATA "../shapes/points.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "point_simple_point_label"
+    "wms_title" "point_simple_label"
+    "wms_srs" "EPSG:4326"
   END
   CLASS
     NAME "Test label"

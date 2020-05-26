@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const lineStyle: Style = {
-  name: 'line_st_sample_line_style_tags',
+  name: 'line_st_sample_style_tags',
   rules: [{
     name: 'Test line',
     symbolizers: [{

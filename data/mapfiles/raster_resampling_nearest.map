@@ -1,11 +1,11 @@
 LAYER
-  NAME "raster_simple_raster"
+  NAME "raster_resampling_nearest"
   TYPE RASTER
   PROCESSING "RESAMPLE=NEAREST"
   DATA "../rasters/raster.tif"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "raster_simple_raster"
+    "wms_title" "raster_resampling_nearest"
     "wms_srs" "EPSG:4326"
   END
   CLASS
