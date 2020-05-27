@@ -1,5 +1,5 @@
 import { checkComment } from './checkComment';
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 describe('checkComment', () => {
   it('is defined', () => {

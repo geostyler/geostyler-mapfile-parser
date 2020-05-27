@@ -1,4 +1,4 @@
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 /**
  *

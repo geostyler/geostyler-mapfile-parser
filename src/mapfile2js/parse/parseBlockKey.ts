@@ -1,26 +1,27 @@
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 // there can be multiple layer, class and style block siblings
-const multiBlockKeys = { layer: 'layers', class: 'classes', label: 'labels', style: 'styles', symbol: 'symbols' };
-// some blocks are actually just an array
-const arrayBlockKeys = ['points'];
+const multiBlockKeys = {
+  layer: 'layers',
+  class: 'classes',
+  label: 'labels',
+  style: 'styles',
+  symbol: 'symbols',
+  outputformat: 'outputformats',
+  formatoption: 'formatoptions',
+  include: 'includes',
+};
 
 /**
  * Parse block keys.
  * @param {LineObject} lineObject Line Object
- * @param {number} index Current lines index
  * @param {array} lines Array of line strings
  * @param {array} blocks Block stack
  */
-export function parseBlockKey(lineObject: LineObject, index: number, currentBlock: any): object | undefined {
-  // can not handle block lines
+export function parseBlockKey(lineObject: LineObject, currentBlock: any): object | undefined {
+  // test for unhadled block lines
   if (lineObject.isBlockLine) {
-    console.error(`Not able to deal with block line yet! Block line [${index + 1}]: ${lineObject.content}`);
-    return;
-  }
-
-  // work around projection imitating a block
-  if (lineObject.key.toUpperCase() === 'PROJECTION') {
+    console.error(`Not able to deal with the following Block line: ${lineObject.content}`);
     return;
   }
 
@@ -28,21 +29,18 @@ export function parseBlockKey(lineObject: LineObject, index: number, currentBloc
   if (lineObject.key in multiBlockKeys) {
     const pluralKey = multiBlockKeys[lineObject.key];
     if (!(pluralKey in currentBlock)) {
-      // add list
-      currentBlock[pluralKey] = [];
+      currentBlock[pluralKey] = []; // add list
     }
-    // add block to list
-    currentBlock[pluralKey].push({});
-
-    // return new block
-    return currentBlock[pluralKey][currentBlock[pluralKey].length - 1];
-  } else if (arrayBlockKeys.includes(lineObject.key)) {
-    // create array
-    currentBlock[lineObject.key] = [];
-    return currentBlock[lineObject.key];
+    if (lineObject.isBlockKey) {
+      currentBlock[pluralKey].push({}); // add block to list
+      return currentBlock[pluralKey][currentBlock[pluralKey].length - 1]; // return new block
+    } else {
+      currentBlock[pluralKey].push(lineObject.value); // formatoptions & includes
+      return undefined;
+    }
   } else {
     // check for duplicate block key
-    if (lineObject.key in currentBlock) {
+    if (lineObject.key in currentBlock || multiBlockKeys[lineObject.key] in currentBlock) {
       console.error(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
     }
     // create block

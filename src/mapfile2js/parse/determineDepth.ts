@@ -1,4 +1,4 @@
-import { LineObject } from '../parse';
+import { LineObject } from '../parseMapfile';
 
 /**
  * Determines the depth of every line of mapfile.

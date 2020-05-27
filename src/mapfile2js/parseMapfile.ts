@@ -7,6 +7,12 @@ import { determineDepth } from './parse/determineDepth';
 import { resolveSymbolset } from './parse/resolveSymbolset';
 import { Mapfile, MapfileSymbolset } from './mapfileTypes';
 
+// some blocks are actually a key value pair
+const pseudoBlockKeys = ['projection', 'pattern', 'points'];
+
+/**
+ * Object representation of a Mapfile line.
+ */
 export interface LineObject {
   content: string;
   comment: string;
@@ -18,6 +24,23 @@ export interface LineObject {
   depth: number;
 }
 
+/**
+ * Parses a Mapfile line into a JavaScript object.
+ * @param {string} line Content of a Mapfile
+ * @returns {object} the parsed object
+ */
+function parseLine(line: string): LineObject {
+  let lineObject: LineObject = { content: line } as any;
+
+  // check included comments
+  lineObject = Object.assign(lineObject, checkComment(lineObject));
+  // check key value
+  lineObject = Object.assign(lineObject, checkKeyValue(lineObject));
+  // check block key
+  lineObject = Object.assign(lineObject, checkBlockKey(lineObject));
+
+  return lineObject;
+}
 
 /**
  * Parses the Mapfile content into a JavaScript object.
@@ -26,55 +49,65 @@ export interface LineObject {
  */
 function parseContent(content: string): object {
   const result = {};
-  
   const lineObjects: Array<LineObject> = [];
   // stack to keep track of blocks
   const blocks: Array<any> = [result];
-  // replace windows line breaks with linux line breaks
-  content = content.replace(/[\r\n]/g, '\n');
-  // split content into lines
-  const lines = content.split('\n');
+  let pseudoBlockKey: any;
+  // split content into trimmed lines like Van Damme
+  const lines = content.split(/\s*(?:\r\n?|\n)\s*/g);
+  // iterate over lines
   lines.forEach((line, index) => {
-    // line object
-    let lineObject: LineObject = { content: line.trim() } as any;
     // ommit empty lines and comments
-    if (lineObject.content === '' || lineObject.content.startsWith('#')) {
+    if (line === '' || line.startsWith('#')) {
       return;
     }
-    // check included comments
-    lineObject = Object.assign(lineObject, checkComment(lineObject));
-    // check key value
-    lineObject = Object.assign(lineObject, checkKeyValue(lineObject));
-    // check block key
-    lineObject = Object.assign(lineObject, checkBlockKey(lineObject));
+    // line object
+    const lineObject = parseLine(line);
     // store lineobjects
     lineObjects.push(lineObject);
     // current block
-    const currentBlock: any = blocks[blocks.length - 1];
-    // handle block keys
-    if (lineObject.isBlockKey) {
-      const newBlock = parseBlockKey(lineObject, index, currentBlock);
+    const currentBlock = blocks[blocks.length - 1];
+
+    // handle pseudo blocks
+    if (pseudoBlockKeys.includes(lineObject.key)) {
+      if (lineObject.value) {
+        currentBlock[lineObject.key] = lineObject.value.replace(/\s*END$/i, '');
+        if (lineObject.value.match(/\s*END$/i)) {
+          return;
+        }
+      }
+      pseudoBlockKey = lineObject.key;
+      return;
+    }
+    if (pseudoBlockKey && lineObject.key !== 'end') {
+      const value = lineObject.contentWithoutComment.replace(/"/g, '');
+      if (currentBlock[pseudoBlockKey]) {
+        currentBlock[pseudoBlockKey] = `${currentBlock[pseudoBlockKey]} ${value}`;
+      } else {
+        currentBlock[pseudoBlockKey] = value;
+      }
+      return;
+    }
+
+    // handle block & list keys
+    if (lineObject.isBlockKey || ['formatoption', 'include'].includes(lineObject.key)) {
+      const newBlock = parseBlockKey(lineObject, currentBlock);
       if (newBlock) {
         blocks.push(newBlock as any);
       }
       return;
     }
+
     // handle block end
-    if (lineObject.key.toUpperCase() === 'END' && !('projection' in currentBlock)) {
-      // pop current block
-      blocks.pop();
+    if (lineObject.key === 'end') {
+      if (pseudoBlockKey) {
+        pseudoBlockKey = undefined;
+      } else {
+        blocks.pop();
+      }
       return;
     }
-    // work around projection imitating a block
-    if (lineObject.key.toLowerCase().includes('init=')) {
-      currentBlock.projection = lineObject.key.trim().replace(/"/g, '');
-      return;
-    }
-    // some blocks are actually just an array
-    if (Array.isArray(currentBlock)) {
-      currentBlock.push(lineObject.contentWithoutComment);
-      return;
-    }
+
     // insert key value pair
     if (lineObject.key in currentBlock) {
       console.warn(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
@@ -90,25 +123,22 @@ function parseContent(content: string): object {
   return result;
 }
 
-
 /**
  * Parses a MapServer Mapfile to a JavaScript object.
  * @param {string} content Content of a MapServer Mapfile
  * @returns {Mapfile} the parsed Mapfile
  */
 export function parseMapfile(content: string): Mapfile {
-
   let result = parseContent(content);
 
   // add map bock for consistency if not exists
-  result = ('map' in result)? result : { map: result };
-    
+  result = 'map' in result ? result : { map: result };
+
   // resolve symbolset
   const mapfile = resolveSymbolset(result as Mapfile);
-  
+
   return mapfile;
 }
-
 
 /**
  * Parses a MapServer Symbolsetfile to a JavaScript object.
@@ -116,8 +146,10 @@ export function parseMapfile(content: string): Mapfile {
  * @returns {MapfileSymbolset} the parsed Symbolset
  */
 export function parseSymbolset(content: string): MapfileSymbolset {
-
   const result: any = parseContent(content);
-  
+
+  // A Mapfile symbolset begins with SYMBOLSET and ends with END
+  console.assert('symbolset' in result);
+
   return result.symbolset as MapfileSymbolset;
 }
