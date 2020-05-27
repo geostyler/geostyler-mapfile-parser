@@ -20,6 +20,7 @@ export function rgbRangeToHexArray(s: string): string[] {
   const lowerBoundColor = rgbToHex(s.split(' ').slice(0, 3).join(' '));
   const upperBoundColor = rgbToHex(s.split(' ').slice(3, 6).join(' '));
   return [lowerBoundColor, upperBoundColor];
+}
 
 /**
  * Test weather an sequence of point coordinates are a closed sequence
