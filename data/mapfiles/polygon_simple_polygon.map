@@ -5,6 +5,7 @@ LAYER
   EXTENT -180 -90 180 90
   METADATA
     "wms_title" "polygon_simple_polygon.map"
+    "wms_srs" "EPSG:4326"
   END
   CLASS
     NAME "Test polygon"

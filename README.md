@@ -26,7 +26,7 @@ Not really useable now, wait on the first release.
 Be sure you have:
   - GNU Make: https://www.gnu.org/software/make/
   - Docker: https://www.docker.com/
-  - Docker-compoe: https://docs.docker.com/compose/
+  - Docker-compose: https://docs.docker.com/compose/
 
 Then run simply: `make run`
 

@@ -1,0 +1,19 @@
+LAYER
+  NAME "raster_rgbrange_to_hexarray"
+  TYPE RASTER
+  DATA "../rasters/raster.tif"
+    METADATA
+    "wms_title" "raster_rgbrange_to_hexarray"
+    "wms_srs" "EPSG:4326"
+  END
+  STATUS DEFAULT
+  CLASSITEM "[pixel]"
+  CLASS
+    NAME "Test raster"
+    STYLE
+      COLORRANGE 0 0 0 255 255 255
+      DATARANGE 370 3557
+      RANGEITEM "pixel"
+    END
+  END
+END

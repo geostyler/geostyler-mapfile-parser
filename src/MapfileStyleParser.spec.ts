@@ -5,16 +5,26 @@ import { ComparisonFilter, Filter, Style } from 'geostyler-style';
 import { SldStyleParser } from 'geostyler-sld-parser';
 
 import point_simple_point from '../data/styles/point_simple_point';
-import point_simple_point_label from '../data/styles/point_simple_point_label';
-import point_simple_point_many_classes_filters from '../data/styles/point_simple_point_many_classes_filters';
-import point_scale from '../data/styles/point_scale';
-import point_st_sample_point_style_tags from '../data/styles/point_st_sample_point_style_tags';
-import point_st_sample_point_style_tags_single_filter_list from '../data/styles/point_st_sample_point_style_tags_single_filter_list';
-import point_st_sample_point_style_tags_single_filter_regex from '../data/styles/point_st_sample_point_style_tags_single_filter_regex';
-
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
+
+import point_simple_rgb_to_hex from '../data/styles/point_simple_rgb_to_hex';
+import point_simple_label from '../data/styles/point_simple_label';
+import point_simple_many_classes_filters from '../data/styles/point_simple_many_classes_filters';
+import point_scale from '../data/styles/point_scale';
+import point_st_sample_style_tags from '../data/styles/point_st_sample_style_tags';
+import point_st_sample_style_tags_single_filter_list from '../data/styles/point_st_sample_style_tags_single_filter_list';
+import point_st_sample_style_tags_single_filter_regex from '../data/styles/point_st_sample_style_tags_single_filter_regex';
+
+import raster_simple_many_classes_filter_intervals from '../data/styles/raster_simple_many_classes_filter_intervals';
+import raster_simple_many_classes_filter_values from '../data/styles/raster_simple_many_classes_filter_values';
+import raster_simple_many_classes_filter_ramp from '../data/styles/raster_simple_many_classes_filter_ramp';
+import raster_rgbrange_to_hexarray from '../data/styles/raster_rgbrange_to_hexarray';
+import raster_resampling_average from '../data/styles/raster_resampling_average';
+import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
+import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
+import { rgbToHex, rgbRangeToHexArray } from './Useful';
 
 
 it('MapfileStyleParser is defined', () => {
@@ -65,12 +75,20 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(raster_simple_raster);
     });
 
+    it('can convert a RGB color to hexdecimal format', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_rgb_to_hex.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(point_simple_rgb_to_hex);
+    });
+
     it('can read a simple MapFile Label', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './data/mapfiles/point_simple_point_label.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/point_simple_label.map', 'utf8');
       const geoStylerStyles = await styleParser.readStyle(mapfile);
       expect(geoStylerStyles).toBeDefined();
-      expect(geoStylerStyles).toEqual(point_simple_point_label);
+      expect(geoStylerStyles).toEqual(point_simple_label);
     });
 
     it('can read a Point MapFile with scales', async () => {
@@ -83,10 +101,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a PointSymbolizer with style tags', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './data/mapfiles/point_st_sample_point_style_tags.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/point_st_sample_style_tags.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags);
+      expect(geoStylerStyle).toEqual(point_st_sample_style_tags);
     });
 
     // TODO: fixme there are no Square, Triangle and other WellKlnownName equivalents in Mapfiles
@@ -100,27 +118,100 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple sample MapFile PointSymbolizer with style tags', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync( './data/mapfiles/point_st_sample_point_style_tags.map', 'utf8');
+      const mapfile = fs.readFileSync( './data/mapfiles/point_st_sample_style_tags.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags);
+      expect(geoStylerStyle).toEqual(point_st_sample_style_tags);
     });
 
     it('can read a simple MapFile PointSymbolizer with filter list', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_point_style_tags_single_filter_list.map', 'utf8');
+      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags_single_filter_list.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_list);
+      expect(geoStylerStyle).toEqual(point_st_sample_style_tags_single_filter_list);
     });
 
     it('can read a simple MapFile PointSymbolizer with filter regex', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_point_style_tags_single_filter_regex.map', 'utf8');
+      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags_single_filter_regex.map', 'utf8');
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
-      expect(geoStylerStyle).toEqual(point_st_sample_point_style_tags_single_filter_regex);
+      expect(geoStylerStyle).toEqual(point_st_sample_style_tags_single_filter_regex);
     });
+    /*
+    it('can read a simple MapFile RasterSymbolizer with many classes intervals', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_many_classes_filter_intervals.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_many_classes_filter_intervals);
+    });
+
+    it('can read a simple MapFile RasterSymbolizer with many classes values', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_many_classes_filter_values.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_many_classes_filter_values);
+    });
+
+    it('can read a simple MapFile RasterSymbolizer with many classes ramp', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_many_classes_filter_ramp.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_simple_many_classes_filter_ramp);
+    });
+
+    it('can convert a RGBRGB range to hexadecimal array', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_rgbrange_to_hexarray.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_rgbrange_to_hexarray);
+    });
+
+    it('can resample a simple MapFile RasterSymbolizer (average)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_average.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_average);
+    });
+    
+    it('can resample a simple MapFile RasterSymbolizer (bilinear)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_bilinear.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_bilinear);
+    });
+
+    it('can resample a simple MapFile RasterSymbolizer (nearest)', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_nearest.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(raster_resampling_nearest);
+    });
+    */
+
+   it('can convert a RGB color to hexdecimal format', async () => {
+    expect.assertions(2);
+    const rgb = '0 0 0';
+    const hex = rgbToHex(rgb);
+    expect(hex).toBeDefined();
+    expect(hex).toEqual('#000000');
+  });
+
+  it('can convert a RGB color range to hexdecimal array format', async () => {
+    expect.assertions(2);
+    const rgbRange = '0 0 0 255 255 255';
+    const hexArray = rgbRangeToHexArray(rgbRange);
+    expect(hexArray).toBeDefined();
+    expect(hexArray).toEqual(['#000000', '#FFFFFF']);
+  });
 
  it('can translate Mapfile to SLD', async () => {
    const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');

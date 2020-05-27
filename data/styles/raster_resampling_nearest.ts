@@ -1,12 +1,13 @@
 import { Style } from 'geostyler-style';
 
 const rasterStyle: Style = {
-  'name': 'raster_st_sample_raster_style_tags',
+  'name': 'raster_resampling_nearest',
   'rules': [{
     'name': 'Test raster',
     'symbolizers': [{
       'kind': 'Raster',
-      'opacity': 0.5,
+      'opacity': 1.0,
+      'resampling': 'nearest'
     }]
   }]
 };

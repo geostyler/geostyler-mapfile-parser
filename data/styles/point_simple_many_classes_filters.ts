@@ -1,7 +1,7 @@
 import { Style } from 'geostyler-style';
 
 const pointStyle: Style = {
-  name: 'point_simple_point_many_classes_filters',
+  name: 'point_simple_many_classes_filters',
   rules: [
   {
     name: 'Test point 1',

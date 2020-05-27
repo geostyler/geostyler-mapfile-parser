@@ -1,0 +1,27 @@
+LAYER
+  NAME "raster_simple_many_classes_filter_values"
+  TYPE RASTER
+  DATA "../rasters/raster.tif"
+  STATUS DEFAULT
+  METADATA
+    "wms_title" "raster_simple_many_classes_filter_values"
+    "wms_srs" "EPSG:4326"
+  END
+  CLASSITEM "[pixel]"
+  CLASS
+    NAME "Expression 0"
+    EXPRESSION "0"
+    STYLE
+      COLOR 0 255 0
+      OPACITY 100
+    END
+  END
+  CLASS
+    NAME "Expression 1"
+    EXPRESSION "1"
+    STYLE
+      COLOR 0 0 255
+      OPACITY 100
+    END
+  END
+END

@@ -1,11 +1,11 @@
 LAYER
-  NAME "raster_st_sample_raster_style_tags"
+  NAME "raster_st_sample_style_tags"
   TYPE RASTER
   PROCESSING "SCALE=AUTO"
   DATA "../rasters/raster.tif"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "raster_st_sample_raster_style_tags"
+    "wms_title" "raster_st_sample_style_tags"
     "wms_srs" "EPSG:4326"
   END
   CLASS

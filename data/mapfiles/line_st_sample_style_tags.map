@@ -1,11 +1,11 @@
 LAYER
-  NAME "line_st_sample_line_style_tags"
+  NAME "line_st_sample_style_tags"
   TYPE LINE
   DATA "../shapes/lines.shp"
   EXTENT -180 -90 180 90
   METADATA
-    "wms_title" "line_st_sample_line_style_tags"
-    "wms_srs" "EPSG:2056"
+    "wms_title" "line_st_sample_style_tags"
+    "wms_srs" "EPSG:4326"
   END
   CLASS
     NAME "Test line"
