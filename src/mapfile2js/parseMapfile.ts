@@ -9,6 +9,8 @@ import { Mapfile, MapfileSymbolset } from './mapfileTypes';
 
 // some blocks are actually a key value pair
 const pseudoBlockKeys = ['projection', 'pattern', 'points'];
+// some keys are reused to specify an array of values
+const listKeys = ['formatoption', 'include', 'processing'];
 
 /**
  * Object representation of a Mapfile line.
@@ -90,7 +92,7 @@ function parseContent(content: string): object {
     }
 
     // handle block & list keys
-    if (lineObject.isBlockKey || ['formatoption', 'include'].includes(lineObject.key)) {
+    if (lineObject.isBlockKey || listKeys.includes(lineObject.key)) {
       const newBlock = parseBlockKey(lineObject, currentBlock);
       if (newBlock) {
         blocks.push(newBlock as any);

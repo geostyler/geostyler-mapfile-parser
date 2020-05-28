@@ -58,6 +58,7 @@ export interface MapfileLayer {
   metadata: MapfileMetadata;
   classes: MapfileClass[];
   feature: MapfileFeature;
+  processing: string[];
 }
 
 interface MapfileReference {}
