@@ -106,14 +106,13 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags);
     });
 
-    // TODO: fixme there are no Square, Triangle and other WellKlnownName equivalents in Mapfiles
-    // it('can read a simple MapFile PointSymbolizer with many classes', async () => {
-    //   expect.assertions(2);
-    //   const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point_many_classes_filters.map', 'utf8');
-    //   const geoStylerStyle = await styleParser.readStyle(mapfile);
-    //   expect(geoStylerStyle).toBeDefined();
-    //   expect(geoStylerStyle).toEqual(point_simple_point_many_classes_filters);
-    // });
+    it('can read a simple MapFile PointSymbolizer with many classes', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_many_classes_filters.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(point_simple_many_classes_filters);
+    });
 
     it('can read a simple sample MapFile PointSymbolizer with style tags', async () => {
       expect.assertions(2);
