@@ -2,7 +2,6 @@ LAYER
   NAME "raster_simple_many_classes_filter_intervals"
   TYPE RASTER
   DATA "../rasters/raster.tif"
-  STATUS DEFAULT
   METADATA
     "wms_title" "raster_simple_many_classes_filter_intervals"
     "wms_srs" "EPSG:4326"

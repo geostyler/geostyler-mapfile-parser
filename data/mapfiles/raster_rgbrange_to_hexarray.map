@@ -6,7 +6,6 @@ LAYER
     "wms_title" "raster_rgbrange_to_hexarray"
     "wms_srs" "EPSG:4326"
   END
-  STATUS DEFAULT
   CLASSITEM "[pixel]"
   CLASS
     NAME "Test raster"
