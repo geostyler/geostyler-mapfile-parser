@@ -1,4 +1,4 @@
-import { isCross, isSquare, isTriangle } from './Useful';
+import { isCross, isSquare, isTriangle, rgbToHex, rgbRangeToHexArray } from './Useful';
 
 describe('isCross', () => {
   it('is defined', () => {
@@ -70,5 +70,23 @@ describe('isTriangle', () => {
     // Triangle with other start point
     points = [2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 2.0, 2.0];
     expect(isTriangle(points)).toEqual(true);
+  });
+});
+
+describe('Color helpers', () => {
+   it('can convert a RGB color to hexdecimal format', async () => {
+    expect.assertions(2);
+    const rgb = '0 0 0';
+    const hex = rgbToHex(rgb);
+    expect(hex).toBeDefined();
+    expect(hex).toEqual('#000000');
+  });
+
+  it('can convert a RGB color range to hexdecimal array format', async () => {
+    expect.assertions(2);
+    const rgbRange = '0 0 0 255 255 255';
+    const hexArray = rgbRangeToHexArray(rgbRange);
+    expect(hexArray).toBeDefined();
+    expect(hexArray).toEqual(['#000000', '#FFFFFF']);
   });
 });
