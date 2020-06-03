@@ -8,7 +8,6 @@ LAYER
     "wms_srs" "EPSG:4326"
   END
   CLASS
-    NAME "Test polygon"
     STYLE
       COLOR 0 255 0
       OUTLINECOLOR 85 85 85

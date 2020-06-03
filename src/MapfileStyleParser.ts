@@ -754,7 +754,7 @@ export class MapfileStyleParser implements StyleParser {
     const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
     mapfileLayer.classes.forEach((mapfileClass: any) => {
-      const name = mapfileLayer.group ? `${mapfileLayer.group}.${mapfileClass.name}` : mapfileClass.name;
+      const name = mapfileClass.name || '';
       const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
       const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
       const symbolizers = this.getSymbolizersFromClass(mapfileClass, mapfileLayerType, mapfileLayerLabelItem);

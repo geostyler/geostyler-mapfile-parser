@@ -214,7 +214,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
   });
 
  it('can translate Mapfile to SLD', async () => {
-   const mapfile = fs.readFileSync('./data/mapfiles//point_simple_point.map', 'utf8');
+   const mapfile = fs.readFileSync('./data/mapfiles/point_simple_point.map', 'utf8');
    const geostylerStyle = styleParser.readStyle(mapfile);
    const sldStyleParser = new SldStyleParser();
    return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {

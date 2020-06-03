@@ -8,7 +8,6 @@ LAYER
     "wms_srs" "EPSG:4326"    
   END
   CLASS
-    NAME "Test point"
     STYLE
       SYMBOL "circle"
       COLOR 0 255 0
