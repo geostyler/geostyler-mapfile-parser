@@ -79,7 +79,6 @@ export function isSquare(points: number[]): boolean {
 export function isTriangle(points: number[]): boolean {
   // Triangles should be represented by a closed sequence of 4 coordinate pairs
   if (points.length !== 8 || !isClosedSequence(points)) {
-    console.log('triangle 1');
     return false;
   }
 
@@ -91,7 +90,6 @@ export function isTriangle(points: number[]): boolean {
       const middle = (points[i] + points[i + 2]) / 2;
       // The remaining corner should be vetically aligned with the middle and point upwards
       if (middle === pointsTwice[i + 4] && pointsTwice[i + 4] < points[i + 1]) {
-        console.log('triangle 2', middle);
         return true;
       }
     }
