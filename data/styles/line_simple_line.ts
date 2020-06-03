@@ -3,7 +3,7 @@ import { Style } from 'geostyler-style';
 const lineStyle: Style = {
   name: 'line_simple_line',
   rules: [{
-    name: 'Test line',
+    name: '',
     symbolizers: [{
       kind: 'Line',
       join: 'round', // mapserver default

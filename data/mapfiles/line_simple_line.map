@@ -8,7 +8,6 @@ LAYER
     "wms_srs" "EPSG:4326"
   END
   CLASS
-    NAME "Test line"
     STYLE
       COLOR 0 255 0
       WIDTH 5
