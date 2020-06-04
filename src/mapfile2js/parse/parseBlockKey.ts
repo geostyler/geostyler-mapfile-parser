@@ -10,6 +10,7 @@ const multiBlockKeys = {
   outputformat: 'outputformats',
   formatoption: 'formatoptions',
   include: 'includes',
+  processing: 'processings',
 };
 
 /**
@@ -35,7 +36,7 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): object
       currentBlock[pluralKey].push({}); // add block to list
       return currentBlock[pluralKey][currentBlock[pluralKey].length - 1]; // return new block
     } else {
-      currentBlock[pluralKey].push(lineObject.value); // formatoptions & includes
+      currentBlock[pluralKey].push(lineObject.value); // list key value
       return undefined;
     }
   } else {
