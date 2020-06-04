@@ -1,5 +1,5 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
-import { rgbToHex, isSquare, isTriangle, isCross } from './Useful';
+import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray } from './Useful';
 import {
   StyleParser,
   Style,
@@ -20,6 +20,7 @@ import {
   CombinationFilter,
   IconSymbolizer,
   TextSymbolizer,
+  ColorMap,
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
 
@@ -642,8 +643,20 @@ export class MapfileStyleParser implements StyleParser {
       rasterSymbolizer.opacity = styleParameters.opacity / 100;
     }
 
+    if (styleParameters.colorrange && styleParameters.datarange) {
+      const colors = rgbRangeToHexArray(styleParameters.colorrange);
+      const values = styleParameters.datarange.split(' ').map((element) => parseFloat(element));
+      rasterSymbolizer.colorMap = {
+        type: 'ramp',
+        colorMapEntries: [
+          { color: colors[0], quantity: values[0] },
+          { color: colors[1], quantity: values[1] },
+        ],
+      } as ColorMap;
+    }
+
     if (mapfileLayerProcessing) {
-      const resamplingMethod = mapfileLayerProcessing.find(element =>
+      const resamplingMethod = mapfileLayerProcessing.find((element) =>
         element.toLowerCase().includes('resample=')
       );
       if (resamplingMethod) {
@@ -790,7 +803,10 @@ export class MapfileStyleParser implements StyleParser {
         rules.push(rule);
       });
     } else if (mapfileLayerType.toLowerCase() === 'raster') {
-      const symbolizer = this.getRasterSymbolizerFromMapfileStyle({} as MapfileStyle, mapfileLayerProcessings);
+      const symbolizer = this.getRasterSymbolizerFromMapfileStyle(
+        {} as MapfileStyle,
+        mapfileLayerProcessings
+      );
       const rule = { name: '' } as Rule;
       if (layerScaleDenominator) {
         rule.scaleDenominator = layerScaleDenominator;

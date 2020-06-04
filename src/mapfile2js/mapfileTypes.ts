@@ -158,6 +158,14 @@ export interface MapfileStyle {
   angle: number;
   minscaledenom: number;
   maxscaledenom: number;
+  /**
+   * Defines two colors to correspond to the low and high ends of the DATARANGE values.
+   */
+  colorrange: string;
+  /**
+   * Defines two values, a low value and a high value, that are mapped to the colorrange.
+   */
+  datarange: string;
 }
 
 interface MapfileLeader {
