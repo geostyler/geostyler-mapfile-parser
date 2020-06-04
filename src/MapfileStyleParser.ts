@@ -629,27 +629,36 @@ export class MapfileStyleParser implements StyleParser {
    * Get the GeoStyler-Style RasterSymbolizer from an Mapfile STYLE.
    *
    * @param {object} styleParameters The Mapfile Style Parameters
+   * @param {Array<string>} mapfileLayerProcessing The Mapfile Layer Processing statements
    * @return {RasterSymbolizer} The GeoStyler-Style RasterSymbolizer
    */
-  getRasterSymbolizerFromMapfileStyle(styleParameters: MapfileStyle): RasterSymbolizer {
+  getRasterSymbolizerFromMapfileStyle(
+    styleParameters: MapfileStyle,
+    mapfileLayerProcessing: string[]
+  ): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
     if (styleParameters.opacity) {
       rasterSymbolizer.opacity = styleParameters.opacity / 100;
     }
-    /*
-    if (styleParameters.resamplingMethod) {
-      const resamplingMethod = styleParameters.resamplingMethod;
-      switch (resamplingMethod.toLowerCase()) {
+
+    if (mapfileLayerProcessing) {
+      const resamplingMethod = mapfileLayerProcessing.find((element) =>
+        element.toLowerCase().includes('resample=')
+      );
+      if (resamplingMethod) {
+        switch (resamplingMethod.toLowerCase().replace('resample=', '')) {
+        // TODO: is this mapping ok?
         case 'average':
+        case 'bilinear':
           rasterSymbolizer.resampling = 'linear';
           break;
         case 'nearest':
           rasterSymbolizer.resampling = 'nearest';
           break;
+        }
       }
     }
-    */
     return rasterSymbolizer;
   }
 
@@ -680,12 +689,14 @@ export class MapfileStyleParser implements StyleParser {
    * @param {MapfileClass} mapfileClass The Mapfile Class
    * @param {string} mapfileLayerType The Mapfile Layer Type
    * @param {string} mapfileLayerLabelItem The Mapfile Layer Label Item
+   * @param {Array<string>} mapfileLayerProcessing The Mapfile Layer Processing statements
    * @return {Symbolizer[]} The GeoStyler-Style Symbolizer Array
    */
   getSymbolizersFromClass(
     mapfileClass: MapfileClass,
     mapfileLayerType: string,
-    mapfileLayerLabelItem: string
+    mapfileLayerLabelItem: string,
+    mapfileLayerProcessing: string[]
   ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
     // Mapfile STYLE
@@ -703,7 +714,7 @@ export class MapfileStyleParser implements StyleParser {
           symbolizer = this.getFillSymbolizerFromMapfileStyle(mapfileStyle);
           break;
         case 'raster':
-          symbolizer = this.getRasterSymbolizerFromMapfileStyle(mapfileStyle);
+          symbolizer = this.getRasterSymbolizerFromMapfileStyle(mapfileStyle, mapfileLayerProcessing);
           break;
         case 'query':
           // layer can be queried but not drawn
@@ -748,16 +759,22 @@ export class MapfileStyleParser implements StyleParser {
    */
   getRulesFromMapfileLayer(mapfileLayer: MapfileLayer): Rule[] {
     const rules: Rule[] = [];
-    const mapfileLayerType: string = mapfileLayer.type;
-    const mapfileLayerClassItem: string = mapfileLayer.classitem;
-    const mapfileLayerLabelItem: string = mapfileLayer.labelitem;
+    const mapfileLayerType = mapfileLayer.type;
+    const mapfileLayerClassItem = mapfileLayer.classitem;
+    const mapfileLayerLabelItem = mapfileLayer.labelitem;
+    const mapfileLayerProcessing = mapfileLayer.processing;
     const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
     mapfileLayer.classes.forEach((mapfileClass: any) => {
       const name = mapfileClass.name || '';
       const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
       const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
-      const symbolizers = this.getSymbolizersFromClass(mapfileClass, mapfileLayerType, mapfileLayerLabelItem);
+      const symbolizers = this.getSymbolizersFromClass(
+        mapfileClass,
+        mapfileLayerType,
+        mapfileLayerLabelItem,
+        mapfileLayerProcessing
+      );
 
       const rule = { name } as Rule;
       if (filter) {
