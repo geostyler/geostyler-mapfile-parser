@@ -21,6 +21,8 @@ import {
   IconSymbolizer,
   TextSymbolizer,
   ColorMap,
+  GrayChannel,
+  RGBChannel,
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
 
@@ -629,47 +631,73 @@ export class MapfileStyleParser implements StyleParser {
   /**
    * Get the GeoStyler-Style RasterSymbolizer from an Mapfile STYLE.
    *
-   * @param {object} styleParameters The Mapfile Style Parameters
-   * @param {Array<string>} mapfileLayerProcessing The Mapfile Layer Processing statements
+   * @param {object} mapfileLayer The Mapfile Style Parameters
    * @return {RasterSymbolizer} The GeoStyler-Style RasterSymbolizer
    */
-  getRasterSymbolizerFromMapfileStyle(
-    styleParameters: MapfileStyle,
-    mapfileLayerProcessing: string[]
-  ): RasterSymbolizer {
+  getRasterSymbolizersFromMapfileLayer(mapfileLayer: MapfileLayer): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
-    if (styleParameters.opacity) {
-      rasterSymbolizer.opacity = styleParameters.opacity / 100;
+    if (mapfileLayer.composite && mapfileLayer.composite.opacity) {
+      rasterSymbolizer.opacity = mapfileLayer.composite.opacity / 100;
     }
 
-    if (styleParameters.colorrange && styleParameters.datarange) {
-      const colors = rgbRangeToHexArray(styleParameters.colorrange);
-      const values = styleParameters.datarange.split(' ').map((element) => parseFloat(element));
-      rasterSymbolizer.colorMap = {
-        type: 'ramp',
-        colorMapEntries: [
-          { color: colors[0], quantity: values[0] },
-          { color: colors[1], quantity: values[1] },
-        ],
-      } as ColorMap;
-    }
+    if (mapfileLayer.processings) {
+      const processings: any = {};
+      mapfileLayer.processings.forEach((element) => {
+        const parts = element.split('=');
+        processings[parts[0].toLowerCase()] = parts[1].toLowerCase();
+      });
 
-    if (mapfileLayerProcessing) {
-      const resamplingMethod = mapfileLayerProcessing.find((element) =>
-        element.toLowerCase().includes('resample=')
-      );
-      if (resamplingMethod) {
-        switch (resamplingMethod.toLowerCase().replace('resample=', '')) {
-        // TODO: is this mapping ok?
-        case 'average':
-        case 'bilinear':
-          rasterSymbolizer.resampling = 'linear';
-          break;
-        case 'nearest':
-          rasterSymbolizer.resampling = 'nearest';
-          break;
+      // TODO: is this mapping ok?
+      switch (processings.resample) {
+      case 'average':
+      case 'bilinear':
+        rasterSymbolizer.resampling = 'linear';
+        break;
+      case 'nearest':
+        rasterSymbolizer.resampling = 'nearest';
+        break;
+      default:
+        break;
+      }
+
+      if (processings.bands) {
+        const bands = processings.bands.split(',');
+        if (bands.length === 1) {
+          rasterSymbolizer.channelSelection = { grayChannel: { sourceChannelName: bands[0] } } as GrayChannel;
+        } else {
+          rasterSymbolizer.channelSelection = {
+            redChannel: { sourceChannelName: bands[0] },
+            greenChannel: { sourceChannelName: bands[1] },
+            blueChannel: { sourceChannelName: bands[2] },
+          } as RGBChannel;
         }
+      }
+    }
+
+    if (mapfileLayer.classes) {
+      const mapfileClass = mapfileLayer.classes[0];
+
+      if (mapfileLayer.classes.length === 1 && mapfileClass.styles) {
+        const mapfileStyle = mapfileClass.styles[0];
+
+        if (mapfileStyle.opacity) {
+          rasterSymbolizer.opacity = mapfileStyle.opacity / 100;
+        }
+
+        if (mapfileStyle.colorrange && mapfileStyle.datarange) {
+          const colors = rgbRangeToHexArray(mapfileStyle.colorrange);
+          const values = mapfileStyle.datarange.split(' ').map((element) => parseFloat(element));
+          rasterSymbolizer.colorMap = {
+            type: 'ramp',
+            colorMapEntries: [
+              { color: colors[0], quantity: values[0] },
+              { color: colors[1], quantity: values[1] },
+            ],
+          } as ColorMap;
+        }
+      } else {
+        console.warn('Raster classification not implemented!');
       }
     }
     return rasterSymbolizer;
@@ -702,14 +730,12 @@ export class MapfileStyleParser implements StyleParser {
    * @param {MapfileClass} mapfileClass The Mapfile Class
    * @param {string} mapfileLayerType The Mapfile Layer Type
    * @param {string} mapfileLayerLabelItem The Mapfile Layer Label Item
-   * @param {Array<string>} mapfileLayerProcessing The Mapfile Layer Processing statements
    * @return {Symbolizer[]} The GeoStyler-Style Symbolizer Array
    */
   getSymbolizersFromClass(
     mapfileClass: MapfileClass,
     mapfileLayerType: string,
-    mapfileLayerLabelItem: string,
-    mapfileLayerProcessing: string[]
+    mapfileLayerLabelItem: string
   ): Symbolizer[] {
     const symbolizers = [] as Symbolizer[];
     // Mapfile STYLE
@@ -725,9 +751,6 @@ export class MapfileStyleParser implements StyleParser {
           break;
         case 'polygon':
           symbolizer = this.getFillSymbolizerFromMapfileStyle(mapfileStyle);
-          break;
-        case 'raster':
-          symbolizer = this.getRasterSymbolizerFromMapfileStyle(mapfileStyle, mapfileLayerProcessing);
           break;
         case 'query':
           // layer can be queried but not drawn
@@ -775,10 +798,20 @@ export class MapfileStyleParser implements StyleParser {
     const mapfileLayerType = mapfileLayer.type;
     const mapfileLayerClassItem = mapfileLayer.classitem;
     const mapfileLayerLabelItem = mapfileLayer.labelitem;
-    const mapfileLayerProcessings = mapfileLayer.processings;
     const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
-    if (mapfileLayer.classes) {
+    if (mapfileLayerType.toLowerCase() === 'raster') {
+      const symbolizer = this.getRasterSymbolizersFromMapfileLayer(mapfileLayer);
+
+      const rule = { name: '' } as Rule;
+      if (layerScaleDenominator) {
+        rule.scaleDenominator = layerScaleDenominator;
+      }
+      if (symbolizer) {
+        rule.symbolizers = [symbolizer];
+      }
+      rules.push(rule);
+    } else {
       mapfileLayer.classes.forEach((mapfileClass) => {
         const name = mapfileClass.name || '';
         const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
@@ -786,8 +819,7 @@ export class MapfileStyleParser implements StyleParser {
         const symbolizers = this.getSymbolizersFromClass(
           mapfileClass,
           mapfileLayerType,
-          mapfileLayerLabelItem,
-          mapfileLayerProcessings
+          mapfileLayerLabelItem
         );
 
         const rule = { name } as Rule;
@@ -802,19 +834,6 @@ export class MapfileStyleParser implements StyleParser {
         }
         rules.push(rule);
       });
-    } else if (mapfileLayerType.toLowerCase() === 'raster') {
-      const symbolizer = this.getRasterSymbolizerFromMapfileStyle(
-        {} as MapfileStyle,
-        mapfileLayerProcessings
-      );
-      const rule = { name: '' } as Rule;
-      if (layerScaleDenominator) {
-        rule.scaleDenominator = layerScaleDenominator;
-      }
-      if (symbolizer) {
-        rule.symbolizers = [symbolizer];
-      }
-      rules.push(rule);
     }
 
     this.checkWarnDropRule('LABELMINSCALEDENOM', 'LAYER', mapfileLayer.labelminscaledenom);

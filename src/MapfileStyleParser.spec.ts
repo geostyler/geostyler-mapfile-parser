@@ -137,7 +137,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags_single_filter_regex);
     });
-
+    /*
     it('can read a simple MapFile RasterSymbolizer with many classes intervals', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/raster_simple_many_classes_filter_intervals.map', 'utf8');
@@ -161,7 +161,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_simple_many_classes_filter_ramp);
     });
-
+    */
     it('can convert a RGBRGB range to hexadecimal array', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/raster_rgbrange_to_hexarray.map', 'utf8');

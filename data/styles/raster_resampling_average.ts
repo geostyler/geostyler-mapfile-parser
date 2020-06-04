@@ -3,7 +3,7 @@ import { Style } from 'geostyler-style';
 const rasterStyle: Style = {
   'name': 'raster_resampling_average',
   'rules': [{
-    'name': 'Test raster',
+    'name': '',
     'symbolizers': [{
       'kind': 'Raster',
       'opacity': 1.0,

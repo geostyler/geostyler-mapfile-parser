@@ -98,7 +98,12 @@ interface MapfileScaleToken {
   values: MapfileScaleTokenValue[];
 }
 
-interface MapfileComposite {}
+interface MapfileComposite {
+  /**
+   * Sets the opacity level of all classed pixels for a given layer.
+   */
+  opacity: number;
+}
 
 interface MapfileJoin {}
 
@@ -115,7 +120,7 @@ export interface MapfileClass {
 }
 
 interface MapfileFeature {
-  points: string; 
+  points: string;
 }
 
 export interface MapfileLabel {
@@ -152,7 +157,7 @@ export interface MapfileStyle {
   /**
    * Used to define a dash pattern for line work (lines, polygon outlines, hatch lines, …).
    */
-  pattern: string; 
+  pattern: string;
   color: string;
   opacity: number;
   angle: number;
@@ -171,7 +176,6 @@ export interface MapfileStyle {
 interface MapfileLeader {
   style: MapfileStyle;
 }
-
 
 interface MapfileOutputformat {
   name: string;

@@ -3,7 +3,7 @@ import { Style } from 'geostyler-style';
 const rasterStyle: Style = {
   name: 'raster_rgbrange_to_hexarray',
   rules: [{
-    name: 'Test raster',
+    name: '',
     symbolizers: [{
       kind: 'Raster',
       colorMap: {
@@ -14,7 +14,6 @@ const rasterStyle: Style = {
         }, {
           color: '#FFFFFF',
           quantity: 3557,
-          opacity: 1
         }]
       },
     }]
