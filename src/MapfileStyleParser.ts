@@ -643,7 +643,7 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     if (mapfileLayerProcessing) {
-      const resamplingMethod = mapfileLayerProcessing.find((element) =>
+      const resamplingMethod = mapfileLayerProcessing.find(element =>
         element.toLowerCase().includes('resample=')
       );
       if (resamplingMethod) {
@@ -762,32 +762,44 @@ export class MapfileStyleParser implements StyleParser {
     const mapfileLayerType = mapfileLayer.type;
     const mapfileLayerClassItem = mapfileLayer.classitem;
     const mapfileLayerLabelItem = mapfileLayer.labelitem;
-    const mapfileLayerProcessing = mapfileLayer.processing;
+    const mapfileLayerProcessings = mapfileLayer.processings;
     const layerScaleDenominator = this.getScaleDenominator(mapfileLayer);
 
-    mapfileLayer.classes.forEach((mapfileClass: any) => {
-      const name = mapfileClass.name || '';
-      const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
-      const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
-      const symbolizers = this.getSymbolizersFromClass(
-        mapfileClass,
-        mapfileLayerType,
-        mapfileLayerLabelItem,
-        mapfileLayerProcessing
-      );
+    if (mapfileLayer.classes) {
+      mapfileLayer.classes.forEach((mapfileClass) => {
+        const name = mapfileClass.name || '';
+        const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
+        const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
+        const symbolizers = this.getSymbolizersFromClass(
+          mapfileClass,
+          mapfileLayerType,
+          mapfileLayerLabelItem,
+          mapfileLayerProcessings
+        );
 
-      const rule = { name } as Rule;
-      if (filter) {
-        rule.filter = filter;
+        const rule = { name } as Rule;
+        if (filter) {
+          rule.filter = filter;
+        }
+        if (classScaleDenominator) {
+          rule.scaleDenominator = classScaleDenominator;
+        }
+        if (symbolizers) {
+          rule.symbolizers = symbolizers;
+        }
+        rules.push(rule);
+      });
+    } else if (mapfileLayerType.toLowerCase() === 'raster') {
+      const symbolizer = this.getRasterSymbolizerFromMapfileStyle({} as MapfileStyle, mapfileLayerProcessings);
+      const rule = { name: '' } as Rule;
+      if (layerScaleDenominator) {
+        rule.scaleDenominator = layerScaleDenominator;
       }
-      if (classScaleDenominator) {
-        rule.scaleDenominator = classScaleDenominator;
-      }
-      if (symbolizers) {
-        rule.symbolizers = symbolizers;
+      if (symbolizer) {
+        rule.symbolizers = [symbolizer];
       }
       rules.push(rule);
-    });
+    }
 
     this.checkWarnDropRule('LABELMINSCALEDENOM', 'LAYER', mapfileLayer.labelminscaledenom);
     this.checkWarnDropRule('LABELMAXSCALEDENOM', 'LAYER', mapfileLayer.labelmaxscaledenom);
