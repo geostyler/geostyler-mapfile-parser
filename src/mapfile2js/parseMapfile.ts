@@ -54,7 +54,7 @@ function parseContent(content: string): object {
   const lineObjects: Array<LineObject> = [];
   // stack to keep track of blocks
   const blocks: Array<any> = [result];
-  let pseudoBlockKey: any = undefined;
+  let pseudoBlockKey: any;
   // split content into trimmed lines like Van Damme
   const lines = content.split(/\s*(?:\r\n?|\n)\s*/g);
   // iterate over lines

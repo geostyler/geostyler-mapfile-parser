@@ -629,16 +629,49 @@ export class MapfileStyleParser implements StyleParser {
   }
 
   /**
-   * Get the GeoStyler-Style RasterSymbolizer from an Mapfile STYLE.
+   * Get the GeoStyler-Style ColorMap from an Mapfile LAYER.
    *
-   * @param {object} mapfileLayer The Mapfile Style Parameters
+   * @param {MapfileLayer} mapfileLayer The Mapfile Layer object
+   * @return {ColorMap} The GeoStyler-Style ColorMap
+   */
+  getColorMapFromMapfileLayer(mapfileLayer: MapfileLayer): ColorMap | undefined {
+    // color map based on the style attributes colorrange and datarange of the first class if defined
+    const mapfileClass = mapfileLayer.classes[0];
+
+    if (mapfileLayer.classes.length === 1 && mapfileClass.styles) {
+      const mapfileStyle = mapfileClass.styles[0];
+
+      if (mapfileStyle.colorrange && mapfileStyle.datarange) {
+        const colors = rgbRangeToHexArray(mapfileStyle.colorrange);
+        const values = mapfileStyle.datarange.split(' ').map((element) => parseFloat(element));
+        return {
+          type: 'ramp',
+          colorMapEntries: [
+            { color: colors[0], quantity: values[0] },
+            { color: colors[1], quantity: values[1] },
+          ],
+        } as ColorMap;
+      }
+    } else {
+      console.warn('Raster classification not implemented!');
+    }
+    return;
+  }
+
+  /**
+   * Get the GeoStyler-Style RasterSymbolizer from an Mapfile LAYER.
+   *
+   * @param {MapfileLayer} mapfileLayer The Mapfile Layer object
    * @return {RasterSymbolizer} The GeoStyler-Style RasterSymbolizer
    */
   getRasterSymbolizersFromMapfileLayer(mapfileLayer: MapfileLayer): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
-    if (mapfileLayer.composite && mapfileLayer.composite.opacity) {
-      rasterSymbolizer.opacity = mapfileLayer.composite.opacity / 100;
+    const opacity = mapfileLayer.composite?.opacity
+      ? mapfileLayer.composite?.opacity
+      : mapfileLayer.classes[0]?.styles[0]?.opacity;
+    if (opacity) {
+      rasterSymbolizer.opacity = opacity / 100;
     }
 
     if (mapfileLayer.processings) {
@@ -648,7 +681,6 @@ export class MapfileStyleParser implements StyleParser {
         processings[parts[0].toLowerCase()] = parts[1].toLowerCase();
       });
 
-      // TODO: is this mapping ok?
       switch (processings.resample) {
       case 'average':
       case 'bilinear':
@@ -675,31 +707,11 @@ export class MapfileStyleParser implements StyleParser {
       }
     }
 
-    if (mapfileLayer.classes) {
-      const mapfileClass = mapfileLayer.classes[0];
-
-      if (mapfileLayer.classes.length === 1 && mapfileClass.styles) {
-        const mapfileStyle = mapfileClass.styles[0];
-
-        if (mapfileStyle.opacity) {
-          rasterSymbolizer.opacity = mapfileStyle.opacity / 100;
-        }
-
-        if (mapfileStyle.colorrange && mapfileStyle.datarange) {
-          const colors = rgbRangeToHexArray(mapfileStyle.colorrange);
-          const values = mapfileStyle.datarange.split(' ').map((element) => parseFloat(element));
-          rasterSymbolizer.colorMap = {
-            type: 'ramp',
-            colorMapEntries: [
-              { color: colors[0], quantity: values[0] },
-              { color: colors[1], quantity: values[1] },
-            ],
-          } as ColorMap;
-        }
-      } else {
-        console.warn('Raster classification not implemented!');
-      }
+    const colorMap = this.getColorMapFromMapfileLayer(mapfileLayer);
+    if (colorMap) {
+      rasterSymbolizer.colorMap = colorMap;
     }
+
     return rasterSymbolizer;
   }
 
