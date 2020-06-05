@@ -6,76 +6,58 @@
 
 [GeoStyler](https://github.com/geostyler/geostyler/) Style Parser implementation for Mapserver Mapfiles
 
-
 ## Prerequisite
 
-  node v10+: https://nodejs.org/
+[node v10+](https://nodejs.org/)
 
-  And install it with npm:
+And install it with npm:
 
-  ```
-  npm i geostyler-mapfile-parser
-  ```
+```sh
+npm i geostyler-mapfile-parser
+```
 
 ## How to use
 
 ``
 
 ES6:
+
 ```js
 import * as fs from 'fs';
-import MapfileParser from "geostyler-mapfile-parser";
-
-const pointSimplePoint = {
-  name: "My Style",
-  rules: [
-    {
-      name: "My Rule",
-      symbolizers: [
-        {
-          kind: "Mark",
-          wellKnownName: "Circle",
-          color: "#FF0000",
-          radius: 6
-        }
-      ]
-    }
-  ]
-};
+import MapfileParser from 'geostyler-mapfile-parser';
 
 const parser = new MapfileParser();
 
 // Load a Mapfile file
-const mapfile = fs.readFileSync( './mapfiles_folder/my_mapfile.map', 'utf8');
+const mapfile = fs.readFileSync('./mapfiles_folder/my_mapfile.map', 'utf8');
 
 parser
   .readStyle(mapfile)
-  .then(mapfileObject => console.log(mapfile))
-  .catch(error => console.log(error));
+  .then((geostylerStyle) => console.log(geostylerStyle))
+  .catch((error) => console.log(error));
 ```
 
 Writing a Mapfile from a Geostyler-Style object is currently not possible.
 
 ## Run tests
 
-```
+```sh
   npm install
   npm run test
 ```
 
 ## Run MapServer to display features styles
-  
+
 Be sure you have:
-  - GNU Make: https://www.gnu.org/software/make/
-  - Docker: https://www.docker.com/
-  - Docker-compose: https://docs.docker.com/compose/
+
+- [GNU Make](https://www.gnu.org/software/make/)
+- [Docker](https://www.docker.com/)
+- [Docker-compose](https://docs.docker.com/compose/)
 
 Then run simply: `make run`
 
 You can now show predefined mapfiles at this url:
 
-```
-http://localhost:8380/mapserv?service=wms&version=1.3.0&request=getmap&bbox=46.4,6.4,47.2,7.8&layers=line_simple_line&width=1200&height=800&format=image/jpeg&CRS=EPSG:4326
-```
+<http://localhost:8380/mapserv?service=wms&version=1.3.0&request=getmap&bbox=46.4,6.4,47.2,7.8&layers=line_simple_line&width=1200&height=800&format=image/jpeg&CRS=EPSG:4326>
 
 Set the `layers` param to display other layers (from layers defined in /data/mapfiles).
