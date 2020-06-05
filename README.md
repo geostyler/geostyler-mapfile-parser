@@ -18,8 +18,6 @@ npm i geostyler-mapfile-parser
 
 ## How to use
 
-``
-
 ES6:
 
 ```js
