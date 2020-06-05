@@ -3,7 +3,7 @@ import { Style } from 'geostyler-style';
 const rasterStyle: Style = {
   name: 'raster_simple_many_classes_filter_intervals',
   rules: [{
-    name: 'Test raster',
+    name: '',
     symbolizers: [{
       kind: 'Raster',
       colorMap: {

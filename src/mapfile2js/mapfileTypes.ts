@@ -58,6 +58,7 @@ export interface MapfileLayer {
   metadata: MapfileMetadata;
   classes: MapfileClass[];
   feature: MapfileFeature;
+  processings: string[];
 }
 
 interface MapfileReference {}
@@ -97,7 +98,12 @@ interface MapfileScaleToken {
   values: MapfileScaleTokenValue[];
 }
 
-interface MapfileComposite {}
+interface MapfileComposite {
+  /**
+   * Sets the opacity level of all classed pixels for a given layer.
+   */
+  opacity: number;
+}
 
 interface MapfileJoin {}
 
@@ -114,7 +120,7 @@ export interface MapfileClass {
 }
 
 interface MapfileFeature {
-  points: string; 
+  points: string;
 }
 
 export interface MapfileLabel {
@@ -151,18 +157,25 @@ export interface MapfileStyle {
   /**
    * Used to define a dash pattern for line work (lines, polygon outlines, hatch lines, …).
    */
-  pattern: string; 
+  pattern: string;
   color: string;
   opacity: number;
   angle: number;
   minscaledenom: number;
   maxscaledenom: number;
+  /**
+   * Defines two colors to correspond to the low and high ends of the DATARANGE values.
+   */
+  colorrange: string;
+  /**
+   * Defines two values, a low value and a high value, that are mapped to the colorrange.
+   */
+  datarange: string;
 }
 
 interface MapfileLeader {
   style: MapfileStyle;
 }
-
 
 interface MapfileOutputformat {
   name: string;
