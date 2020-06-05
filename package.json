@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/terrestris/geostyler-mapfile-parser.git"
+    "url": "git+https://github.com/geostyler/geostyler-mapfile-parser.git"
   },
   "keywords": [
     "geostyler",
@@ -21,9 +21,9 @@
   "author": "",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/terrestris/geostyler-mapfile-parser/issues"
+    "url": "https://github.com/geostyler/geostyler-mapfile-parser/issues"
   },
-  "homepage": "https://github.com/terrestris/geostyler-mapfile-parser#readme",
+  "homepage": "https://github.com/geostyler/geostyler-mapfile-parser#readme",
   "dependencies": {
     "geostyler-style": "^2.0.3",
     "ts-jest": "^25.4.0"
@@ -39,7 +39,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint -c .eslintrc.js --ext .ts src && tsc --noEmit --project tsconfig.json",
-    "release": "np --no-yarn && git push https://github.com/terrestris/geostyler-mapfile-parser.git master --tags"
+    "release": "np --no-yarn && git push https://github.com/geostyler/geostyler-mapfile-parser.git master --tags"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
