@@ -18,6 +18,9 @@ module.exports = {
       new TerserPlugin()
     ]
   },
+  node: {
+    fs: 'empty' // hack to avoid error in webpack with fs
+  },
   module: {
     rules: [
       // All files with a '.ts'
