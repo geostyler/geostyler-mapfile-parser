@@ -6,13 +6,55 @@
 
 [GeoStyler](https://github.com/geostyler/geostyler/) Style Parser implementation for Mapserver Mapfiles
 
-## How to use
-
-Not really useable now, wait on the first release.
 
 ## Prerequisite
 
   node v10+: https://nodejs.org/
+
+  And install it with npm:
+
+  ```
+  npm i geostyler-mapfile-parser
+  ```
+
+## How to use
+
+``
+
+ES6:
+```js
+import * as fs from 'fs';
+import MapfileParser from "geostyler-mapfile-parser";
+
+const pointSimplePoint = {
+  name: "My Style",
+  rules: [
+    {
+      name: "My Rule",
+      symbolizers: [
+        {
+          kind: "Mark",
+          wellKnownName: "Circle",
+          color: "#FF0000",
+          radius: 6
+        }
+      ]
+    }
+  ]
+};
+
+const parser = new MapfileParser();
+
+// Load a Mapfile file
+const mapfile = fs.readFileSync( './mapfiles_folder/my_mapfile.map', 'utf8');
+
+parser
+  .readStyle(mapfile)
+  .then(mapfileObject => console.log(mapfile))
+  .catch(error => console.log(error));
+```
+
+Writing a Mapfile from a Geostyler-Style object is currently not possible.
 
 ## Run tests
 

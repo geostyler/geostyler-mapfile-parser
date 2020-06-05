@@ -1,6 +1,6 @@
 {
   "name": "geostyler-mapfile-parser",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "GeoStyler Style Parser implementation for Mapfile",
   "main": "build/dist/MapfileStyleParser.js",
   "types": "build/dist/MapfileStyleParser.d.ts",
