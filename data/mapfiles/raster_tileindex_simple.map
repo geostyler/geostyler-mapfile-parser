@@ -1,0 +1,13 @@
+LAYER
+  NAME "raster_tileindex_simple"
+  TILEINDEX "../data/rasters/tileindex_simple.shp"
+  TYPE RASTER
+  PROCESSING "SCALE=AUTO"
+  DATA "../rasters/raster.tif"
+  EXTENT -180 -90 180 90
+  METADATA
+    "wms_title" "raster_tileindex_simple"
+    "wms_srs" "EPSG:4326"
+  END
+  OPACITY 100
+END
