@@ -26,7 +26,7 @@ import {
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
 
-export type ConstructorParams = {};
+export type ConstructorParams = Record<string, unknown>;
 
 /**
  * This parser can be used with the GeoStyler.

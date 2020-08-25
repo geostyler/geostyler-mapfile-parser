@@ -19,7 +19,6 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
     ],
     "rules": {
-        "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/indent": [
             "error",
             2,
@@ -36,7 +35,21 @@ module.exports = {
             }
         ],
         "@typescript-eslint/no-empty-interface": 0,
-        "@typescript-eslint/interface-name-prefix": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "interface",
+            "format": ["PascalCase"],
+            "custom": {
+              "regex": "^I[A-Z]",
+              "match": false
+            }
+          },
+          {
+            "selector": "class",
+            "format": ["PascalCase"],
+          }
+        ],
         "@typescript-eslint/member-delimiter-style": [
             "error",
             {
