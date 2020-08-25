@@ -26,19 +26,27 @@ function substituteSymbols(obj: any): void {
 }
 
 /**
- *
  * @param {Mapfile} mapfile Parsed Mapfile Object
+ * @param {string} symbolsPath optional path of the symbols.sym file if no symbolset is defined in the Mapfile.
  */
-export function resolveSymbolset(mapfile: Mapfile): Mapfile {
+export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfile {
   let symbolsetPath = mapfile.map.symbolset;
 
-  // fallback to mapserver defaults if not specified
-  const fallbackPath = `${__dirname}/../../../data/mapfiles/symbols.sym`;
   if (!symbolsetPath) {
-    symbolsetPath = fallbackPath;
-  } else if (!fs.existsSync(symbolsetPath)) {
+    // Fallback to load the symbols file. Search "mapfile-symbols-path=" in the process args
+    // (command line options).
+    const processArgs = process.argv.slice(2);
+    symbolsetPath = processArgs.find(arg => arg.search('mapfile-symbols-path=') === 0);
+  }
+
+  if (!symbolsetPath) {
+    // Second fallback to the symbols file. Use the given symbolsPath value.
+    symbolsetPath = symbolsPath;
+  }
+  
+  if (!symbolsetPath || !fs.existsSync(symbolsetPath)) {
     console.error(`Non existent symbolset path: ${symbolsetPath}`);
-    symbolsetPath = fallbackPath;
+    return mapfile;
   }
 
   // resolve symbolset

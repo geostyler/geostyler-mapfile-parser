@@ -37,6 +37,21 @@ parser
 
 Writing a Mapfile from a Geostyler-Style object is currently not possible.
 
+### Specify a symbols.sym file
+
+If a symbolset tag is defined in your mapfile, this link will be followed to read symbols.
+If it's not the case a `symbols.sym` should be located from where you call the transformation.
+
+You can set the default path with:
+
+```
+const parser = new MapfileParser();
+parser.symbolsPath = '<a/path/to/symbols.sym>'
+```
+
+Alternatively, if you use this library through a script, you can set the path by adding the 
+command line option: `mapfile-symbols-path=`.
+
 ## Run tests
 
 ```sh
