@@ -49,7 +49,7 @@ function parseLine(line: string): LineObject {
  * @param {string} content Content of a Mapfile
  * @returns {object} the parsed object
  */
-function parseContent(content: string): object {
+function parseContent(content: string): Record<string, unknown> {
   const result = {};
   const lineObjects: Array<LineObject> = [];
   // stack to keep track of blocks
@@ -131,7 +131,7 @@ function parseContent(content: string): object {
  * @returns {Mapfile} the parsed Mapfile
  */
 export function parseMapfile(content: string): Mapfile {
-  let result = parseContent(content);
+  let result: any = parseContent(content);
 
   // add map bock for consistency if not exists
   result = 'map' in result ? result : { map: result };

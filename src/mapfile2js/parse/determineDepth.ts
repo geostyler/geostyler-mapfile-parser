@@ -4,7 +4,7 @@ import { LineObject } from '../parseMapfile';
  * Determines the depth of every line of mapfile.
  * @param {LineObject[]} lineObjects Array of line objects
  */
-export function determineDepth(lineObjects: Array<LineObject>): object {
+export function determineDepth(lineObjects: Array<LineObject>): Array<LineObject> {
   let depth = 0;
 
   lineObjects.forEach((lineObject) => {

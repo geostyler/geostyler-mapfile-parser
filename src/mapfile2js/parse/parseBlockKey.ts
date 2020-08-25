@@ -19,7 +19,7 @@ const multiBlockKeys = {
  * @param {array} lines Array of line strings
  * @param {array} blocks Block stack
  */
-export function parseBlockKey(lineObject: LineObject, currentBlock: any): object | undefined {
+export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record<string, unknown> | undefined {
   // test for unhadled block lines
   if (lineObject.isBlockLine) {
     console.error(`Not able to deal with the following Block line: ${lineObject.content}`);
