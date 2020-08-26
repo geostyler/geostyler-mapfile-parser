@@ -18,7 +18,9 @@ npm i geostyler-mapfile-parser
 
 ## How to use
 
-ES6:
+If the aim is to transform a Mapfile to another format, your Mapfile must contains only one LAYER per file.
+
+### ES6
 
 ```js
 import * as fs from 'fs';
@@ -36,6 +38,17 @@ parser
 ```
 
 Writing a Mapfile from a Geostyler-Style object is currently not possible.
+
+### Command line
+
+To transforms a file to another Geostyler style, use [Geostyler-cli](https://github.com/geostyler/geostyler-cli)
+Short example of usage - Install and transform a Mapfile to a QGIS qml file, specifying a custom directory
+for symbols:
+
+```
+npm install -g geostyler-cli
+geostyler -s sld -t qgis -o output.map input.qml mapfile-symbols-path=./symbols.sym
+```
 
 ### Specify a symbols.sym file
 
