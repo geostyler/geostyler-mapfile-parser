@@ -43,6 +43,8 @@ export class MapfileStyleParser implements StyleParser {
 
   title = 'Mapfile Style Parser';
 
+  symbolsPath = `${process.cwd()}/symbols.sym`;
+
   constructor(opts?: ConstructorParams) {
     Object.assign(this, opts);
   }
@@ -881,7 +883,7 @@ export class MapfileStyleParser implements StyleParser {
   readStyle(mapfileString: string): Promise<Style> {
     return new Promise<Style>((resolve, reject) => {
       try {
-        const mapfile: Mapfile = parseMapfile(mapfileString);
+        const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         if (mapfileLayers.length > 1) {
           throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyle instead.');
@@ -903,7 +905,7 @@ export class MapfileStyleParser implements StyleParser {
   readMultiStyles(mapfileString: string): Promise<Style[]> {
     return new Promise<Style[]>((resolve, reject) => {
       try {
-        const mapfile: Mapfile = parseMapfile(mapfileString);
+        const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         const geoStylerStyles: Style[] = mapfileLayers.map((layer: any) => {
           return this.mapfileLayerToGeoStylerStyle(layer);

@@ -7,8 +7,10 @@ describe('parseMapfile', () => {
     expect(parseMapfile).toBeDefined();
   });
   it('can parse a mapfile', () => {
-    const pathToMapfile = `${__dirname}/../../data/mapfiles/mapserver.map`;
-    const mapfile = parseMapfile(fs.readFileSync(pathToMapfile, 'utf8'));
+    const pathToMapfilesDir = `${__dirname}/../../data/mapfiles`;
+    const pathToMapfile = `${pathToMapfilesDir}/mapserver.map`;
+    const pathToSymbols = `${pathToMapfilesDir}/symbols.sym`;
+    const mapfile = parseMapfile(fs.readFileSync(pathToMapfile, 'utf8'), pathToSymbols);
     expect(mapfile).toHaveProperty('map');
   });
 });

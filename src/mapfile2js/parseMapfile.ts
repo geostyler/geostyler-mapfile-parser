@@ -128,16 +128,17 @@ function parseContent(content: string): Record<string, unknown> {
 /**
  * Parses a MapServer Mapfile to a JavaScript object.
  * @param {string} content Content of a MapServer Mapfile
+ * @param {string} symbolsPath path of the symbols.sym file if no symbolset is defined in the Mapfile.
  * @returns {Mapfile} the parsed Mapfile
  */
-export function parseMapfile(content: string): Mapfile {
+export function parseMapfile(content: string, symbolsPath: string): Mapfile {
   let result: any = parseContent(content);
 
   // add map bock for consistency if not exists
   result = 'map' in result ? result : { map: result };
 
   // resolve symbolset
-  const mapfile = resolveSymbolset(result as Mapfile);
+  const mapfile = resolveSymbolset(result as Mapfile, symbolsPath);
 
   return mapfile;
 }

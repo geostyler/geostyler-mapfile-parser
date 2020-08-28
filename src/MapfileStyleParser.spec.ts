@@ -35,6 +35,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
   beforeEach(() => {
     styleParser = new MapfileStyleParser();
+    styleParser.symbolsPath = './data/mapfiles/symbols.sym';
   });
 
   describe('#readStyle', () => {
