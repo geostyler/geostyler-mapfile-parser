@@ -31,21 +31,29 @@ function substituteSymbols(obj: any): void {
  */
 export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfile {
   let symbolsetPath = mapfile.map.symbolset;
+  let symbolsetFrom = 'MapFile SYMBOLSET tag';
 
   if (!symbolsetPath) {
     // Fallback to load the symbols file. Search "mapfile-symbols-path=" in the process args
     // (command line options).
     const processArgs = process.argv.slice(2);
     symbolsetPath = processArgs.find(arg => arg.search('mapfile-symbols-path=') === 0);
+    symbolsetFrom = 'command line argument';
   }
 
   if (!symbolsetPath) {
     // Second fallback to the symbols file. Use the given symbolsPath value.
     symbolsetPath = symbolsPath;
+    symbolsetFrom = 'the "symbolsPath" configuration of the parser.';
   }
   
-  if (!symbolsetPath || !fs.existsSync(symbolsetPath)) {
-    console.error(`Non existent symbolset path: ${symbolsetPath}`);
+  if (!symbolsetPath) {
+    console.error('No symbolset path defined.');
+    return mapfile;
+  }
+
+  if (!fs.existsSync(symbolsetPath)) {
+    console.error(`No file found for symbolset path: ${symbolsetPath} (path taken from ${symbolsetFrom})`);
     return mapfile;
   }
 
