@@ -11,6 +11,7 @@ const pointStyle: Style = {
       kind: 'Mark',
       wellKnownName: 'circle',
       color: '#FF0000',
+      fillOpacity: 1,
       radius: 5,
       rotate: 360,
       opacity: 0.5
