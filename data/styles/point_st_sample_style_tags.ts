@@ -10,6 +10,7 @@ const pointStyle: Style = {
       color: '#00FF00',
       radius: 7.5,
       rotate: 360,
+      fillOpacity: 1,
       opacity: 1,
       strokeColor: '#000000',
       strokeWidth: 1,

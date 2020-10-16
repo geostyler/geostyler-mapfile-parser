@@ -10,6 +10,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 12,
     }],
@@ -22,6 +23,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 6,
     }],
@@ -34,6 +36,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 3,
     }],
@@ -46,6 +49,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       visibility: false,
       radius: 10,
     }],
@@ -60,6 +64,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 12,
     }],
@@ -72,6 +77,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 6,
     }],
@@ -84,6 +90,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       visibility: false,
       radius: 3,
     }],
@@ -98,6 +105,7 @@ const pointStyle: Style = [{
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#000000',
       radius: 12,
     }],

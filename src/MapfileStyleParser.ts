@@ -369,7 +369,11 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.visibility = false;
     }
 
-    // markSymbolizer.fillOpacity = TODO from symbol?;
+    if (mapfileStyle.symbol.filled) {
+      markSymbolizer.fillOpacity = mapfileStyle.symbol.filled.toLowerCase() === 'true' ? 1 : 0;
+    } else {
+      markSymbolizer.fillOpacity = 0;
+    }
 
     if (mapfileStyle.size) {
       markSymbolizer.radius = mapfileStyle.size / 2;
