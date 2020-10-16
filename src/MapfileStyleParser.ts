@@ -591,6 +591,8 @@ export class MapfileStyleParser implements StyleParser {
 
     if (mapfileStyle.linecap) {
       lineSymbolizer.cap = mapfileStyle.linecap;
+    } else {
+      lineSymbolizer.cap = 'round';
     }
 
     if (mapfileStyle.pattern) {
@@ -636,9 +638,11 @@ export class MapfileStyleParser implements StyleParser {
         ? mapfileStyle.outlinecolor
         : rgbToHex(mapfileStyle.outlinecolor);
     }
-
+    
     if (mapfileStyle.outlinewidth) {
       fillSymbolizer.outlineWidth = mapfileStyle.outlinewidth;
+    } else if (mapfileStyle.width) {
+      fillSymbolizer.outlineWidth = mapfileStyle.width;
     }
 
     if (mapfileStyle.opacity) {
