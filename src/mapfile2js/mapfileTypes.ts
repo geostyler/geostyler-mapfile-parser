@@ -72,14 +72,16 @@ interface MapfileScaleBar {
 }
 
 export interface MapfileSymbol {
+  name: string;
   type: string;
-  points: string;
+  points?: string;
   /**
    * Image (GIF or PNG) to use as a marker or brush for type pixmap symbols.
    */
   image?: string;
-  anchorpoint: string;
-  name: string;
+  anchorpoint?: string;
+  font?: string;
+  filled?: string;
 }
 
 interface MapfileLegend {
