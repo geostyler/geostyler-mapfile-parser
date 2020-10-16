@@ -57,9 +57,9 @@ export class MapfileStyleParser implements StyleParser {
    * @return {string} The name to be used for the GeoStyler Style Style
    */
   getStyleNameFromMapfileLayer(mapfileLayer: MapfileLayer): string {
-    const layerGroup = mapfileLayer.group;
+    //const layerGroup = mapfileLayer.group;
     const layerName = mapfileLayer.name;
-    return layerGroup ? layerGroup : layerName ? layerName : '';
+    return layerName ? layerName : '';
   }
 
   /**
