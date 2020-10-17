@@ -24,15 +24,15 @@ interface MapfileMap {
   /**
    * Filename of the symbolset to use. Can be a path relative to the mapfile, or a full path.
    */
-  symbolset?: string;
+  symbolset: string;
   /**
    * Filename of fontset file to use. Can be a path relative to the mapfile, or a full path.
    */
-  fontset?: string;
+  fontset: string;
   /**
    * A map file may have zero, one or more OUTPUTFORMAT object declarations
    */
-  outputformats?: MapfileOutputformat[];
+  outputformats: MapfileOutputformat[];
 }
 
 interface MapfileWeb {
@@ -74,14 +74,15 @@ interface MapfileScaleBar {
 export interface MapfileSymbol {
   name: string;
   type: string;
-  points?: string;
+  points: string;
   /**
    * Image (GIF or PNG) to use as a marker or brush for type pixmap symbols.
    */
-  image?: string;
-  anchorpoint?: string;
-  font?: string;
-  filled?: string;
+  image: string;
+  anchorpoint: string;
+  font: string;
+  filled: string;
+  character: string;
 }
 
 interface MapfileLegend {
@@ -110,8 +111,8 @@ interface MapfileComposite {
 interface MapfileJoin {}
 
 export interface MapfileClass {
-  minscaledenom?: number;
-  maxscaledenom?: number;
+  minscaledenom: number;
+  maxscaledenom: number;
   text: string;
   expression: string;
   name: string;
@@ -134,6 +135,12 @@ export interface MapfileLabel {
   outlinecolor: string;
   outlinewidth: number;
   styles?: MapfileStyle[];
+  font: string;
+  size: string;
+  offset: string;
+  position: string;
+  align: string;
+  buffer: string;
 }
 
 interface MapfileScaleTokenValue {}
@@ -150,11 +157,11 @@ export interface MapfileStyle {
   /**
    * Sets the line cap type for lines. Default is round.
    */
-  linecap?: 'butt' | 'round' | 'square';
+  linecap: 'butt' | 'round' | 'square';
   /**
    * Sets the line join type for lines. Default is round.
    */
-  linejoin?: 'bevel' | 'round' | 'miter' | 'none';
+  linejoin: 'bevel' | 'round' | 'miter' | 'none';
   initialgap: number;
   symbol: MapfileSymbol;
   outlinecolor: string;
