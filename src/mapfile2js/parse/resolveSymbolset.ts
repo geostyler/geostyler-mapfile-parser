@@ -16,7 +16,9 @@ function substituteSymbols(obj: any): void {
         obj[property] = undefined;
       } else {
         // TODO: distinguish corectly between index and name reference
-        const symbol = mapfileSymbols.find((element) => element.name === obj[property]);
+        const symbol = mapfileSymbols.find(
+          (element) => element.name.replace('/\'|"/g', '') === obj[property].replace('/\'|"/g', '')
+        );
         if (symbol) {
           obj[property] = symbol;
         } else {
@@ -96,11 +98,14 @@ export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfil
     // Fallback to load the symbols file. Search "mapfile-symbols-path=" in the process args
     // (command line options).
     const processArgs = process.argv.slice(2);
-    symbolsetPath = processArgs.find(arg => arg.search('mapfile-symbols-path=') === 0);
-    symbolsetFrom = 'command line argument';
+    const cliSymbolsetPath = processArgs.find((arg) => arg.search('mapfile-symbols-path=') === 0);
+    if (cliSymbolsetPath) {
+      symbolsetPath = cliSymbolsetPath.substring(21);
+      symbolsetFrom = 'command line argument';
+    }
   }
 
-  if (!symbolsetPath) {
+  if (!symbolsetPath && symbolsPath) {
     // Second fallback to the symbols file. Use the given symbolsPath value.
     symbolsetPath = symbolsPath;
     symbolsetFrom = 'the "symbolsPath" configuration of the parser.';
