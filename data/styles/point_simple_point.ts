@@ -10,7 +10,8 @@ const pointStyle: Style = {
       fillOpacity: 1,
       wellKnownName: 'circle',
       color: '#00FF00',
-      radius: 7.5
+      radius: 7.5,
+      rotate: 0,
     }]
   }]
 }

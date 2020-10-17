@@ -7,7 +7,7 @@ const polygonStyle: Style = {
     symbolizers: [{
       kind: 'Fill',
       color: '#00FF00',
-      outlineColor: '#555555'
+      outlineColor: '#555555',
     }]
   }]
 };
