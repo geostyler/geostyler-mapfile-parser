@@ -379,6 +379,8 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.radius = mapfileStyle.size / 2;
     }
 
+    markSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle * 1 : 0;
+
     if (mapfileStyle.outlinecolor) {
       markSymbolizer.strokeColor = isHex(mapfileStyle.outlinecolor)
         ? mapfileStyle.outlinecolor
@@ -438,6 +440,8 @@ export class MapfileStyleParser implements StyleParser {
     if (mapfileStyle.size) {
       iconSymbolizer.size = mapfileStyle.size;
     }
+    iconSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle * 1 : 0;
+
     if (mapfileStyle.symbol.anchorpoint) {
       const anchorpoint: Array<number> = mapfileStyle.symbol.anchorpoint
         .split(' ')
@@ -767,9 +771,7 @@ export class MapfileStyleParser implements StyleParser {
     if ('opacity' in styleParameters) {
       symbolizer.opacity = styleParameters.opacity / 100;
     }
-    if (styleParameters.angle) {
-      symbolizer.rotate = styleParameters.angle * 1;
-    }
+
     return symbolizer;
   }
 
