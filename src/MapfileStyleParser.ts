@@ -673,11 +673,13 @@ export class MapfileStyleParser implements StyleParser {
   getRasterSymbolizersFromMapfileLayer(mapfileLayer: MapfileLayer): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
-    const opacity = mapfileLayer.composite?.opacity
-      ? mapfileLayer.composite?.opacity
-      : mapfileLayer.classes[0]?.styles[0]?.opacity;
-    if (opacity) {
-      rasterSymbolizer.opacity = opacity / 100;
+    if (mapfileLayer.classes[0]?.styles && Array.isArray(mapfileLayer.classes[0]?.styles)) {
+      const opacity = mapfileLayer.composite?.opacity
+        ? mapfileLayer.composite?.opacity
+        : mapfileLayer.classes[0]?.styles[0]?.opacity;
+      if (opacity) {
+        rasterSymbolizer.opacity = opacity / 100;
+      }
     }
 
     if (mapfileLayer.processings) {
@@ -830,7 +832,7 @@ export class MapfileStyleParser implements StyleParser {
       }
       rules.push(rule);
     } else {
-      mapfileLayer.classes.forEach((mapfileClass) => {
+      mapfileLayer.classes?.forEach((mapfileClass) => {
         const name = mapfileClass.name || '';
         const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
         const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
@@ -890,7 +892,7 @@ export class MapfileStyleParser implements StyleParser {
         const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         if (mapfileLayers.length > 1) {
-          throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyle instead.');
+          throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyles instead.');
         }
         const geoStylerStyle: Style = this.mapfileLayerToGeoStylerStyle(mapfileLayers[0]);
         resolve(geoStylerStyle);
