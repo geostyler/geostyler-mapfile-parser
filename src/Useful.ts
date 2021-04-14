@@ -11,6 +11,16 @@ export function rgbToHex(s: string): string {
 }
 
 /**
+ * Tests if a given string is a valid hex number
+ *
+ * @param {string} hex The string to test
+ * @returns {boolean} Returns true or false as the result of testing the string
+ */
+export function isHex(hex: string): boolean {
+  return (hex.indexOf('#') === 0);
+}
+
+/**
  * Convert a color range in RGB (R G B R G B) format to hexadecimal (#RRGGBB) array
  *
  * @param {string} s The strings representing the range of colors in RGB in the Mapfile file

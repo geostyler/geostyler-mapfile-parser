@@ -1,5 +1,5 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
-import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray } from './Useful';
+import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray, isHex } from './Useful';
 import {
   StyleParser,
   Style,
@@ -368,7 +368,9 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     if (mapfileStyle.outlinecolor) {
-      markSymbolizer.strokeColor = rgbToHex(mapfileStyle.outlinecolor);
+      markSymbolizer.strokeColor = isHex(mapfileStyle.outlinecolor)
+        ? mapfileStyle.outlinecolor
+        : rgbToHex(mapfileStyle.outlinecolor);
       if (mapfileStyle.opacity) {
         markSymbolizer.strokeOpacity = mapfileStyle.opacity / 100;
       }
@@ -612,7 +614,9 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     if (mapfileStyle.outlinecolor) {
-      fillSymbolizer.outlineColor = rgbToHex(mapfileStyle.outlinecolor);
+      fillSymbolizer.outlineColor = isHex(mapfileStyle.outlinecolor)
+        ? mapfileStyle.outlinecolor
+        : rgbToHex(mapfileStyle.outlinecolor);
     }
 
     if (mapfileStyle.outlinewidth) {
@@ -727,7 +731,7 @@ export class MapfileStyleParser implements StyleParser {
     const symbolizer: any = {};
 
     if (styleParameters.color) {
-      symbolizer.color = rgbToHex(styleParameters.color);
+      symbolizer.color = isHex(styleParameters.color) ? styleParameters.color : rgbToHex(styleParameters.color);
     }
     if ('opacity' in styleParameters) {
       symbolizer.opacity = styleParameters.opacity / 100;
