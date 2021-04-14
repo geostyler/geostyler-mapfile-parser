@@ -761,6 +761,10 @@ export class MapfileStyleParser implements StyleParser {
     // Mapfile STYLE
     if (mapfileClass.styles) {
       mapfileClass.styles.forEach((mapfileStyle) => {
+        // jump to next style block if current block is empty
+        if (Object.keys(mapfileStyle).length === 0 && mapfileStyle.constructor === Object) {
+          return;
+        }
         let symbolizer: any;
         switch (mapfileLayerType.toLowerCase()) {
         case 'point':
