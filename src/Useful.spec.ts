@@ -98,13 +98,4 @@ describe('Color helpers', () => {
     expect(isHex(hex)).toBeTruthy();
     expect(isHex(rgb)).toBeFalsy();
   });
-
-  it('checks if a color string for black is in hexadecimal format', async () => {
-    expect.assertions(3);
-    const rgb = '0 0 0';
-    const hex = rgbToHex(rgb);
-    expect(hex).toBeDefined();
-    expect(isHex(hex)).toBeTruthy();
-    expect(isHex(rgb)).toBeFalsy();
-  });
 });
