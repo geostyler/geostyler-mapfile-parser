@@ -896,7 +896,7 @@ export class MapfileStyleParser implements StyleParser {
         const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         if (mapfileLayers.length > 1) {
-          throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyles instead.');
+          throw new Error('Cannot read multiple LAYER in one file. Use method readMultiStyles instead.');
         }
         const geoStylerStyle: Style = this.mapfileLayerToGeoStylerStyle(mapfileLayers[0]);
         resolve(geoStylerStyle);
