@@ -319,30 +319,22 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     const mergedScale = {} as ScaleDenominator;
-    // Take max scale only if it's defined and take parent max scale only if it's bigger
-    // (more restrictive) than the children one.
+    // Take max scale only if it's defined and take children max scale if it's defined additionally (more specific)
     if (scaleDenominator.max === undefined && elementScaleDenominator.max !== undefined) {
       mergedScale.max = elementScaleDenominator.max;
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max === undefined) {
       mergedScale.max = scaleDenominator.max;
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max !== undefined) {
-      mergedScale.max =
-        (scaleDenominator.max || 0) > (elementScaleDenominator.max || 0)
-          ? scaleDenominator.max
-          : elementScaleDenominator.max;
+      mergedScale.max = elementScaleDenominator.max;
     }
 
-    // Take mix scale only if it's defined and take parent min scale only if it's lesser
-    // (more restrictive) than the children one.
+    // Take min scale only if it's defined and take children min scale it's defined additionally (more specific)
     if (scaleDenominator.min === undefined && elementScaleDenominator.min !== undefined) {
       mergedScale.min = elementScaleDenominator.min;
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min === undefined) {
       mergedScale.min = scaleDenominator.min;
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min !== undefined) {
-      mergedScale.min =
-        (scaleDenominator.min || 0) < (elementScaleDenominator.min || 0)
-          ? scaleDenominator.min
-          : elementScaleDenominator.min;
+      mergedScale.min = elementScaleDenominator.min;
     }
 
     return mergedScale;

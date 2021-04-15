@@ -7,19 +7,18 @@ LAYER
     "wms_title" "point_scale"
     "wms_srs" "EPSG:4326"
   END
-  MAXSCALEDENOM 160000
+  MAXSCALEDENOM 320000
   CLASS
-    NAME "Max scale from layer (priority)"
+    NAME "Max scale from class"
+    MAXSCALEDENOM 7000
     STYLE
-      MAXSCALEDENOM 7000
       SYMBOL "circle"
       COLOR 0 0 0
       SIZE 24
     END
   END
   CLASS
-    NAME "Scales from class"
-    MAXSCALEDENOM 320000
+    NAME "Max scale from layer, min scale from class"
     MINSCALEDENOM 160000
     STYLE
       SYMBOL "circle"
@@ -29,7 +28,7 @@ LAYER
   END
   CLASS
     NAME "Max scale from layer"
-    MINSCALEDENOM 320000
+    MINSCALEDENOM 160000
     STYLE
       SYMBOL "circle"
       COLOR 0 0 0
@@ -37,7 +36,7 @@ LAYER
     END
   END
   CLASS
-    NAME "Scale 0 and max scale from layer (priority)"
+    NAME "Scale 0 and max scale from class"
     MAXSCALEDENOM 0
     MINSCALEDENOM 0
     STYLE
@@ -57,9 +56,9 @@ LAYER
   END
   MINSCALEDENOM 6000
   CLASS
-    NAME "Min scale from layer (priority)"
+    NAME "Min scale from class"
+    MINSCALEDENOM 10000
     STYLE
-      MINSCALEDENOM 10000
       SYMBOL "circle"
       COLOR 0 0 0
       SIZE 24
