@@ -493,6 +493,16 @@ export class MapfileStyleParser implements StyleParser {
       }
     }
 
+    if (styleParameters.outlinecolor) {
+      textSymbolizer.haloColor = isHex(styleParameters.outlinecolor)
+        ? styleParameters.outlinecolor
+        : rgbToHex(styleParameters.outlinecolor);
+    }
+
+    if (styleParameters.outlinewidth) {
+      textSymbolizer.haloWidth = parseFloat(styleParameters.outlinewidth);
+    }
+
     return textSymbolizer;
   }
 

@@ -129,6 +129,8 @@ export interface MapfileLabel {
   text: string;
   angle: number;
   color: string;
+  outlinecolor: string;
+  outlinewidth: number;
 }
 
 interface MapfileScaleTokenValue {}
