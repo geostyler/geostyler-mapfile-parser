@@ -599,7 +599,7 @@ export class MapfileStyleParser implements StyleParser {
   getFillSymbolizerFromMapfileStyle(mapfileStyle: MapfileStyle): FillSymbolizer {
     const fillSymbolizer = { kind: 'Fill' } as FillSymbolizer;
 
-    if (!mapfileStyle.color && !mapfileStyle.symbol) {
+    if (!(mapfileStyle.color || mapfileStyle.outlinecolor) && !mapfileStyle.symbol) {
       fillSymbolizer.visibility = false;
     } else if (mapfileStyle.symbol) {
       fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
