@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { parseSymbolset } from '../parseMapfile';
-import { MapfileSymbol, Mapfile } from '../mapfileTypes';
+import { MapfileSymbol, Mapfile, MapfileClass, MapfileLayer, MapfileStyle } from '../mapfileTypes';
+import { parse } from 'path';
 
 let mapfileSymbols: Array<MapfileSymbol>;
 
@@ -26,12 +27,54 @@ function substituteSymbols(obj: any): void {
 }
 
 /**
+ * Parses the Mapfile data if it contains single SYMBOL tags and replaces the name with the filename within the
+ * symbolizer tag
+ *
+ * @param {Mapfile} mapfile Parsed Mapfile Object
+ */
+export function resolveSymbolsFromMapfile(mapfile: Mapfile): Mapfile {
+  const symbols = mapfile.map.symbols;
+
+  if (mapfile.map.layers) {
+    mapfile.map.layers.forEach((layer: MapfileLayer) => {
+      if (layer.classes) {
+        layer.classes.forEach((mclass: MapfileClass) => {
+          if (mclass.styles) {
+            const styles: MapfileStyle[] = mclass.styles;
+            styles.forEach((style: MapfileStyle) => {
+              if (style.symbol) {
+                symbols.forEach((symbol: any) => {
+                  if (
+                    symbol.name &&
+                    symbol.image &&
+                    symbol.name === style.symbol
+                  ) {
+                    style.symbol = (parse(symbol.image)
+                      .base as unknown) as MapfileSymbol;
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+  return mapfile;
+}
+
+/**
  * @param {Mapfile} mapfile Parsed Mapfile Object
  * @param {string} symbolsPath optional path of the symbols.sym file if no symbolset is defined in the Mapfile.
  */
 export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfile {
   let symbolsetPath = mapfile.map.symbolset;
   let symbolsetFrom = 'MapFile SYMBOLSET tag';
+
+  // if no SYMBOLSET is specified, but the Mapfile contains single SYMBOL tags
+  if (!symbolsetPath && mapfile.map.symbols) {
+    return resolveSymbolsFromMapfile(mapfile);
+  }
 
   if (!symbolsetPath) {
     // Fallback to load the symbols file. Search "mapfile-symbols-path=" in the process args
