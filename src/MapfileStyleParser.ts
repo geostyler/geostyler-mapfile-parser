@@ -77,14 +77,14 @@ export class MapfileStyleParser implements StyleParser {
     case '"':
       return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
     case '/':
-      return ['*=', ['FN_strMatches', mapfileClassItem, expression], true];
+      return ['*=' , ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
     case '{':
       return [
         '*=',
         [
           'FN_strMatches',
           mapfileClassItem,
-          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/`,
+          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
         ],
         true,
       ];
@@ -117,14 +117,20 @@ export class MapfileStyleParser implements StyleParser {
     switch (operator) {
     case '~': {
       const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-      return ['*=', ['FN_strMatches', attribute, valueOrNumber], true];
+      return ['*=', ['FN_strMatches', attribute, valueOrNumber as any], true];
     }
     case '~*':
-      return ['*=', ['FN_strMatches', attribute, `${value}i`], true];
+      return ['*=', ['FN_strMatches', attribute, `${value}i` as any], true];
     case 'IN':
       return [
         '*=',
-        ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`],
+        [
+          'FN_strMatches',
+          attribute,
+          (`/${value
+            .substring(1, value.length - 1)
+            .replace(',', '|')}/` as unknown) as RegExp
+        ],
         true,
       ];
     case '==':
@@ -378,16 +384,16 @@ export class MapfileStyleParser implements StyleParser {
       if (!(points[0] === points[1] && points.length === 2)) {
         console.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
       }
-      markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+      markSymbolizer.wellKnownName = 'circle' as WellKnownName;
     } else {
       if (isSquare(points)) {
-        markSymbolizer.wellKnownName = 'Square' as WellKnownName;
+        markSymbolizer.wellKnownName = 'square' as WellKnownName;
       }
       if (isTriangle(points)) {
-        markSymbolizer.wellKnownName = 'Triangle' as WellKnownName;
+        markSymbolizer.wellKnownName = 'triangle' as WellKnownName;
       }
       if (isCross(points)) {
-        markSymbolizer.wellKnownName = 'Cross' as WellKnownName;
+        markSymbolizer.wellKnownName = 'cross' as WellKnownName;
       }
     }
     if (!markSymbolizer.wellKnownName) {
@@ -398,7 +404,7 @@ export class MapfileStyleParser implements StyleParser {
           2
         )}`
       );
-      markSymbolizer.wellKnownName = 'X' as WellKnownName;
+      markSymbolizer.wellKnownName = 'x' as WellKnownName;
     }
     return markSymbolizer;
   }
