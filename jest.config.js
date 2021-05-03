@@ -12,6 +12,6 @@ module.exports = {
     "src/*.ts"
   ],
   "transformIgnorePatterns": [
-    "/node_modules/(?!(geostyler-style|ol|css-animation|labelgun|mapbox-to-ol-style|ol-mapbox-style|antd|@terrestris|(rc-*[a-z]*))/).*/"
+    "/node_modules/(?!(geostyler-style|(rc-*[a-z]*))/).*/"
   ]
 };
