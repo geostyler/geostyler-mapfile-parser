@@ -45,9 +45,7 @@ export function resolveSymbolsFromMapfile(mapfile: Mapfile): Mapfile {
               if (style.symbol) {
                 symbols.forEach((symbol: any) => {
                   if (
-                    symbol.name &&
-                    symbol.image &&
-                    symbol.name === style.symbol
+                    symbol.name && symbol.image && symbol.name === style.symbol
                   ) {
                     style.symbol = (parse(symbol.image)
                       .base as unknown) as MapfileSymbol;
