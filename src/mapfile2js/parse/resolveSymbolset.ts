@@ -28,7 +28,7 @@ function substituteSymbols(obj: any): void {
 
 /**
  * Parses the Mapfile data if it contains single SYMBOL tags and replaces the name with the filename within the
- * symbolizer tag
+ * symbol tag
  *
  * @param {Mapfile} mapfile Parsed Mapfile Object
  */
