@@ -77,7 +77,7 @@ export class MapfileStyleParser implements StyleParser {
     case '"':
       return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
     case '/':
-      return ['*=' , ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
+      return ['*=', ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
     case '{':
       return [
         '*=',
