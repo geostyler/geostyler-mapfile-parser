@@ -741,7 +741,9 @@ export class MapfileStyleParser implements StyleParser {
     const symbolizer: any = {};
 
     if (styleParameters.color) {
-      symbolizer.color = isHex(styleParameters.color) ? styleParameters.color : rgbToHex(styleParameters.color);
+      symbolizer.color = isHex(styleParameters.color)
+        ? styleParameters.color
+        : rgbToHex(styleParameters.color);
     }
     if ('opacity' in styleParameters) {
       symbolizer.opacity = styleParameters.opacity / 100;
