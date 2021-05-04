@@ -163,19 +163,22 @@ export class MapfileStyleParser implements StyleParser {
     // capture nested expressions
     if (/^\(/.test(mapfileExpression)) {
       // split up nested expression
-      const nestedExpressions = this.splitNestedExpression(mapfileExpression);
 
-      // extract operator
-      let operator = mapfileExpression.substring(
-        nestedExpressions[0].length,
-        mapfileExpression.length - nestedExpressions[1].length
-      );
-      operator = operator.replace('AND', '&&').replace('OR', '||').trim();
+      const nestedExpressions = this.splitNestedExpression(mapfileExpression);
+      let operator;
+      if (mapfileExpression.includes('AND')) {
+        operator = '&&';
+      } else if (mapfileExpression.includes('OR')) {
+        operator = '||';
+      }
+      const filterExpressions: any[] = [];
+      nestedExpressions.forEach((nestedExpression) => {
+        filterExpressions.push(this.getFilterFromMapfileExpression(nestedExpression));
+      });
 
       return [
         operator as CombinationOperator,
-        this.getFilterFromMapfileExpression(nestedExpressions[0]),
-        this.getFilterFromMapfileExpression(nestedExpressions[1]),
+        ...filterExpressions
       ] as CombinationFilter;
     }
 
@@ -979,11 +982,7 @@ export class MapfileStyleParser implements StyleParser {
       case ')':
         parantheseCount--;
         if (parantheseCount === 0) {
-          const operators: string = nestedExpressions[0]
-            ? mapfileExpression.substring(nestedExpressions[0].length, fromIndex)
-            : mapfileExpression.substring(0, fromIndex);
-          const negationOperator: string = operators.replace(/\s*(AND|&&|OR|\|\|)\s*/, '');
-          nestedExpressions.push(negationOperator + mapfileExpression.substring(fromIndex, index + 1));
+          nestedExpressions.push(mapfileExpression.substring(fromIndex, index + 1));
         }
         break;
       }
