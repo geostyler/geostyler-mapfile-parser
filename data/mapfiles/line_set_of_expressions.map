@@ -1,0 +1,14 @@
+IMAGECOLOR "#f3f3e9"
+LAYER
+    NAME roads_inline
+    TYPE LINE
+    EXTENT -20026376.39 -20048966.10 20026376.39 20048966.10
+    PROJECTION
+      "init=epsg:3857"
+    END
+    CLASS
+      MAXSCALEDENOM 500000
+      MINSCALEDENOM 25000
+      EXPRESSION (('[class]' = 'railways') AND ('[service]' != 'spur') AND ('[type]' = 'rail'))
+    END
+END
