@@ -10,6 +10,10 @@ module.exports = {
     library: "GeoStylerMapfileStyleParser"
   },
   resolve: {
+    fallback: {
+      fs: false,
+      path: false
+    },
     // Add '.ts' as resolvable extensions.
     extensions: [".ts", ".js", ".json"]
   },
@@ -17,9 +21,6 @@ module.exports = {
     minimizer: [
       new TerserPlugin()
     ]
-  },
-  node: {
-    fs: 'empty' // hack to avoid error in webpack with fs
   },
   module: {
     rules: [

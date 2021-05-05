@@ -7,7 +7,7 @@ const pointStyle: Style = {
     name: 'Test point 1',
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#00FF00',
       radius: 7.5
     }],
@@ -19,7 +19,7 @@ const pointStyle: Style = {
     name: 'Test point 2',
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Triangle',
+      wellKnownName: 'triangle',
       color: '#FF0000',
       radius: 5
     }],
@@ -31,7 +31,7 @@ const pointStyle: Style = {
     name: 'Test point 3',
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Square',
+      wellKnownName: 'square',
       color: '#00FFFF',
       radius: 5
     }],
@@ -43,7 +43,7 @@ const pointStyle: Style = {
     name: 'Test point 4',
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Cross',
+      wellKnownName: 'cross',
       color: '#0000FF',
       radius: 5
     }],

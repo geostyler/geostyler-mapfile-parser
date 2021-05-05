@@ -1,5 +1,5 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
-import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray } from './Useful';
+import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray, isHex } from './Useful';
 import {
   StyleParser,
   Style,
@@ -77,14 +77,14 @@ export class MapfileStyleParser implements StyleParser {
     case '"':
       return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
     case '/':
-      return ['*=', ['FN_strMatches', mapfileClassItem, expression], true];
+      return ['*=', ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
     case '{':
       return [
         '*=',
         [
           'FN_strMatches',
           mapfileClassItem,
-          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/`,
+          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
         ],
         true,
       ];
@@ -117,14 +117,20 @@ export class MapfileStyleParser implements StyleParser {
     switch (operator) {
     case '~': {
       const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-      return ['*=', ['FN_strMatches', attribute, valueOrNumber], true];
+      return ['*=', ['FN_strMatches', attribute, valueOrNumber as any], true];
     }
     case '~*':
-      return ['*=', ['FN_strMatches', attribute, `${value}i`], true];
+      return ['*=', ['FN_strMatches', attribute, `${value}i` as any], true];
     case 'IN':
       return [
         '*=',
-        ['FN_strMatches', attribute, `/${value.substring(1, value.length - 1).replace(',', '|')}/`],
+        [
+          'FN_strMatches',
+          attribute,
+          (`/${value
+            .substring(1, value.length - 1)
+            .replace(',', '|')}/` as unknown) as RegExp
+        ],
         true,
       ];
     case '==':
@@ -319,30 +325,22 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     const mergedScale = {} as ScaleDenominator;
-    // Take max scale only if it's defined and take parent max scale only if it's bigger
-    // (more restrictive) than the children one.
+    // Take max scale only if it's defined and take children max scale if it's defined additionally (more specific)
     if (scaleDenominator.max === undefined && elementScaleDenominator.max !== undefined) {
       mergedScale.max = elementScaleDenominator.max;
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max === undefined) {
       mergedScale.max = scaleDenominator.max;
     } else if (scaleDenominator.max !== undefined && elementScaleDenominator.max !== undefined) {
-      mergedScale.max =
-        (scaleDenominator.max || 0) > (elementScaleDenominator.max || 0)
-          ? scaleDenominator.max
-          : elementScaleDenominator.max;
+      mergedScale.max = elementScaleDenominator.max;
     }
 
-    // Take mix scale only if it's defined and take parent min scale only if it's lesser
-    // (more restrictive) than the children one.
+    // Take min scale only if it's defined and take children min scale it's defined additionally (more specific)
     if (scaleDenominator.min === undefined && elementScaleDenominator.min !== undefined) {
       mergedScale.min = elementScaleDenominator.min;
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min === undefined) {
       mergedScale.min = scaleDenominator.min;
     } else if (scaleDenominator.min !== undefined && elementScaleDenominator.min !== undefined) {
-      mergedScale.min =
-        (scaleDenominator.min || 0) < (elementScaleDenominator.min || 0)
-          ? scaleDenominator.min
-          : elementScaleDenominator.min;
+      mergedScale.min = elementScaleDenominator.min;
     }
 
     return mergedScale;
@@ -368,7 +366,9 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     if (mapfileStyle.outlinecolor) {
-      markSymbolizer.strokeColor = rgbToHex(mapfileStyle.outlinecolor);
+      markSymbolizer.strokeColor = isHex(mapfileStyle.outlinecolor)
+        ? mapfileStyle.outlinecolor
+        : rgbToHex(mapfileStyle.outlinecolor);
       if (mapfileStyle.opacity) {
         markSymbolizer.strokeOpacity = mapfileStyle.opacity / 100;
       }
@@ -384,16 +384,16 @@ export class MapfileStyleParser implements StyleParser {
       if (!(points[0] === points[1] && points.length === 2)) {
         console.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
       }
-      markSymbolizer.wellKnownName = 'Circle' as WellKnownName;
+      markSymbolizer.wellKnownName = 'circle' as WellKnownName;
     } else {
       if (isSquare(points)) {
-        markSymbolizer.wellKnownName = 'Square' as WellKnownName;
+        markSymbolizer.wellKnownName = 'square' as WellKnownName;
       }
       if (isTriangle(points)) {
-        markSymbolizer.wellKnownName = 'Triangle' as WellKnownName;
+        markSymbolizer.wellKnownName = 'triangle' as WellKnownName;
       }
       if (isCross(points)) {
-        markSymbolizer.wellKnownName = 'Cross' as WellKnownName;
+        markSymbolizer.wellKnownName = 'cross' as WellKnownName;
       }
     }
     if (!markSymbolizer.wellKnownName) {
@@ -404,7 +404,7 @@ export class MapfileStyleParser implements StyleParser {
           2
         )}`
       );
-      markSymbolizer.wellKnownName = 'X' as WellKnownName;
+      markSymbolizer.wellKnownName = 'x' as WellKnownName;
     }
     return markSymbolizer;
   }
@@ -497,6 +497,16 @@ export class MapfileStyleParser implements StyleParser {
       if (!(styleParameters.size in ['tiny', 'small', 'medium', 'large', 'giant'])) {
         textSymbolizer.size = parseFloat(styleParameters.size);
       }
+    }
+
+    if (styleParameters.outlinecolor) {
+      textSymbolizer.haloColor = isHex(styleParameters.outlinecolor)
+        ? styleParameters.outlinecolor
+        : rgbToHex(styleParameters.outlinecolor);
+    }
+
+    if (styleParameters.outlinewidth) {
+      textSymbolizer.haloWidth = parseFloat(styleParameters.outlinewidth);
     }
 
     return textSymbolizer;
@@ -605,14 +615,16 @@ export class MapfileStyleParser implements StyleParser {
   getFillSymbolizerFromMapfileStyle(mapfileStyle: MapfileStyle): FillSymbolizer {
     const fillSymbolizer = { kind: 'Fill' } as FillSymbolizer;
 
-    if (!mapfileStyle.color && !mapfileStyle.symbol) {
+    if (!(mapfileStyle.color || mapfileStyle.outlinecolor) && !mapfileStyle.symbol) {
       fillSymbolizer.visibility = false;
     } else if (mapfileStyle.symbol) {
       fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
     }
 
     if (mapfileStyle.outlinecolor) {
-      fillSymbolizer.outlineColor = rgbToHex(mapfileStyle.outlinecolor);
+      fillSymbolizer.outlineColor = isHex(mapfileStyle.outlinecolor)
+        ? mapfileStyle.outlinecolor
+        : rgbToHex(mapfileStyle.outlinecolor);
     }
 
     if (mapfileStyle.outlinewidth) {
@@ -669,11 +681,13 @@ export class MapfileStyleParser implements StyleParser {
   getRasterSymbolizersFromMapfileLayer(mapfileLayer: MapfileLayer): RasterSymbolizer {
     const rasterSymbolizer = { kind: 'Raster' } as RasterSymbolizer;
 
-    const opacity = mapfileLayer.composite?.opacity
-      ? mapfileLayer.composite?.opacity
-      : mapfileLayer.classes[0]?.styles[0]?.opacity;
-    if (opacity) {
-      rasterSymbolizer.opacity = opacity / 100;
+    if (mapfileLayer.classes[0]?.styles && Array.isArray(mapfileLayer.classes[0]?.styles)) {
+      const opacity = mapfileLayer.composite?.opacity
+        ? mapfileLayer.composite?.opacity
+        : mapfileLayer.classes[0]?.styles[0]?.opacity;
+      if (opacity) {
+        rasterSymbolizer.opacity = opacity / 100;
+      }
     }
 
     if (mapfileLayer.processings) {
@@ -727,7 +741,9 @@ export class MapfileStyleParser implements StyleParser {
     const symbolizer: any = {};
 
     if (styleParameters.color) {
-      symbolizer.color = rgbToHex(styleParameters.color);
+      symbolizer.color = isHex(styleParameters.color)
+        ? styleParameters.color
+        : rgbToHex(styleParameters.color);
     }
     if ('opacity' in styleParameters) {
       symbolizer.opacity = styleParameters.opacity / 100;
@@ -755,6 +771,10 @@ export class MapfileStyleParser implements StyleParser {
     // Mapfile STYLE
     if (mapfileClass.styles) {
       mapfileClass.styles.forEach((mapfileStyle) => {
+        // jump to next style block if current block is empty
+        if (Object.keys(mapfileStyle).length === 0 && mapfileStyle.constructor === Object) {
+          return;
+        }
         let symbolizer: any;
         switch (mapfileLayerType.toLowerCase()) {
         case 'point':
@@ -826,7 +846,7 @@ export class MapfileStyleParser implements StyleParser {
       }
       rules.push(rule);
     } else {
-      mapfileLayer.classes.forEach((mapfileClass) => {
+      mapfileLayer.classes?.forEach((mapfileClass) => {
         const name = mapfileClass.name || '';
         const filter = this.getFilterFromMapfileClass(mapfileClass, mapfileLayerClassItem);
         const classScaleDenominator = this.updateScaleDenominator(mapfileClass, layerScaleDenominator);
@@ -886,7 +906,7 @@ export class MapfileStyleParser implements StyleParser {
         const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         if (mapfileLayers.length > 1) {
-          throw new Error('Can not read multiple LAYER in one file. Use method readMultiStyle instead.');
+          throw new Error('Cannot read multiple LAYER in one file. Use method readMultiStyles instead.');
         }
         const geoStylerStyle: Style = this.mapfileLayerToGeoStylerStyle(mapfileLayers[0]);
         resolve(geoStylerStyle);

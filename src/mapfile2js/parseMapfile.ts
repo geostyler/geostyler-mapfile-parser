@@ -55,6 +55,10 @@ function parseContent(content: string): Record<string, unknown> {
   // stack to keep track of blocks
   const blocks: Array<any> = [result];
   let pseudoBlockKey: any;
+
+  // remove DATA block from full content data
+  content = content.replace(/DATA "[^"\\]*(?:\\.[^"\\]*?)*"(\r\n?|\n)/gs, '');
+
   // split content into trimmed lines like Van Damme
   const lines = content.split(/\s*(?:\r\n?|\n)\s*/g);
   // iterate over lines

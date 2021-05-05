@@ -3,49 +3,49 @@ import { Style } from 'geostyler-style';
 const pointStyle: Style = [{
   name: 'point_scale',
   rules: [{
-    name: 'Max scale from layer (priority)',
+    name: 'Max scale from class',
     scaleDenominator: {
-      max: 160000,
+      max: 7000,
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 12,
     }],
   }, {
-    name: 'Scales from class',
+    name: 'Max scale from layer, min scale from class',
     scaleDenominator: {
       max: 320000,
       min: 160000,
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 6,
     }],
   }, {
     name: 'Max scale from layer',
     scaleDenominator: {
-      max: 160000,
-      min: 320000,
+      max: 320000,
+      min: 160000,
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 3,
     }],
   }, {
-    name: 'Scale 0 and max scale from layer (priority)',
+    name: 'Scale 0 and max scale from class',
     scaleDenominator: {
-      max: 160000,
+      max: 0,
       min: 0,
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       visibility: false,
       radius: 10,
     }],
@@ -53,13 +53,13 @@ const pointStyle: Style = [{
 }, {
   name: 'point_scale_2',
   rules: [{
-    name: 'Min scale from layer (priority)',
+    name: 'Min scale from class',
     scaleDenominator: {
-      min: 6000,
+      min: 10000,
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 12,
     }],
@@ -71,7 +71,7 @@ const pointStyle: Style = [{
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 6,
     }],
@@ -83,7 +83,7 @@ const pointStyle: Style = [{
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       visibility: false,
       radius: 3,
     }],
@@ -97,7 +97,7 @@ const pointStyle: Style = [{
     },
     symbolizers: [{
       kind: 'Mark',
-      wellKnownName: 'Circle',
+      wellKnownName: 'circle',
       color: '#000000',
       radius: 12,
     }],

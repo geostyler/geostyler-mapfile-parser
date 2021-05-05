@@ -1,4 +1,4 @@
-import { isCross, isSquare, isTriangle, rgbToHex, rgbRangeToHexArray } from './Useful';
+import { isCross, isSquare, isTriangle, rgbToHex, rgbRangeToHexArray, isHex } from './Useful';
 
 describe('isCross', () => {
   it('is defined', () => {
@@ -88,5 +88,14 @@ describe('Color helpers', () => {
     const hexArray = rgbRangeToHexArray(rgbRange);
     expect(hexArray).toBeDefined();
     expect(hexArray).toEqual(['#000000', '#FFFFFF']);
+  });
+
+  it('checks if a color string is in hexadecimal format', async () => {
+    expect.assertions(3);
+    const rgb = '226 6 19';
+    const hex = rgbToHex(rgb);
+    expect(hex).toBeDefined();
+    expect(isHex(hex)).toBeTruthy();
+    expect(isHex(rgb)).toBeFalsy();
   });
 });
