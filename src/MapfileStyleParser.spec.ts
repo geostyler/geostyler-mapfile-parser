@@ -203,7 +203,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readMultiStyles(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(line_set_of_expressions);
-
+    });
     it('can read a simple MapFile with symbol style in label', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/point_symbol_style_in_label.map', 'utf8');
