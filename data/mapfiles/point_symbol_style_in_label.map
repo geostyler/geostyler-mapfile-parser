@@ -1,0 +1,28 @@
+LAYER
+  NAME point_symbol_style_in_label
+  MAXSCALEDENOM 35000
+  TYPE POINT
+  EXTENT -20026376.39 -20048966.10 20026376.39 20048966.10
+  PROJECTION
+    "init=epsg:3857"
+  END
+  CLASS
+    MAXSCALEDENOM 35000
+    LABEL
+      SIZE 6.644432194046306
+      COLOR "#ffffff"
+      TEXT '[ref]'
+      PARTIALS false
+      FONT "ptsansbold"
+      TYPE truetype
+      STYLE
+        SYMBOL "simple_point_symbol_svg"
+      END
+    END
+  END
+END
+SYMBOL
+  NAME simple_point_symbol_svg
+  IMAGE "simple_point_symbol.svg"
+  TYPE svg
+END
