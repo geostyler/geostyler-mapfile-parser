@@ -45,6 +45,8 @@ export class MapfileStyleParser implements StyleParser {
 
   symbolsPath = `${process.cwd()}/symbols.sym`;
 
+  iconsOnLabels: IconSymbolizer = { kind: 'Icon' };
+
   constructor(opts?: ConstructorParams) {
     Object.assign(this, opts);
   }
@@ -421,7 +423,7 @@ export class MapfileStyleParser implements StyleParser {
   getIconSymbolizerFromMapfileStyle(mapfileStyle: MapfileStyle): IconSymbolizer {
     const iconSymbolizer: IconSymbolizer = {
       kind: 'Icon',
-      image: mapfileStyle.symbol.image,
+      image: mapfileStyle.symbol.image || mapfileStyle.symbol,
     } as IconSymbolizer;
 
     if (mapfileStyle.size) {
@@ -472,6 +474,15 @@ export class MapfileStyleParser implements StyleParser {
 
     if (styleParameters.buffer) {
       textSymbolizer.padding = parseFloat(styleParameters.buffer);
+    }
+
+    // collect icon data if defined within the label tag
+    if (styleParameters.styles) {
+      styleParameters.styles.forEach((style: MapfileStyle )=> {
+        if (style.symbol) {
+          this.iconsOnLabels = this.getIconSymbolizerFromMapfileStyle(style);
+        }
+      });
     }
 
     if (styleParameters.position) {
@@ -819,6 +830,11 @@ export class MapfileStyleParser implements StyleParser {
         this.checkWarnDropRule('MINSCALEDENOM', 'LABEL', mapfileLabel.minscaledenom);
         this.checkWarnDropRule('MAXSCALEDENOM', 'LABEL', mapfileLabel.maxscaledenom);
       });
+    }
+
+    // check for available icons
+    if (Object.keys(this.iconsOnLabels).length > 1) {
+      symbolizers.unshift(this.iconsOnLabels as IconSymbolizer);
     }
 
     return symbolizers;
