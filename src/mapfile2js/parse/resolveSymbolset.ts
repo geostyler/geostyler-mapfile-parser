@@ -57,22 +57,18 @@ export function resolveSymbolsFromMapfile(mapfile: Mapfile): Mapfile {
             // parse symbol data within a style tag of a label
             mclass.labels.forEach((label) => {
               const styles: MapfileStyle[] = label.styles as MapfileStyle[];
-              if (styles) {
-                styles.forEach((style: MapfileStyle) => {
-                  if (style.symbol) {
-                    symbols.forEach((symbol: any) => {
-                      if (
-                        symbol.name &&
-                        symbol.image &&
-                        symbol.name === style.symbol
-                      ) {
-                        style.symbol = (parse(symbol.image)
-                          .base as unknown) as MapfileSymbol;
-                      }
-                    });
+              styles?.forEach((style: MapfileStyle) => {
+                symbols?.forEach((symbol: any) => {
+                  if (
+                    symbol.name &&
+                    symbol.image &&
+                    symbol.name === style.symbol
+                  ) {
+                    style.symbol = (parse(symbol.image)
+                      .base as unknown) as MapfileSymbol;
                   }
                 });
-              }
+              });
             });
           }
         });
