@@ -24,6 +24,7 @@ import raster_rgbrange_to_hexarray from '../data/styles/raster_rgbrange_to_hexar
 import raster_resampling_average from '../data/styles/raster_resampling_average';
 import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
 import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
+import line_set_of_expressions from '../data/styles/line_set_of_expressions';
 
 
 it('MapfileStyleParser is defined', () => {
@@ -193,6 +194,14 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_nearest);
+    });
+
+    it('can read a simple MapFile with several filter expressions', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/line_set_of_expressions.map', 'utf8');
+      const geoStylerStyle = await styleParser.readMultiStyles(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(line_set_of_expressions);
     });
 
  it('can translate Mapfile to SLD', async () => {
