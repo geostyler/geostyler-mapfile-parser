@@ -45,8 +45,6 @@ export class MapfileStyleParser implements StyleParser {
 
   symbolsPath = `${process.cwd()}/symbols.sym`;
 
-  iconsOnLabels: IconSymbolizer = { kind: 'Icon' };
-
   constructor(opts?: ConstructorParams) {
     Object.assign(this, opts);
   }
@@ -476,15 +474,6 @@ export class MapfileStyleParser implements StyleParser {
       textSymbolizer.padding = parseFloat(styleParameters.buffer);
     }
 
-    // collect icon data if defined within the label tag
-    if (styleParameters.styles) {
-      styleParameters.styles.forEach((style: MapfileStyle )=> {
-        if (style.symbol) {
-          this.iconsOnLabels = this.getIconSymbolizerFromMapfileStyle(style);
-        }
-      });
-    }
-
     if (styleParameters.position) {
       const anchorpointMap = {
         cc: 'center',
@@ -821,6 +810,15 @@ export class MapfileStyleParser implements StyleParser {
       mapfileLayerLabelItem = mapfileClass.text ? mapfileClass.text : mapfileLayerLabelItem;
       mapfileClass.labels.forEach((mapfileLabel) => {
         mapfileLabel.text = mapfileLabel.text ? mapfileLabel.text : mapfileLayerLabelItem;
+
+        // Set Icons in front of the associated label
+        const labelIcons =  this.getIconsFromMapfileLabel(mapfileLabel);
+        if (labelIcons) {
+          labelIcons.forEach(labelIcon => {
+            symbolizers.push(labelIcon);
+          });
+        }
+
         const symbolizer = Object.assign(
           this.getTextSymbolizerFromMapfileStyle(mapfileLabel),
           this.getBaseSymbolizerFromMapfileStyle(mapfileLabel)
@@ -832,12 +830,30 @@ export class MapfileStyleParser implements StyleParser {
       });
     }
 
-    // check for available icons
-    if (Object.keys(this.iconsOnLabels).length > 1) {
-      symbolizers.unshift(this.iconsOnLabels as IconSymbolizer);
-    }
-
     return symbolizers;
+  }
+
+  /**
+   * Collect icon data if defined within the label tag
+   *
+   * @param mapfileLabel
+   * @returns
+   */
+  getIconsFromMapfileLabel(
+    mapfileLabel: MapfileLabel
+  ): IconSymbolizer[] | void {
+    const labelStyles: IconSymbolizer[] = [];
+    mapfileLabel?.styles?.forEach((style: MapfileStyle) => {
+      if (style.symbol) {
+        labelStyles.push(this.getIconSymbolizerFromMapfileStyle(style));
+      }
+    });
+
+    if (labelStyles.length) {
+      return labelStyles;
+    } else {
+      return undefined;
+    }
   }
 
   /**

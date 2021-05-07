@@ -16,13 +16,54 @@ LAYER
       FONT "ptsansbold"
       TYPE truetype
       STYLE
-        SYMBOL "simple_point_symbol_svg"
+        SYMBOL "simple_point_1_symbol_svg"
+      END
+      STYLE
+        SYMBOL "simple_point_2_symbol_svg"
+      END
+    END
+  END
+  CLASS
+    MAXSCALEDENOM 25000
+    LABEL
+      SIZE 5.644432194046306
+      COLOR "#ffffff"
+      TEXT '[ref]'
+      PARTIALS false
+      FONT "ptsansbold"
+      TYPE truetype
+      STYLE
+        SYMBOL "simple_point_2_symbol_svg"
+      END
+    END
+  END
+  CLASS
+    MAXSCALEDENOM 20000
+    LABEL
+      SIZE 4.644432194046306
+      COLOR "#ffffff"
+      TEXT '[ref]'
+      PARTIALS false
+      FONT "ptsansbold"
+      TYPE truetype
+      STYLE
+        SYMBOL "simple_point_3_symbol_svg"
       END
     END
   END
 END
 SYMBOL
-  NAME simple_point_symbol_svg
-  IMAGE "simple_point_symbol.svg"
+  NAME simple_point_1_symbol_svg
+  IMAGE "simple_point_1_symbol.svg"
+  TYPE svg
+END
+SYMBOL
+  NAME simple_point_2_symbol_svg
+  IMAGE "simple_point_2_symbol.svg"
+  TYPE svg
+END
+SYMBOL
+  NAME simple_point_3_symbol_svg
+  IMAGE "simple_point_3_symbol.svg"
   TYPE svg
 END
