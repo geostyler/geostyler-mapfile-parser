@@ -421,7 +421,7 @@ export class MapfileStyleParser implements StyleParser {
   getIconSymbolizerFromMapfileStyle(mapfileStyle: MapfileStyle): IconSymbolizer {
     const iconSymbolizer: IconSymbolizer = {
       kind: 'Icon',
-      image: mapfileStyle.symbol.image || mapfileStyle.symbol,
+      image: mapfileStyle.symbol.image,
     } as IconSymbolizer;
 
     if (mapfileStyle.size) {
@@ -812,12 +812,10 @@ export class MapfileStyleParser implements StyleParser {
         mapfileLabel.text = mapfileLabel.text ? mapfileLabel.text : mapfileLayerLabelItem;
 
         // Set Icons in front of the associated label
-        const labelIcons =  this.getIconsFromMapfileLabel(mapfileLabel);
-        if (labelIcons) {
-          labelIcons.forEach(labelIcon => {
-            symbolizers.push(labelIcon);
-          });
-        }
+        const labelIcons = this.getIconsFromMapfileLabel(mapfileLabel);
+        labelIcons?.forEach(labelIcon => {
+          symbolizers.push(labelIcon);
+        });
 
         const symbolizer = Object.assign(
           this.getTextSymbolizerFromMapfileStyle(mapfileLabel),
@@ -836,24 +834,19 @@ export class MapfileStyleParser implements StyleParser {
   /**
    * Collect icon data if defined within the label tag
    *
-   * @param mapfileLabel
-   * @returns
+   * @param {MapfileLabel} mapfileLabel Mapfile label data
+   * @return {IconSymbolizer[]} The IconSymbolizer
    */
-  getIconsFromMapfileLabel(
-    mapfileLabel: MapfileLabel
-  ): IconSymbolizer[] | void {
+  getIconsFromMapfileLabel(mapfileLabel: MapfileLabel): IconSymbolizer[] {
     const labelStyles: IconSymbolizer[] = [];
     mapfileLabel?.styles?.forEach((style: MapfileStyle) => {
       if (style.symbol) {
-        labelStyles.push(this.getIconSymbolizerFromMapfileStyle(style));
+        labelStyles.push(this.getIconSymbolizerFromMapfileStyle(
+          {symbol: {image: style.symbol}} as unknown as MapfileStyle
+        ));
       }
     });
-
-    if (labelStyles.length) {
-      return labelStyles;
-    } else {
-      return undefined;
-    }
+    return labelStyles;
   }
 
   /**
