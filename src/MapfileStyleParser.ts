@@ -813,7 +813,7 @@ export class MapfileStyleParser implements StyleParser {
 
         // Set Icons in front of the associated label
         const labelIcons = this.getIconsFromMapfileLabel(mapfileLabel);
-        labelIcons?.forEach(labelIcon => {
+        labelIcons.forEach(labelIcon => {
           symbolizers.push(labelIcon);
         });
 
