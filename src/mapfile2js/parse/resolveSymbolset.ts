@@ -53,6 +53,23 @@ export function resolveSymbolsFromMapfile(mapfile: Mapfile): Mapfile {
                 });
               }
             });
+          }  else if (mclass.labels) {
+            // parse symbol data within a style tag of a label
+            mclass.labels.forEach((label) => {
+              const styles: MapfileStyle[] = label.styles as MapfileStyle[];
+              styles?.forEach((style: MapfileStyle) => {
+                symbols?.forEach((symbol: any) => {
+                  if (
+                    symbol.name &&
+                    symbol.image &&
+                    symbol.name === style.symbol
+                  ) {
+                    style.symbol = (parse(symbol.image)
+                      .base as unknown) as MapfileSymbol;
+                  }
+                });
+              });
+            });
           }
         });
       }

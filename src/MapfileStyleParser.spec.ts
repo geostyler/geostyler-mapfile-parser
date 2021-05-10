@@ -25,6 +25,7 @@ import raster_resampling_average from '../data/styles/raster_resampling_average'
 import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
 import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
 import line_set_of_expressions from '../data/styles/line_set_of_expressions';
+import point_symbol_style_in_label from '../data/styles/point_symbol_style_in_label';
 
 
 it('MapfileStyleParser is defined', () => {
@@ -202,6 +203,13 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readMultiStyles(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(line_set_of_expressions);
+    });
+    it('can read a simple MapFile with symbol style in label', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/point_symbol_style_in_label.map', 'utf8');
+      const geoStylerStyle = await styleParser.readMultiStyles(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(point_symbol_style_in_label);
     });
 
  it('can translate Mapfile to SLD', async () => {

@@ -810,6 +810,13 @@ export class MapfileStyleParser implements StyleParser {
       mapfileLayerLabelItem = mapfileClass.text ? mapfileClass.text : mapfileLayerLabelItem;
       mapfileClass.labels.forEach((mapfileLabel) => {
         mapfileLabel.text = mapfileLabel.text ? mapfileLabel.text : mapfileLayerLabelItem;
+
+        // Set Icons in front of the associated label
+        const labelIcons = this.getIconsFromMapfileLabel(mapfileLabel);
+        labelIcons.forEach(labelIcon => {
+          symbolizers.push(labelIcon);
+        });
+
         const symbolizer = Object.assign(
           this.getTextSymbolizerFromMapfileStyle(mapfileLabel),
           this.getBaseSymbolizerFromMapfileStyle(mapfileLabel)
@@ -822,6 +829,24 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     return symbolizers;
+  }
+
+  /**
+   * Collect icon data if defined within the label tag
+   *
+   * @param {MapfileLabel} mapfileLabel Mapfile label data
+   * @return {IconSymbolizer[]} The IconSymbolizer
+   */
+  getIconsFromMapfileLabel(mapfileLabel: MapfileLabel): IconSymbolizer[] {
+    const iconStyles: IconSymbolizer[] = [];
+    mapfileLabel?.styles?.forEach((style: MapfileStyle) => {
+      if (style.symbol) {
+        iconStyles.push(this.getIconSymbolizerFromMapfileStyle(
+          {symbol: {image: style.symbol}} as unknown as MapfileStyle
+        ));
+      }
+    });
+    return iconStyles;
   }
 
   /**
