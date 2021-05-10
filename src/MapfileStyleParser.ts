@@ -838,15 +838,15 @@ export class MapfileStyleParser implements StyleParser {
    * @return {IconSymbolizer[]} The IconSymbolizer
    */
   getIconsFromMapfileLabel(mapfileLabel: MapfileLabel): IconSymbolizer[] {
-    const labelStyles: IconSymbolizer[] = [];
+    const iconStyles: IconSymbolizer[] = [];
     mapfileLabel?.styles?.forEach((style: MapfileStyle) => {
       if (style.symbol) {
-        labelStyles.push(this.getIconSymbolizerFromMapfileStyle(
+        iconStyles.push(this.getIconSymbolizerFromMapfileStyle(
           {symbol: {image: style.symbol}} as unknown as MapfileStyle
         ));
       }
     });
-    return labelStyles;
+    return iconStyles;
   }
 
   /**
