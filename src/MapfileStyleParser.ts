@@ -624,14 +624,25 @@ export class MapfileStyleParser implements StyleParser {
       fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
     }
 
+    if (mapfileStyle.color && !mapfileStyle.outlinecolor) {
+      fillSymbolizer.outlineOpacity = 0;
+    }
+
     if (mapfileStyle.outlinecolor) {
       fillSymbolizer.outlineColor = isHex(mapfileStyle.outlinecolor)
         ? mapfileStyle.outlinecolor
         : rgbToHex(mapfileStyle.outlinecolor);
+
+      if (mapfileStyle.width) {
+        fillSymbolizer.outlineWidth = mapfileStyle.width;
+      }
+      if (!mapfileStyle.color) {
+        fillSymbolizer.fillOpacity = 0;
+      }
     }
 
     if (mapfileStyle.outlinewidth) {
-      fillSymbolizer.outlineWidth = mapfileStyle.outlinewidth;
+      fillSymbolizer.outlineWidth = parseFloat(mapfileStyle.outlinewidth as unknown as string);
     }
 
     if (mapfileStyle.opacity) {
