@@ -6,12 +6,13 @@ const polygonStyle: Style = {
     {
       name: '',
       symbolizers: [
-        { kind: 'Fill', outlineOpacity: 0, color: '#00FF00' },
+        { kind: 'Fill', outlineOpacity: 0, color: '#00FF00', fillOpacity: 1 },
         {
           kind: 'Fill',
           outlineColor: '#555555',
           fillOpacity: 0,
-          outlineWidth: 0.1
+          outlineWidth: 0.1,
+          outlineOpacity: 1
         }
       ]
     }

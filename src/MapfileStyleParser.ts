@@ -624,11 +624,18 @@ export class MapfileStyleParser implements StyleParser {
       fillSymbolizer.graphicFill = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
     }
 
-    if (mapfileStyle.color && !mapfileStyle.outlinecolor) {
-      fillSymbolizer.outlineOpacity = 0;
+    if (mapfileStyle.color) {
+      fillSymbolizer.fillOpacity = mapfileStyle.opacity / 100 || 1;
+
+      if (!mapfileStyle.outlinecolor) {
+        fillSymbolizer.outlineOpacity = 0;
+      } else {
+        fillSymbolizer.outlineOpacity = mapfileStyle.opacity / 100 || 1;
+      }
     }
 
     if (mapfileStyle.outlinecolor) {
+      fillSymbolizer.outlineOpacity = mapfileStyle.opacity / 100 || 1;
       fillSymbolizer.outlineColor = isHex(mapfileStyle.outlinecolor)
         ? mapfileStyle.outlinecolor
         : rgbToHex(mapfileStyle.outlinecolor);
@@ -636,6 +643,7 @@ export class MapfileStyleParser implements StyleParser {
       if (mapfileStyle.width) {
         fillSymbolizer.outlineWidth = mapfileStyle.width;
       }
+
       if (!mapfileStyle.color) {
         fillSymbolizer.fillOpacity = 0;
       }
@@ -643,10 +651,6 @@ export class MapfileStyleParser implements StyleParser {
 
     if (mapfileStyle.outlinewidth) {
       fillSymbolizer.outlineWidth = parseFloat(mapfileStyle.outlinewidth as unknown as string);
-    }
-
-    if (mapfileStyle.opacity) {
-      fillSymbolizer.outlineOpacity = mapfileStyle.opacity / 100;
     }
 
     if (mapfileStyle.pattern) {
@@ -838,7 +842,6 @@ export class MapfileStyleParser implements StyleParser {
         this.checkWarnDropRule('MAXSCALEDENOM', 'LABEL', mapfileLabel.maxscaledenom);
       });
     }
-
     return symbolizers;
   }
 
