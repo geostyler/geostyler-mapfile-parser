@@ -625,31 +625,25 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     if (mapfileStyle.color) {
-      fillSymbolizer.fillOpacity = mapfileStyle.opacity / 100 || 1;
-
-      if (!mapfileStyle.outlinecolor) {
-        fillSymbolizer.outlineOpacity = 0;
-      } else {
-        fillSymbolizer.outlineOpacity = mapfileStyle.opacity / 100 || 1;
-      }
+      fillSymbolizer.fillOpacity = mapfileStyle.opacity !== undefined ? mapfileStyle.opacity / 100 : 1;
+    } else {
+      fillSymbolizer.fillOpacity = 0;
     }
 
     if (mapfileStyle.outlinecolor) {
-      fillSymbolizer.outlineOpacity = mapfileStyle.opacity / 100 || 1;
+      fillSymbolizer.outlineOpacity = mapfileStyle.opacity !== undefined ? mapfileStyle.opacity / 100 : 1;
       fillSymbolizer.outlineColor = isHex(mapfileStyle.outlinecolor)
         ? mapfileStyle.outlinecolor
         : rgbToHex(mapfileStyle.outlinecolor);
 
-      if (mapfileStyle.width) {
+      if (mapfileStyle.width !== undefined) {
         fillSymbolizer.outlineWidth = mapfileStyle.width;
       }
-
-      if (!mapfileStyle.color) {
-        fillSymbolizer.fillOpacity = 0;
-      }
+    } else {
+      fillSymbolizer.outlineOpacity = 0;
     }
 
-    if (mapfileStyle.outlinewidth) {
+    if (mapfileStyle.outlinewidth !== undefined) {
       fillSymbolizer.outlineWidth = parseFloat(mapfileStyle.outlinewidth as unknown as string);
     }
 
