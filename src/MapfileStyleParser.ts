@@ -178,7 +178,7 @@ export class MapfileStyleParser implements StyleParser {
       return [
         operator as CombinationOperator,
         ...filterExpressions
-      ] as CombinationFilter;
+      ] as unknown as CombinationFilter;
     }
 
     // capture negation
@@ -539,14 +539,14 @@ export class MapfileStyleParser implements StyleParser {
       }
     }
 
-    if (styleParameters.outlinecolor) {
-      textSymbolizer.haloColor = isHex(styleParameters.outlinecolor)
-        ? styleParameters.outlinecolor
-        : rgbToHex(styleParameters.outlinecolor);
+    if (labelParameters.outlinecolor) {
+      textSymbolizer.haloColor = isHex(labelParameters.outlinecolor)
+        ? labelParameters.outlinecolor
+        : rgbToHex(labelParameters.outlinecolor);
     }
 
-    if (styleParameters.outlinewidth) {
-      textSymbolizer.haloWidth = parseFloat(styleParameters.outlinewidth);
+    if (labelParameters.outlinewidth) {
+      textSymbolizer.haloWidth = labelParameters.outlinewidth;
     }
 
     return textSymbolizer;
