@@ -7,9 +7,11 @@ const pointStyle: Style = {
     name: '',
     symbolizers: [{
       kind: 'Mark',
+      fillOpacity: 1,
       wellKnownName: 'circle',
       color: '#00FF00',
-      radius: 7.5
+      radius: 7.5,
+      rotate: 0,
     }]
   }]
 }

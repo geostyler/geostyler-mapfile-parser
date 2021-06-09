@@ -8,8 +8,10 @@ const pointStyle: Style = {
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'circle',
+      fillOpacity: 1,
       color: '#00FF00',
-      radius: 7.5
+      radius: 7.5,
+      rotate: 0,
     }],
     filter: [
       "==", "id", "1"
@@ -20,8 +22,10 @@ const pointStyle: Style = {
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'triangle',
+      fillOpacity: 0,
       color: '#FF0000',
-      radius: 5
+      radius: 5,
+      rotate: 0,
     }],
     filter: [
       "==", "id", "2"
@@ -32,8 +36,10 @@ const pointStyle: Style = {
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'square',
+      fillOpacity: 0,
       color: '#00FFFF',
-      radius: 5
+      radius: 5,
+      rotate: 0,
     }],
     filter: [
       "==", "id", "3"
@@ -44,8 +50,10 @@ const pointStyle: Style = {
     symbolizers: [{
       kind: 'Mark',
       wellKnownName: 'cross',
+      fillOpacity: 0,
       color: '#0000FF',
-      radius: 5
+      radius: 5,
+      rotate: 0,
     }],
   }]
 }

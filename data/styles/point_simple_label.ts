@@ -10,7 +10,8 @@ const pointStyle: Style = {
       label: 'Nisosa',
       font: ['Verdana'],
       color: '#00FF00',
-      size: 9
+      size: 9,
+      rotate: 0,
     }]
   }]
 }
