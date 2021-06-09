@@ -182,7 +182,7 @@ export class MapfileStyleParser implements StyleParser {
       return [
         operator as CombinationOperator,
         ...filterExpressions
-      ] as CombinationFilter;
+      ] as unknown as CombinationFilter;
     }
 
     // capture negation
@@ -378,7 +378,7 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.radius = mapfileStyle.size / 2;
     }
 
-    markSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle * 1 : 0;
+    markSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle : 0;
 
     if (mapfileStyle.outlinecolor) {
       markSymbolizer.strokeColor = isHex(mapfileStyle.outlinecolor)
@@ -420,7 +420,7 @@ export class MapfileStyleParser implements StyleParser {
             2
           )}`
         );
-        markSymbolizer.wellKnownName = 'X' as WellKnownName;
+        markSymbolizer.wellKnownName = 'x' as WellKnownName;
       }
     } else if (mapfileStyle.symbol.character) {
       const character = mapfileStyle.symbol.character.replace(/'|"/g, '');
@@ -545,14 +545,14 @@ export class MapfileStyleParser implements StyleParser {
       }
     }
 
-    if (styleParameters.outlinecolor) {
-      textSymbolizer.haloColor = isHex(styleParameters.outlinecolor)
-        ? styleParameters.outlinecolor
-        : rgbToHex(styleParameters.outlinecolor);
+    if (labelParameters.outlinecolor) {
+      textSymbolizer.haloColor = isHex(labelParameters.outlinecolor)
+        ? labelParameters.outlinecolor
+        : rgbToHex(labelParameters.outlinecolor);
     }
 
-    if (styleParameters.outlinewidth) {
-      textSymbolizer.haloWidth = parseFloat(styleParameters.outlinewidth);
+    if (labelParameters.outlinewidth) {
+      textSymbolizer.haloWidth = labelParameters.outlinewidth;
     }
 
     return textSymbolizer;
