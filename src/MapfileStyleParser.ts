@@ -25,6 +25,7 @@ import {
   RGBChannel,
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
+import logger from '@terrestris/base-util/dist/Logger';
 
 export type ConstructorParams = Record<string, unknown>;
 
@@ -70,26 +71,29 @@ export class MapfileStyleParser implements StyleParser {
    * @return {Filter} The GeoStyler-Style Filter
    */
   getFilterFromClassItem(mapfileClass: MapfileClass, mapfileClassItem: string): Filter | null {
-    console.assert(mapfileClassItem, 'Mapfile CLASSITEM undefined!');
+    if (!mapfileClassItem) {
+      logger.error(mapfileClassItem, 'Mapfile CLASSITEM undefined!');
+    }
 
     const expression = mapfileClass.expression;
     switch (expression.charAt(0)) {
-    case '"':
-      return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
-    case '/':
-      return ['*=', ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
-    case '{':
-      return [
-        '*=',
-        [
-          'FN_strMatches',
-          mapfileClassItem,
+      case '"':
+        return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
+      case '/':
+        return ['*=', ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
+      case '{':
+        return [
+          '*=',
+          [
+            'FN_strMatches',
+            mapfileClassItem,
           `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
-        ],
-        true,
-      ];
+          ],
+          true,
+        ];
+      default:
+        logger.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
     }
-    console.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
     return null;
   }
 
@@ -115,36 +119,36 @@ export class MapfileStyleParser implements StyleParser {
     // TODO: assert there are no qotes in strings, either of!
 
     switch (operator) {
-    case '~': {
-      const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-      return ['*=', ['FN_strMatches', attribute, valueOrNumber as any], true];
-    }
-    case '~*':
-      return ['*=', ['FN_strMatches', attribute, `${value}i` as any], true];
-    case 'IN':
-      return [
-        '*=',
-        [
-          'FN_strMatches',
-          attribute,
+      case '~': {
+        const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
+        return ['*=', ['FN_strMatches', attribute, valueOrNumber as any], true];
+      }
+      case '~*':
+        return ['*=', ['FN_strMatches', attribute, `${value}i` as any], true];
+      case 'IN':
+        return [
+          '*=',
+          [
+            'FN_strMatches',
+            attribute,
           (`/${value
             .substring(1, value.length - 1)
             .replace(',', '|')}/` as unknown) as RegExp
-        ],
-        true,
-      ];
-    case '==':
-    case '!=':
-    case '<':
-    case '>':
-    case '<=':
-    case '>=': {
-      const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-      return [operator as ComparisonOperator, attribute, valueOrNumber];
-    }
-    default:
-      console.error(`Unknow comparison operator: ${operator}`);
-      return null;
+          ],
+          true,
+        ];
+      case '==':
+      case '!=':
+      case '<':
+      case '>':
+      case '<=':
+      case '>=': {
+        const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
+        return [operator as ComparisonOperator, attribute, valueOrNumber];
+      }
+      default:
+        logger.error(`Unknow comparison operator: ${operator}`);
+        return null;
     }
   }
 
@@ -207,13 +211,15 @@ export class MapfileStyleParser implements StyleParser {
       if (attributeMatch && operator && valueMatch) {
         return this.getFilterFromAttributeValueComparison(attributeMatch[1], operator, valueMatch[1]);
       } else {
-        console.error(`Unable to parse common expression: ${attributeMatch}, ${operator}, ${valueMatch}`);
+        logger.error(`Unable to parse common expression: ${attributeMatch}, ${operator}, ${valueMatch}`);
       }
     }
 
     // TODO: implement logical combination expression relying on operator precedence
 
-    console.assert(mapfileExpression.length === 0, `Mapfile expression leftovers: ${mapfileExpression}`);
+    if (mapfileExpression.length > 0) {
+      logger.warn(`Mapfile expression leftovers: ${mapfileExpression}`);
+    }
 
     return null;
   }
@@ -232,9 +238,9 @@ export class MapfileStyleParser implements StyleParser {
 
     // assert expression contains no string functions, arithmetic operations or spatial components
     if (/tostring \(|commify \(|upper \(|lower \(|initcap \(|firstcap \(|length \(/.test(expression)) {
-      console.error(`Not able to parse string function: ${expression}`);
+      logger.error(`Not able to parse string function: ${expression}`);
     } else if (/round \(| \+ | - | \* | \/ | \^ | % /.test(expression)) {
-      console.error(`Not able to parse arithmetic operator or function: ${expression}`);
+      logger.error(`Not able to parse arithmetic operator or function: ${expression}`);
       return null;
     } else if (
       [
@@ -253,18 +259,17 @@ export class MapfileStyleParser implements StyleParser {
         'difference (',
       ].some((spatialComponent) => expression.includes(spatialComponent))
     ) {
-      console.error(`Not able to parse spatial expression: ${expression}`);
+      logger.error(`Not able to parse spatial expression: ${expression}`);
       return null;
     } else if (expression.includes('´')) {
-      console.error(`Not able to parse temporal expression: ${expression}`);
+      logger.error(`Not able to parse temporal expression: ${expression}`);
       return null;
     }
 
     // assert expression does not contain escaped quotes
-    console.assert(
-      !/\\'|\\"/.test(expression),
-      `Mapfile expression may contain escaped quote: ${expression}`
-    );
+    if (/\\'|\\"/.test(expression)) {
+      logger.error(`Mapfile expression may contain escaped quote: ${expression}`);
+    }
 
     // get filter from expression value targeting CLASSITEM
     if (/^["/{]/.test(expression)) {
@@ -272,7 +277,9 @@ export class MapfileStyleParser implements StyleParser {
     }
 
     // assert expression starts and ends with a bracket
-    console.assert(/^\(.+\)$/.test(expression), `Malformed expression! ${expression}`);
+    if (!/^\(.+\)$/.test(expression)) {
+      logger.error(`Malformed expression! ${expression}`);
+    }
 
     // get filter by expression parsing
     return this.getFilterFromMapfileExpression(expression);
@@ -385,7 +392,7 @@ export class MapfileStyleParser implements StyleParser {
     const points = mapfileStyle.symbol.points.split(' ').map((item) => parseFloat(item));
     if (symbolType === 'ellipse') {
       if (!(points[0] === points[1] && points.length === 2)) {
-        console.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
+        logger.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
       }
       markSymbolizer.wellKnownName = 'circle' as WellKnownName;
     } else {
@@ -400,7 +407,7 @@ export class MapfileStyleParser implements StyleParser {
       }
     }
     if (!markSymbolizer.wellKnownName) {
-      console.warn(
+      logger.warn(
         `Custom symbol not supported by MarkerSymbolyzer, fallback to 'X':\n${JSON.stringify(
           mapfileStyle.symbol,
           null,
@@ -527,24 +534,24 @@ export class MapfileStyleParser implements StyleParser {
     if (typeof mapfileStyle.symbol === 'object') {
       const symbolType = mapfileStyle.symbol.type;
       switch (symbolType) {
-      case 'ellipse':
-      case 'vector':
-        pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(mapfileStyle);
-        break;
-      case 'svg':
+        case 'ellipse':
+        case 'vector':
+          pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(mapfileStyle);
+          break;
+        case 'svg':
         // TODO: handle as svg
-        break;
-      case 'hatch':
+          break;
+        case 'hatch':
         // TODO
-        break;
-      case 'pixmap':
-        pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileStyle);
-        break;
-      case 'truetype':
-        pointSymbolizer = this.getTextSymbolizerFromMapfileStyle(mapfileStyle);
-        break;
-      default:
-        break;
+          break;
+        case 'pixmap':
+          pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileStyle);
+          break;
+        case 'truetype':
+          pointSymbolizer = this.getTextSymbolizerFromMapfileStyle(mapfileStyle);
+          break;
+        default:
+          break;
       }
     } else if (typeof mapfileStyle.symbol === 'string') {
       if (/^['"]?[^[]/.test(mapfileStyle.symbol)) {
@@ -552,7 +559,7 @@ export class MapfileStyleParser implements StyleParser {
         pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileStyle);
       } else {
         // TODO: handle attribute pixmaps
-        console.error('Not able to deal with attribute pixmaps');
+        logger.error('Not able to deal with attribute pixmaps');
       }
     }
     return pointSymbolizer;
@@ -670,7 +677,7 @@ export class MapfileStyleParser implements StyleParser {
         } as ColorMap;
       }
     } else {
-      console.warn('Raster classification not implemented!');
+      logger.warn('Raster classification not implemented!');
     }
     return;
   }
@@ -701,15 +708,15 @@ export class MapfileStyleParser implements StyleParser {
       });
 
       switch (processings.resample) {
-      case 'average':
-      case 'bilinear':
-        rasterSymbolizer.resampling = 'linear';
-        break;
-      case 'nearest':
-        rasterSymbolizer.resampling = 'nearest';
-        break;
-      default:
-        break;
+        case 'average':
+        case 'bilinear':
+          rasterSymbolizer.resampling = 'linear';
+          break;
+        case 'nearest':
+          rasterSymbolizer.resampling = 'nearest';
+          break;
+        default:
+          break;
       }
 
       if (processings.bands) {
@@ -780,22 +787,22 @@ export class MapfileStyleParser implements StyleParser {
         }
         let symbolizer: any;
         switch (mapfileLayerType.toLowerCase()) {
-        case 'point':
-          symbolizer = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
-          break;
-        case 'line':
-          symbolizer = this.getLineSymbolizerFromMapfileStyle(mapfileStyle);
-          break;
-        case 'polygon':
-          symbolizer = this.getFillSymbolizerFromMapfileStyle(mapfileStyle);
-          break;
-        case 'query':
+          case 'point':
+            symbolizer = this.getPointSymbolizerFromMapfileStyle(mapfileStyle);
+            break;
+          case 'line':
+            symbolizer = this.getLineSymbolizerFromMapfileStyle(mapfileStyle);
+            break;
+          case 'polygon':
+            symbolizer = this.getFillSymbolizerFromMapfileStyle(mapfileStyle);
+            break;
+          case 'query':
           // layer can be queried but not drawn
-          break;
-        case 'chart':
-        case 'circle':
-        default:
-          throw new Error('Unable to parse Symbolizer from Mapfile');
+            break;
+          case 'chart':
+          case 'circle':
+          default:
+            throw new Error('Unable to parse Symbolizer from Mapfile');
         }
         const baseSymbolizer: any = this.getBaseSymbolizerFromMapfileStyle(mapfileStyle);
         symbolizers.push(Object.assign(symbolizer, baseSymbolizer));
@@ -1000,16 +1007,18 @@ export class MapfileStyleParser implements StyleParser {
 
     for (const char of mapfileExpression) {
       switch (char) {
-      case '(':
-        fromIndex = parantheseCount === 0 ? index : fromIndex;
-        parantheseCount++;
-        break;
-      case ')':
-        parantheseCount--;
-        if (parantheseCount === 0) {
-          nestedExpressions.push(mapfileExpression.substring(fromIndex, index + 1));
-        }
-        break;
+        case '(':
+          fromIndex = parantheseCount === 0 ? index : fromIndex;
+          parantheseCount++;
+          break;
+        case ')':
+          parantheseCount--;
+          if (parantheseCount === 0) {
+            nestedExpressions.push(mapfileExpression.substring(fromIndex, index + 1));
+          }
+          break;
+        default:
+          throw Error('Could not split mapfilExpression:' + mapfileExpression);
       }
       index++;
     }
@@ -1024,7 +1033,7 @@ export class MapfileStyleParser implements StyleParser {
    */
   private checkWarnDropRule(notSupported: string, mapfileParentElement: string, mapfileElement: any): void {
     if (mapfileElement !== undefined) {
-      console.warn(`Geostyler style does not support ${notSupported} operator
+      logger.warn(`Geostyler style does not support ${notSupported} operator
         in ${mapfileParentElement}. This rule is dropped.`);
     }
   }

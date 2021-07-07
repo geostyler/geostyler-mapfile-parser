@@ -1,4 +1,11 @@
-import { isCross, isSquare, isTriangle, rgbToHex, rgbRangeToHexArray, isHex } from './Useful';
+import {
+  isCross,
+  isSquare,
+  isTriangle,
+  rgbToHex,
+  rgbRangeToHexArray,
+  isHex
+} from './Useful';
 
 describe('isCross', () => {
   it('is defined', () => {
@@ -74,7 +81,7 @@ describe('isTriangle', () => {
 });
 
 describe('Color helpers', () => {
-   it('can convert a RGB color to hexdecimal format', async () => {
+  it('can convert a RGB color to hexdecimal format', async () => {
     expect.assertions(2);
     const rgb = '0 0 0';
     const hex = rgbToHex(rgb);

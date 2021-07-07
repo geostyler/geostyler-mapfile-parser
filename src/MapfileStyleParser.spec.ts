@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
@@ -14,12 +15,14 @@ import point_simple_label from '../data/styles/point_simple_label';
 import point_simple_many_classes_filters from '../data/styles/point_simple_many_classes_filters';
 import point_scale from '../data/styles/point_scale';
 import point_st_sample_style_tags from '../data/styles/point_st_sample_style_tags';
+// eslint-disable-next-line max-len
 import point_st_sample_style_tags_single_filter_list from '../data/styles/point_st_sample_style_tags_single_filter_list';
+// eslint-disable-next-line max-len
 import point_st_sample_style_tags_single_filter_regex from '../data/styles/point_st_sample_style_tags_single_filter_regex';
 
-import raster_simple_many_classes_filter_intervals from '../data/styles/raster_simple_many_classes_filter_intervals';
-import raster_simple_many_classes_filter_values from '../data/styles/raster_simple_many_classes_filter_values';
-import raster_simple_many_classes_filter_ramp from '../data/styles/raster_simple_many_classes_filter_ramp';
+// import raster_simple_many_classes_filter_intervals from '../data/styles/raster_simple_many_classes_filter_intervals';
+// import raster_simple_many_classes_filter_values from '../data/styles/raster_simple_many_classes_filter_values';
+// import raster_simple_many_classes_filter_ramp from '../data/styles/raster_simple_many_classes_filter_ramp';
 import raster_rgbrange_to_hexarray from '../data/styles/raster_rgbrange_to_hexarray';
 import raster_resampling_average from '../data/styles/raster_resampling_average';
 import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinear';
@@ -52,7 +55,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_point);
     });
- 
+
     it('can read a simple MapFile LineSymbolizer', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync('./data/mapfiles/line_simple_line.map', 'utf8');
@@ -180,7 +183,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_average);
     });
-    
+
     it('can resample a simple MapFile RasterSymbolizer (bilinear)', async () => {
       expect.assertions(2);
       const mapfile = fs.readFileSync( './data/mapfiles/raster_resampling_bilinear.map', 'utf8');
@@ -212,15 +215,15 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(point_symbol_style_in_label);
     });
 
- it('can translate Mapfile to SLD', async () => {
-   const mapfile = fs.readFileSync('./data/mapfiles/point_simple_point.map', 'utf8');
-   const geostylerStyle = styleParser.readStyle(mapfile);
-   const sldStyleParser = new SldStyleParser();
-   return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
-     expect(sldStyle).toEqual(expect.any(String));
+    it('can translate Mapfile to SLD', async () => {
+      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_point.map', 'utf8');
+      const geostylerStyle = styleParser.readStyle(mapfile);
+      const sldStyleParser = new SldStyleParser();
+      return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
+        expect(sldStyle).toEqual(expect.any(String));
+      });
+    });
   });
-  });
-});
 
   describe('#getFilterFromMapfileExpression', () => {
     it('is defined', () => {

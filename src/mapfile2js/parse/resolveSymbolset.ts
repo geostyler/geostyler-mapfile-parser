@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { parseSymbolset } from '../parseMapfile';
 import { MapfileSymbol, Mapfile, MapfileClass, MapfileLayer, MapfileStyle } from '../mapfileTypes';
 import { parse } from 'path';
+import logger from '@terrestris/base-util/dist/Logger';
 
 let mapfileSymbols: Array<MapfileSymbol>;
 
@@ -104,14 +105,14 @@ export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfil
     symbolsetPath = symbolsPath;
     symbolsetFrom = 'the "symbolsPath" configuration of the parser.';
   }
-  
+
   if (!symbolsetPath) {
-    console.error('No symbolset path defined.');
+    logger.error('No symbolset path defined.');
     return mapfile;
   }
 
   if (!fs.existsSync(symbolsetPath)) {
-    console.error(`No file found for symbolset path: ${symbolsetPath} (path taken from ${symbolsetFrom})`);
+    logger.error(`No file found for symbolset path: ${symbolsetPath} (path taken from ${symbolsetFrom})`);
     return mapfile;
   }
 

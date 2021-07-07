@@ -1,7 +1,6 @@
 import { checkKeyValue} from './checkKeyValue';
 import { LineObject } from '../parseMapfile';
 
-
 describe('checkKeyValue', () => {
   it('is defined', () => {
     expect(checkKeyValue).toBeDefined();
