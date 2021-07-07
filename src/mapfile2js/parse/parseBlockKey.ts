@@ -1,3 +1,4 @@
+import logger from '@terrestris/base-util/dist/Logger';
 import { LineObject } from '../parseMapfile';
 
 // there can be multiple layer, class and style block siblings
@@ -22,7 +23,7 @@ const multiBlockKeys = {
 export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record<string, unknown> | undefined {
   // test for unhadled block lines
   if (lineObject.isBlockLine) {
-    console.error(`Not able to deal with the following Block line: ${lineObject.content}`);
+    logger.error(`Not able to deal with the following Block line: ${lineObject.content}`);
     return;
   }
 
@@ -42,7 +43,7 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record
   } else {
     // check for duplicate block key
     if (lineObject.key in currentBlock || multiBlockKeys[lineObject.key] in currentBlock) {
-      console.error(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
+      logger.error(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
     }
     // create block
     currentBlock[lineObject.key] = {};

@@ -24,10 +24,6 @@
     "url": "https://github.com/geostyler/geostyler-mapfile-parser/issues"
   },
   "homepage": "https://github.com/geostyler/geostyler-mapfile-parser#readme",
-  "dependencies": {
-    "geostyler-style": "^4.0.2",
-    "ts-jest": "^27.0.3"
-  },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm run build:browser",
     "build:browser": "webpack --config browser-build.config.js",
@@ -41,6 +37,11 @@
     "lint": "eslint -c .eslintrc.js --ext .ts src && tsc --noEmit --project tsconfig.json",
     "release": "np --no-yarn && git push https://github.com/geostyler/geostyler-mapfile-parser.git master --tags"
   },
+  "dependencies": {
+    "@terrestris/base-util": "^1.0.1",
+    "geostyler-style": "^4.0.3",
+    "ts-jest": "^27.0.3"
+  },
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
@@ -48,6 +49,7 @@
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-typescript": "^7.13.0",
+    "@terrestris/eslint-config-typescript": "^2.0.0",
     "@types/jest": "^26.0.22",
     "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
