@@ -8,6 +8,7 @@ import { SldStyleParser } from 'geostyler-sld-parser';
 import point_simple_point from '../data/styles/point_simple_point';
 import line_simple_line from '../data/styles/line_simple_line';
 import polygon_simple_polygon from '../data/styles/polygon_simple_polygon';
+import polygon_simple_polygon_outline from '../data/styles/polygon_simple_polygon_outline';
 import raster_simple_raster from '../data/styles/raster_simple_raster';
 
 import point_simple_rgb_to_hex from '../data/styles/point_simple_rgb_to_hex';
@@ -70,6 +71,14 @@ describe('MapfileStyleParser implements StyleParser', () => {
       const geoStylerStyle = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(polygon_simple_polygon);
+    });
+
+    it('can read a simple MapFile PolygonSymbolizer with seperate outline', async () => {
+      expect.assertions(2);
+      const mapfile = fs.readFileSync( './data/mapfiles/polygon_simple_polygon_outline.map', 'utf8');
+      const geoStylerStyle = await styleParser.readStyle(mapfile);
+      expect(geoStylerStyle).toBeDefined();
+      expect(geoStylerStyle).toEqual(polygon_simple_polygon_outline);
     });
 
     it('can read a simple MapFile RasterSymbolizer', async () => {

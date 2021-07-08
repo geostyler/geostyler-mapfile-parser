@@ -1,0 +1,19 @@
+LAYER
+    NAME "polygon_simple_polygon_outline"
+    TYPE POLYGON
+    DATA "../shapes/polygons.shp"
+    EXTENT -180 -90 180 90
+    METADATA
+      "wms_title" "polygon_simple_polygon_outline.map"
+      "wms_srs" "EPSG:4326"
+    END
+    CLASS
+      STYLE
+        COLOR 0 255 0
+      END
+      STYLE
+        OUTLINECOLOR 85 85 85
+        OUTLINEWIDTH 0.1
+      END
+    END
+END
