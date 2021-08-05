@@ -15,7 +15,7 @@ const pointStyle: Style = {
       strokeColor: '#000000',
       strokeWidth: 1,
       strokeOpacity: 1  // same as opacity
-    }]    
+    }]
   }]
 };
 

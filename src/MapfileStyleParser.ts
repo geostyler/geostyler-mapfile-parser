@@ -86,7 +86,7 @@ export class MapfileStyleParser implements StyleParser {
           [
             'FN_strMatches',
             mapfileClassItem,
-          `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
+            `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
           ],
           true,
         ];
@@ -130,9 +130,9 @@ export class MapfileStyleParser implements StyleParser {
           [
             'FN_strMatches',
             attribute,
-          (`/${value
-            .substring(1, value.length - 1)
-            .replace(',', '|')}/` as unknown) as RegExp
+            (`/${value
+              .substring(1, value.length - 1)
+              .replace(',', '|')}/` as unknown) as RegExp
           ],
           true,
         ];
@@ -396,7 +396,7 @@ export class MapfileStyleParser implements StyleParser {
     const symbolType = mapfileStyle.symbol.type.toLowerCase();
     if (mapfileStyle.symbol.points) {
       const points = mapfileStyle.symbol.points.split(' ').map((item) => parseFloat(item));
-      if (symbolType === 'ellipse' && points[0] === points[1] && points.length === 2) { 
+      if (symbolType === 'ellipse' && points[0] === points[1] && points.length === 2) {
         markSymbolizer.wellKnownName = 'circle' as WellKnownName;
       } else {
         if (isSquare(points)) {
@@ -422,13 +422,13 @@ export class MapfileStyleParser implements StyleParser {
       const character = mapfileStyle.symbol.character.replace(/'|"/g, '');
       if (character.length === 1) {
         markSymbolizer.wellKnownName =
-          'ttf://' + mapfileStyle.symbol.font + '#0x00' + character.charCodeAt(0).toString(16);
+          'ttf://' + mapfileStyle.symbol.font + '#0x00' + character.charCodeAt(0).toString(16) as WellKnownName;
       } else {
         markSymbolizer.wellKnownName =
           'ttf://' +
           mapfileStyle.symbol.font +
           '#0x' +
-          parseInt(character.replace(/&#|;/g, ''), 10).toString(16);
+          parseInt(character.replace(/&#|;/g, ''), 10).toString(16) as WellKnownName;
       }
     }
     return markSymbolizer;
@@ -449,7 +449,7 @@ export class MapfileStyleParser implements StyleParser {
     if (mapfileStyle.size) {
       iconSymbolizer.size = mapfileStyle.size;
     }
-    iconSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle * 1 : 0;
+    iconSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle : 0;
 
     if (mapfileStyle.symbol.anchorpoint) {
       const anchorpoint: Array<number> = mapfileStyle.symbol.anchorpoint
@@ -485,7 +485,7 @@ export class MapfileStyleParser implements StyleParser {
       textSymbolizer.label = labelParameters.text.replace('[', '{{').replace(']', '}}');
     }
 
-    textSymbolizer.rotate = labelParameters.angle ? labelParameters.angle * 1 : 0;
+    textSymbolizer.rotate = labelParameters.angle ? labelParameters.angle : 0;
 
     if (labelParameters.offset) {
       const offset = labelParameters.offset.split(' ').map((a: string) => parseFloat(a));
@@ -494,18 +494,20 @@ export class MapfileStyleParser implements StyleParser {
 
     if (labelParameters.align) {
       switch (labelParameters.align.replace(/'|"/g, '')) {
-      case '1':
-      case 'left':
-        textSymbolizer.justify = 'left';
-        break;
-      case '2':
-      case 'center':
-        textSymbolizer.justify = 'center';
-        break;
-      case '3':
-      case 'right':
-        textSymbolizer.justify = 'right';
-        break;
+        case '1':
+        case 'left':
+          textSymbolizer.justify = 'left';
+          break;
+        case '2':
+        case 'center':
+          textSymbolizer.justify = 'center';
+          break;
+        case '3':
+        case 'right':
+          textSymbolizer.justify = 'right';
+          break;
+        default:
+          break;
       }
     }
 
@@ -572,10 +574,10 @@ export class MapfileStyleParser implements StyleParser {
           pointSymbolizer = this.getMarkSymbolizerFromMapfileStyle(mapfileStyle);
           break;
         case 'svg':
-        // TODO: handle as svg
+          // TODO: handle as svg
           break;
         case 'hatch':
-        // TODO
+          // TODO
           break;
         case 'pixmap':
           pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileStyle);
@@ -831,7 +833,7 @@ export class MapfileStyleParser implements StyleParser {
             symbolizer = this.getFillSymbolizerFromMapfileStyle(mapfileStyle);
             break;
           case 'query':
-          // layer can be queried but not drawn
+            // layer can be queried but not drawn
             break;
           case 'chart':
           case 'circle':
