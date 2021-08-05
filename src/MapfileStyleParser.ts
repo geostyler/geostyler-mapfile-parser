@@ -396,10 +396,7 @@ export class MapfileStyleParser implements StyleParser {
     const symbolType = mapfileStyle.symbol.type.toLowerCase();
     if (mapfileStyle.symbol.points) {
       const points = mapfileStyle.symbol.points.split(' ').map((item) => parseFloat(item));
-      if (symbolType === 'ellipse') {
-        if (!(points[0] === points[1] && points.length === 2)) {
-          logger.warn('Custom ellipse not supported by MarkerSymbolyzer, fallback to "Circle"!');
-        }
+      if (symbolType === 'ellipse' && points[0] === points[1] && points.length === 2) { 
         markSymbolizer.wellKnownName = 'circle' as WellKnownName;
       } else {
         if (isSquare(points)) {
@@ -414,13 +411,12 @@ export class MapfileStyleParser implements StyleParser {
       }
       if (!markSymbolizer.wellKnownName) {
         logger.warn(
-          `Custom symbol not supported by MarkerSymbolyzer, fallback to 'X':\n${JSON.stringify(
+          `Custom symbol not supported by MarkerSymbolyzer:\n${JSON.stringify(
             mapfileStyle.symbol,
             null,
             2
           )}`
         );
-        markSymbolizer.wellKnownName = 'x' as WellKnownName;
       }
     } else if (mapfileStyle.symbol.character) {
       const character = mapfileStyle.symbol.character.replace(/'|"/g, '');
