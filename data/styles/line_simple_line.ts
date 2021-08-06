@@ -5,6 +5,7 @@ const lineStyle: Style = {
   rules: [{
     name: '',
     symbolizers: [{
+      cap: 'round',
       kind: 'Line',
       join: 'round', // mapserver default
       width: 5,
