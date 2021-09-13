@@ -378,7 +378,7 @@ export class MapfileStyleParser implements StyleParser {
       markSymbolizer.radius = mapfileStyle.size / 2;
     }
 
-    markSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle : 0;
+    markSymbolizer.rotate = mapfileStyle.angle ? Number(mapfileStyle.angle) : 0;
 
     if (mapfileStyle.outlinecolor) {
       markSymbolizer.strokeColor = isHex(mapfileStyle.outlinecolor)
@@ -449,7 +449,7 @@ export class MapfileStyleParser implements StyleParser {
     if (mapfileStyle.size) {
       iconSymbolizer.size = mapfileStyle.size;
     }
-    iconSymbolizer.rotate = mapfileStyle.angle ? mapfileStyle.angle : 0;
+    iconSymbolizer.rotate = mapfileStyle.angle ? Number(mapfileStyle.angle) : 0;
 
     if (mapfileStyle.symbol.anchorpoint) {
       const anchorpoint: Array<number> = mapfileStyle.symbol.anchorpoint
@@ -485,7 +485,7 @@ export class MapfileStyleParser implements StyleParser {
       textSymbolizer.label = labelParameters.text.replace('[', '{{').replace(']', '}}');
     }
 
-    textSymbolizer.rotate = labelParameters.angle ? labelParameters.angle : 0;
+    textSymbolizer.rotate = labelParameters.angle ? Number(labelParameters.angle) : 0;
 
     if (labelParameters.offset) {
       const offset = labelParameters.offset.split(' ').map((a: string) => parseFloat(a));
@@ -1054,7 +1054,7 @@ export class MapfileStyleParser implements StyleParser {
           }
           break;
         default:
-          throw Error('Could not split mapfilExpression:' + mapfileExpression);
+          break;
       }
       index++;
     }
