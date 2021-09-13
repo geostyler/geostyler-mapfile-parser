@@ -25,17 +25,17 @@
   },
   "homepage": "https://github.com/geostyler/geostyler-mapfile-parser#readme",
   "scripts": {
-    "build": "tsc -p tsconfig.json && npm run build:browser",
-    "build:browser": "webpack --config browser-build.config.js",
-    "start:dev": "webpack --config dev-build.config.js --watch",
-    "prebuild": "npm run test",
-    "pretest": "npm run lint",
+    "build-browser": "webpack --config browser-build.config.js",
+    "build-dist": "tsc -p tsconfig.json",
+    "build": "npm run build-dist && npm run build-browser",
+    "lint:test:build": "npm run lint && npm run test && npm run build",
+    "lint:test": "npm run lint && npm run test",
+    "lint": "eslint -c .eslintrc.js --ext .ts . && tsc --noEmit --project tsconfig.json",
     "prepublishOnly": "npm run build",
-    "jest": "jest",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "lint": "eslint -c .eslintrc.js --ext .ts src && tsc --noEmit --project tsconfig.json",
-    "release": "np --no-yarn && git push https://github.com/geostyler/geostyler-mapfile-parser.git master --tags"
+    "release": "np --no-yarn && git push https://github.com/geostyler/geostyler-mapfile-parser.git master --tags",
+    "start-dev": "webpack --config dev-build.config.js --watch",
+    "test-watch": "jest --watchAll",
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@terrestris/base-util": "^1.0.1",
