@@ -2,8 +2,7 @@
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
-import { ComparisonFilter, Filter, Style } from 'geostyler-style';
-import { SldStyleParser } from 'geostyler-sld-parser';
+import { ComparisonFilter, Filter } from 'geostyler-style';
 
 import point_simple_point from '../data/styles/point_simple_point';
 import line_simple_line from '../data/styles/line_simple_line';
@@ -215,14 +214,6 @@ describe('MapfileStyleParser implements StyleParser', () => {
       expect(geoStylerStyle).toEqual(point_symbol_style_in_label);
     });
 
-    it('can translate Mapfile to SLD', async () => {
-      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_point.map', 'utf8');
-      const geostylerStyle = styleParser.readStyle(mapfile);
-      const sldStyleParser = new SldStyleParser();
-      return sldStyleParser.writeStyle(await geostylerStyle).then((sldStyle: string) => {
-        expect(sldStyle).toEqual(expect.any(String));
-      });
-    });
   });
 
   describe('#getFilterFromMapfileExpression', () => {
