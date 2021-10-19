@@ -31,7 +31,7 @@ const parser = new MapfileParser();
 // Load a Mapfile file
 const mapfile = fs.readFileSync('./mapfiles_folder/my_mapfile.map', 'utf8');
 
-const { options: geostylerStyle } = await parser.readStyle(mapfile);
+const { output: geostylerStyle } = await parser.readStyle(mapfile);
 console.log(geostylerStyle);
 ```
 
