@@ -31,10 +31,8 @@ const parser = new MapfileParser();
 // Load a Mapfile file
 const mapfile = fs.readFileSync('./mapfiles_folder/my_mapfile.map', 'utf8');
 
-parser
-  .readStyle(mapfile)
-  .then((geostylerStyle) => console.log(geostylerStyle))
-  .catch((error) => console.log(error));
+const { options: geostylerStyle } = await parser.readStyle(mapfile);
+console.log(geostylerStyle);
 ```
 
 Writing a Mapfile from a Geostyler-Style object is currently not possible.
