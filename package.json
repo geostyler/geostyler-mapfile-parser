@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@terrestris/base-util": "^1.0.1",
-    "geostyler-style": "^4.0.3",
+    "geostyler-style": "^5.0.0",
     "ts-jest": "^27.0.5"
   },
   "devDependencies": {

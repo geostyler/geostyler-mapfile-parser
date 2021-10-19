@@ -23,9 +23,25 @@ import {
   ColorMap,
   GrayChannel,
   RGBChannel,
+  ReadStyleResult,
+  UnsupportedProperties,
+  WriteStyleResult,
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
 import logger from '@terrestris/base-util/dist/Logger';
+
+/**
+ * The Result of the readMultiStyle function.
+ */
+export type ReadStyleMultiResult = {
+  warnings?: string[];
+  unsupportedProperties?: UnsupportedProperties;
+  /**
+   * The geostyler-style array as read by the parser.
+   */
+  output?: Style[];
+  errors?: Error[];
+};
 
 export type ConstructorParams = Record<string, unknown>;
 
@@ -966,13 +982,13 @@ export class MapfileStyleParser implements StyleParser {
    * The readStyle implementation of the GeoStyler-Style StyleParser interface.
    * It reads one mapfile LAYER as a string and returns a Promise.
    * If there are multiple LAYER, only the first will be read and returned.
-   * The Promise itself resolves with a GeoStyler-Style Style.
+   * The Promise itself resolves containing a GeoStyler-Style Style.
    *
    * @param  {string} mapfileString A Mapfile as a string.
-   * @return {Promise} The Promise resolving with the GeoStyler-Style Style
+   * @return {Promise} The Promise resolving containing the GeoStyler-Style Style.
    */
-  readStyle(mapfileString: string): Promise<Style> {
-    return new Promise<Style>((resolve, reject) => {
+  readStyle(mapfileString: string): Promise<ReadStyleResult> {
+    return new Promise<ReadStyleResult>(resolve => {
       try {
         const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
@@ -980,9 +996,13 @@ export class MapfileStyleParser implements StyleParser {
           throw new Error('Cannot read multiple LAYER in one file. Use method readMultiStyles instead.');
         }
         const geoStylerStyle: Style = this.mapfileLayerToGeoStylerStyle(mapfileLayers[0]);
-        resolve(geoStylerStyle);
+        resolve({
+          output: geoStylerStyle
+        });
       } catch (error) {
-        reject(error);
+        resolve({
+          errors: [error]
+        });
       }
     });
   }
@@ -991,19 +1011,23 @@ export class MapfileStyleParser implements StyleParser {
    * Same as readStyle but read mutliple LAYER in a mapfile.
    *
    * @param  {string} mapfileString A Mapfile as a string.
-   * @return {Promise} The Promise resolving with an array of GeoStyler-Style Style
+   * @return {Promise} The Promise resolves containing an array of GeoStyler-Style Style.
    */
-  readMultiStyles(mapfileString: string): Promise<Style[]> {
-    return new Promise<Style[]>((resolve, reject) => {
+  readMultiStyles(mapfileString: string): Promise<ReadStyleMultiResult> {
+    return new Promise<ReadStyleMultiResult>(resolve => {
       try {
         const mapfile: Mapfile = parseMapfile(mapfileString, this.symbolsPath);
         const mapfileLayers = mapfile.map.layers || [];
         const geoStylerStyles: Style[] = mapfileLayers.map((layer: any) => {
           return this.mapfileLayerToGeoStylerStyle(layer);
         });
-        resolve(geoStylerStyles);
+        resolve({
+          output: geoStylerStyles
+        });
       } catch (error) {
-        reject(error);
+        resolve({
+          errors: [error]
+        });
       }
     });
   }
@@ -1016,13 +1040,17 @@ export class MapfileStyleParser implements StyleParser {
    * @param {Style} geoStylerStyle A GeoStyler-Style Style.
    * @return {Promise} The Promise resolving with the Mapfile as a string.
    */
-  writeStyle(geoStylerStyle: Style): Promise<string> {
-    return new Promise<any>((resolve, reject) => {
+  writeStyle(geoStylerStyle: Style): Promise<WriteStyleResult<string>> {
+    return new Promise<WriteStyleResult<string>>(resolve => {
       try {
         const mapfileString = 'TODO';
-        resolve(mapfileString);
+        resolve({
+          output: mapfileString
+        });
       } catch (error) {
-        reject(error);
+        resolve({
+          errors: [error]
+        });
       }
     });
   }
