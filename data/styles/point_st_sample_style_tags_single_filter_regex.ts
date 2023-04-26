@@ -4,7 +4,13 @@ const pointStyle: Style = {
   name: 'point_st_sample_style_tags_single_filter_regex',
   rules: [{
     filter: [
-      '*=', ['FN_strMatches', 'name', '/bus/'], true
+      '==', {
+        name: 'strMatches',
+        args: [{
+          name: 'property',
+          args: ['name']
+        }, '/bus/']
+      }, true
     ],
     name: 'Test point',
     symbolizers: [{

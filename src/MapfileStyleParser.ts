@@ -52,7 +52,7 @@ export type ConstructorParams = Record<string, unknown>;
  * @class MapfileStyleParser
  * @implements StyleParser
  */
-export class MapfileStyleParser implements StyleParser {
+export class MapfileStyleParser implements StyleParser<string> {
   /**
    * The name of the Mapfile Style Parser.
    */
@@ -61,6 +61,22 @@ export class MapfileStyleParser implements StyleParser {
   title = 'Mapfile Style Parser';
 
   symbolsPath = `${process.cwd()}/symbols.sym`;
+
+  unsupportedProperties: UnsupportedProperties = {
+    Symbolizer: {
+      support: 'partial',
+      info: 'Read only'
+    },
+    Filter: {
+      support: 'partial',
+      info: 'Read only'
+    },
+    Function: 'none',
+    ScaleDenominator: {
+      support: 'partial',
+      info: 'Read only'
+    }
+  };
 
   constructor(opts?: ConstructorParams) {
     Object.assign(this, opts);
@@ -95,17 +111,27 @@ export class MapfileStyleParser implements StyleParser {
       case '"':
         return ['==' as ComparisonOperator, mapfileClassItem, expression.substring(1, expression.length - 1)];
       case '/':
-        return ['*=', ['FN_strMatches', mapfileClassItem, expression as unknown as RegExp], true];
+        return ['==', {
+          name: 'strMatches',
+          args: [
+            {
+              name: 'property',
+              args: [mapfileClassItem]
+            },
+            expression
+          ]
+        }, true];
       case '{':
-        return [
-          '*=',
-          [
-            'FN_strMatches',
-            mapfileClassItem,
-            `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/` as unknown as RegExp
-          ],
-          true,
-        ];
+        return ['==', {
+          name: 'strMatches',
+          args: [
+            {
+              name: 'property',
+              args: [mapfileClassItem]
+            },
+            `/(${expression.substring(1, expression.length - 1).replace(/,/g, '|')})/`
+          ]
+        }, true];
       default:
         logger.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
     }
@@ -131,27 +157,36 @@ export class MapfileStyleParser implements StyleParser {
       .replace('le', '<=')
       .replace('ge', '>=');
 
-    // TODO: assert there are no qotes in strings, either of!
+    // TODO: assert there are no quotes in strings, either of!
 
     switch (operator) {
       case '~': {
-        const valueOrNumber: string | number = /^[-\d]/.test(value) ? parseFloat(value) : value;
-        return ['*=', ['FN_strMatches', attribute, valueOrNumber as any], true];
+        return ['==', {
+          name: 'strMatches',
+          args: [{
+            name: 'property',
+            args: [attribute]
+          }, value]
+        }, true];
       }
       case '~*':
-        return ['*=', ['FN_strMatches', attribute, `${value}i` as any], true];
+        return ['==', {
+          name: 'strMatches',
+          args: [{
+            name: 'property',
+            args: [attribute]
+          }, value + 'i']
+        }, true];
       case 'IN':
-        return [
-          '*=',
-          [
-            'FN_strMatches',
-            attribute,
-            (`/${value
-              .substring(1, value.length - 1)
-              .replace(',', '|')}/` as unknown) as RegExp
-          ],
-          true,
-        ];
+        return [ '==', {
+          name: 'in',
+          args: [{
+            name: 'property',
+            args: [attribute]
+          },
+          ...value.split(',')
+          ]
+        }, true];
       case '==':
       case '!=':
       case '<':
