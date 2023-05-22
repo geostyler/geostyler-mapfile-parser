@@ -85,3 +85,11 @@ You can now show predefined mapfiles at this url:
 <http://localhost:8380/mapserv?service=wms&version=1.3.0&request=getmap&bbox=46.4,6.4,47.2,7.8&layers=line_simple_line&width=1200&height=800&format=image/jpeg&CRS=EPSG:4326>
 
 Set the `layers` param to display other layers (from layers defined in /data/mapfiles).
+
+## <a name="funding"></a>Funding & financial sponsorship
+
+Maintenance and further development of this code can be funded through the
+[GeoStyler Open Collective](https://opencollective.com/geostyler). All contributions and
+expenses can transparently be reviewed by anyone; you see what we use the donated money for.
+Thank you for any financial support you give the GeoStyler project 💞
+
