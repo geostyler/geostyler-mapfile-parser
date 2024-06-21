@@ -29,6 +29,7 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record
 
   // handle multi block keys
   if (lineObject.key in multiBlockKeys) {
+    // @ts-expect-error TODO fix index typing
     const pluralKey = multiBlockKeys[lineObject.key];
     if (!(pluralKey in currentBlock)) {
       currentBlock[pluralKey] = []; // add list
@@ -42,6 +43,7 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record
     }
   } else {
     // check for duplicate block key
+    // @ts-expect-error TODO fix index typing
     if (lineObject.key in currentBlock || multiBlockKeys[lineObject.key] in currentBlock) {
       logger.error(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
     }

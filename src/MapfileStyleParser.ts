@@ -517,6 +517,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         '0 1': 'bottom-left',
         '1 1': 'bottom-right',
       };
+      // @ts-expect-error TODO fix index typing
       iconSymbolizer.anchor = anchorpointMap[`${anchorpoint[0]} ${anchorpoint[1]}`];
     }
 
@@ -579,6 +580,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         ll: 'bottom-left',
         lr: 'bottom-right',
       };
+      // @ts-expect-error TODO fix index typing
       textSymbolizer.anchor = anchorpointMap[labelParameters.position.toLowerCase()];
     }
 

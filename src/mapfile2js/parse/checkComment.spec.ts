@@ -1,3 +1,5 @@
+import { beforeEach, expect, it, describe } from 'vitest';
+
 import { checkComment } from './checkComment';
 import { LineObject } from '../parseMapfile';
 
