@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
+    "allowJs": false,
     "baseUrl": ".",
     "declaration": true,
     "esModuleInterop": true,
-    "outDir": "build/dist",
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["es2017", "dom"],
-    "sourceMap": true,
-    "inlineSources": true,
-    "moduleResolution": "node",
-    "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": ["ES2022", "es6", "dom"],
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "target": "ES2022",
   },
   "exclude": [
     "node_modules",
-    "build",
+    "dist",
     "scripts",
     "acceptance-tests",
     "coverage",
@@ -29,7 +29,7 @@
     "jest",
     "data",
     "**/*.spec.ts",
-    "browser",
-    "browser-build.config.js"
+    "vite.config.ts",
+    "vitest.config.ts"
   ]
 }

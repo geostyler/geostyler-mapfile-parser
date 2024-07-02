@@ -1,3 +1,5 @@
+import { expect, it, describe } from 'vitest';
+
 import * as fs from 'fs';
 
 import { parseMapfile, parseSymbolset } from './parseMapfile';

@@ -1,3 +1,5 @@
+import { beforeEach, expect, it, describe } from 'vitest';
+
 import { checkKeyValue} from './checkKeyValue';
 import { LineObject } from '../parseMapfile';
 

@@ -1,3 +1,5 @@
+import { beforeEach, expect, it, describe } from 'vitest';
+
 /* eslint-disable camelcase */
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
