@@ -30,8 +30,6 @@
     "lint:test:build": "npm run lint && npm run test && npm run build",
     "lint:test": "npm run lint && npm run test",
     "lint": "eslint -c .eslintrc.cjs --ext .ts . && tsc --noEmit",
-    "prepublishOnly": "npm run build",
-    "release": "np --no-yarn && git push https://github.com/geostyler/geostyler-mapfile-parser.git master --tags",
     "start-dev": "vite",
     "test-watch": "vitest",
     "test": "vitest run --coverage"
@@ -51,7 +49,6 @@
     "@vitest/coverage-v8": "^1.6.0",
     "eslint": "^7.32.0",
     "jest": "^27.2.0",
-    "np": "^10.0.0",
     "path": "^0.12.7",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",
