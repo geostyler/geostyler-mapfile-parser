@@ -35,7 +35,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@terrestris/base-util": "^1.0.1",
+    "@terrestris/base-util": "^2.0.0",
     "geostyler-style": "9.1.0"
   },
   "devDependencies": {
