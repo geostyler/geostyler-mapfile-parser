@@ -2,7 +2,7 @@ data:
   image: geostyler_mapfile_parser_data
 
 mapserver:
-  image: camptocamp/mapserver:7.2
+  image: camptocamp/mapserver:7.6
   volumes_from:
     - data
   environment:
