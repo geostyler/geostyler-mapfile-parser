@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 COPY mapfiles /etc/mapserver
 VOLUME /etc/mapserver
