@@ -52,7 +52,7 @@
     "path": "^0.12.7",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.0"
   },
   "funding": "https://opencollective.com/geostyler"
 }
