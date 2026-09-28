@@ -157,11 +157,11 @@ export interface MapfileStyle {
   /**
    * Sets the line cap type for lines. Default is round.
    */
-  linecap: 'butt' | 'round' | 'square';
+  linecap: "butt" | "round" | "square";
   /**
    * Sets the line join type for lines. Default is round.
    */
-  linejoin: 'bevel' | 'round' | 'miter' | 'none';
+  linejoin: "bevel" | "round" | "miter" | "none";
   initialgap: number;
   symbol: MapfileSymbol;
   outlinecolor: string;

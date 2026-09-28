@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "allowJs": false,
     "baseUrl": ".",
     "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "inlineSources": true,
+    "isolatedModules": true,
     "lib": ["ES2022", "es6", "dom"],
     "module": "Preserve",
     "moduleResolution": "Bundler",
+    "emitDeclarationOnly": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -17,19 +20,11 @@
     "rootDir": "src",
     "sourceMap": true,
     "strictNullChecks": true,
-    "target": "ES2022",
+    "target": "ES2022"
   },
+  "include": ["src/**/*"],
   "exclude": [
-    "node_modules",
-    "dist",
-    "scripts",
-    "acceptance-tests",
-    "coverage",
-    "webpack",
-    "jest",
-    "data",
-    "**/*.spec.ts",
-    "vite.config.ts",
-    "vitest.config.ts"
+    "src/testData",
+    "**/*.spec.ts"
   ]
 }

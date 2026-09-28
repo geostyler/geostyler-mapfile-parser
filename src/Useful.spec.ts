@@ -1,4 +1,4 @@
-import { expect, it, describe } from 'vitest';
+import { expect, it, describe } from "vitest";
 
 import {
   isCross,
@@ -6,14 +6,14 @@ import {
   isTriangle,
   rgbToHex,
   rgbRangeToHexArray,
-  isHex
-} from './Useful';
+  isHex,
+} from "./Useful";
 
-describe('isCross', () => {
-  it('is defined', () => {
+describe("isCross", () => {
+  it("is defined", () => {
     expect(isCross).toBeDefined();
   });
-  it('can recognize a cross', () => {
+  it("can recognize a cross", () => {
     // Logical cross
     let points = [2.0, 0.0, 2.0, 4.0, -99, -99, 0.0, 2.0, 4.0, 2.0];
     expect(isCross(points)).toEqual(true);
@@ -32,11 +32,11 @@ describe('isCross', () => {
   });
 });
 
-describe('isSquare', () => {
-  it('is defined', () => {
+describe("isSquare", () => {
+  it("is defined", () => {
     expect(isSquare).toBeDefined();
   });
-  it('can recognize a square', () => {
+  it("can recognize a square", () => {
     // Logical square
     let points = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0];
     expect(isSquare(points)).toEqual(true);
@@ -59,11 +59,11 @@ describe('isSquare', () => {
   });
 });
 
-describe('isTriangle', () => {
-  it('is defined', () => {
+describe("isTriangle", () => {
+  it("is defined", () => {
     expect(isTriangle).toBeDefined();
   });
-  it('can recognize a triangle', () => {
+  it("can recognize a triangle", () => {
     // Logical triangle
     let points = [1.0, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0];
     expect(isTriangle(points)).toEqual(true);
@@ -82,26 +82,26 @@ describe('isTriangle', () => {
   });
 });
 
-describe('Color helpers', () => {
-  it('can convert a RGB color to hexdecimal format', async () => {
+describe("Color helpers", () => {
+  it("can convert a RGB color to hexdecimal format", async () => {
     expect.assertions(2);
-    const rgb = '0 0 0';
+    const rgb = "0 0 0";
     const hex = rgbToHex(rgb);
     expect(hex).toBeDefined();
-    expect(hex).toEqual('#000000');
+    expect(hex).toEqual("#000000");
   });
 
-  it('can convert a RGB color range to hexdecimal array format', async () => {
+  it("can convert a RGB color range to hexdecimal array format", async () => {
     expect.assertions(2);
-    const rgbRange = '0 0 0 255 255 255';
+    const rgbRange = "0 0 0 255 255 255";
     const hexArray = rgbRangeToHexArray(rgbRange);
     expect(hexArray).toBeDefined();
-    expect(hexArray).toEqual(['#000000', '#FFFFFF']);
+    expect(hexArray).toEqual(["#000000", "#FFFFFF"]);
   });
 
-  it('checks if a color string is in hexadecimal format', async () => {
+  it("checks if a color string is in hexadecimal format", async () => {
     expect.assertions(3);
-    const rgb = '226 6 19';
+    const rgb = "226 6 19";
     const hex = rgbToHex(rgb);
     expect(hex).toBeDefined();
     expect(isHex(hex)).toBeTruthy();

@@ -1,4 +1,4 @@
-import { LineObject } from '../parseMapfile';
+import { LineObject } from "../parseMapfile";
 
 function removeQuotes(str: string): string {
   if (/^['"].+['"]$/.test(str)) {
@@ -19,9 +19,14 @@ export function checkKeyValue(lineObject: LineObject): LineObject {
 
     lineObject.key = removeQuotes(lineParts[0]).toLowerCase();
 
-    const value = lineObject.contentWithoutComment.replace(lineParts[0], '').trim();
+    const value = lineObject.contentWithoutComment
+      .replace(lineParts[0], "")
+      .trim();
     // do not mess with expressions, quotes have meaning
-    lineObject.value = lineObject.key.toUpperCase() === 'EXPRESSION' ? value : removeQuotes(value);
+    lineObject.value =
+      lineObject.key.toUpperCase() === "EXPRESSION"
+        ? value
+        : removeQuotes(value);
   } else {
     // key only
     lineObject.key = lineObject.contentWithoutComment.toLowerCase();

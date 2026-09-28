@@ -1,4 +1,4 @@
-import { LineObject } from '../parseMapfile';
+import { LineObject } from "../parseMapfile";
 
 /**
  *
@@ -11,12 +11,15 @@ export function checkBlockKey(lineObject: LineObject): LineObject {
 
   if (
     !lineObject.value &&
-    lineObject.key.toUpperCase() !== 'END' && // END is no block
-    !lineObject.key.toLowerCase().includes('init=') && // value of PROJECTION block is no block
+    lineObject.key.toUpperCase() !== "END" && // END is no block
+    !lineObject.key.toLowerCase().includes("init=") && // value of PROJECTION block is no block
     isNaN(parseInt(lineObject.key, 10)) // a single number within a line is no block
   ) {
     lineObject.isBlockKey = true;
-  } else if (lineObject.value && lineObject.value.toUpperCase().endsWith(' END')) {
+  } else if (
+    lineObject.value &&
+    lineObject.value.toUpperCase().endsWith(" END")
+  ) {
     lineObject.isBlockKey = true;
     lineObject.isBlockLine = true;
   }

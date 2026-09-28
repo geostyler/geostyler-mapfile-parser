@@ -1,3 +1,7 @@
+import { Fin, FstrMatches } from "geostyler-style";
+
+export const WARNINGS: string[] = [];
+
 /**
  * Convert a color in RGB (R G B) format to hexadecimal (#RRGGBB) format
  *
@@ -5,9 +9,15 @@
  * @return {string} The same color in hexadecimal format
  */
 export function rgbToHex(s: string): string {
-  const rgb = s.split(' ').map(Number);
+  const rgb = s.split(" ").map(Number);
   // eslint-disable-next-line no-bitwise
-  return '#' + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).toUpperCase().slice(1);
+  return (
+    "#" +
+    ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2])
+      .toString(16)
+      .toUpperCase()
+      .slice(1)
+  );
 }
 
 /**
@@ -17,7 +27,7 @@ export function rgbToHex(s: string): string {
  * @returns {boolean} Returns true or false as the result of testing the string
  */
 export function isHex(hex: string): boolean {
-  return (hex.indexOf('#') === 0);
+  return hex.indexOf("#") === 0;
 }
 
 /**
@@ -25,10 +35,10 @@ export function isHex(hex: string): boolean {
  *
  * @param {string} s The strings representing the range of colors in RGB in the Mapfile file
  * @return {string[]} The same colors as an array of strings in hexadecimal format
-*/
+ */
 export function rgbRangeToHexArray(s: string): string[] {
-  const lowerBoundColor = rgbToHex(s.split(' ').slice(0, 3).join(' '));
-  const upperBoundColor = rgbToHex(s.split(' ').slice(3, 6).join(' '));
+  const lowerBoundColor = rgbToHex(s.split(" ").slice(0, 3).join(" "));
+  const upperBoundColor = rgbToHex(s.split(" ").slice(3, 6).join(" "));
   return [lowerBoundColor, upperBoundColor];
 }
 
@@ -39,7 +49,10 @@ export function rgbRangeToHexArray(s: string): string[] {
  * @return {boolean}
  */
 function isClosedSequence(points: number[]): boolean {
-  return points[0] === points[points.length - 2] && points[1] === points[points.length - 1];
+  return (
+    points[0] === points[points.length - 2] &&
+    points[1] === points[points.length - 1]
+  );
 }
 
 /**
@@ -58,16 +71,22 @@ export function isSquare(points: number[]): boolean {
   const pointsTwice = points.slice(0, 8).concat(points.slice(0, 8));
   for (const i of [0, 2, 4, 6]) {
     const dotProduct =
-      (pointsTwice[i] - pointsTwice[i + 2]) * (pointsTwice[i + 4] - pointsTwice[i + 2]) +
-      (pointsTwice[i + 1] - pointsTwice[i + 3]) * (pointsTwice[i + 5] - pointsTwice[i + 3]);
+      (pointsTwice[i] - pointsTwice[i + 2]) *
+        (pointsTwice[i + 4] - pointsTwice[i + 2]) +
+      (pointsTwice[i + 1] - pointsTwice[i + 3]) *
+        (pointsTwice[i + 5] - pointsTwice[i + 3]);
     if (dotProduct !== 0) {
       return false;
     }
   }
 
   // Two sides must have same length
-  const sideOne = Math.sqrt(Math.pow(points[0] - points[2], 2) + Math.pow(points[1] - points[3], 2));
-  const sideOther = Math.sqrt(Math.pow(points[4] - points[2], 2) + Math.pow(points[5] - points[3], 2));
+  const sideOne = Math.sqrt(
+    Math.pow(points[0] - points[2], 2) + Math.pow(points[1] - points[3], 2),
+  );
+  const sideOther = Math.sqrt(
+    Math.pow(points[4] - points[2], 2) + Math.pow(points[5] - points[3], 2),
+  );
   if (sideOne !== sideOther) {
     return false;
   }
@@ -121,18 +140,19 @@ export function isCross(points: number[]): boolean {
   }
 
   // Should consist of horizontal and vertical line
-  if (
-    !(
-      (points[0] === points[2] && points[7] === points[9]) ||
-      (points[1] === points[3] && points[6] === points[8])
-    )
-  ) {
+  if (!(
+    (points[0] === points[2] && points[7] === points[9]) ||
+    (points[1] === points[3] && points[6] === points[8])
+  )) {
     return false;
   }
 
   // Should intersect in the middle
   const middleOne = [(points[0] + points[2]) / 2, (points[1] + points[3]) / 2];
-  const middleOther = [(points[6] + points[8]) / 2, (points[7] + points[9]) / 2];
+  const middleOther = [
+    (points[6] + points[8]) / 2,
+    (points[7] + points[9]) / 2,
+  ];
   if (middleOne[0] !== middleOther[0] || middleOne[1] !== middleOther[1]) {
     return false;
   }
@@ -140,3 +160,38 @@ export function isCross(points: number[]): boolean {
   return true;
 }
 
+/**
+ * @returns a "FstrMatches" expression.
+ * @param args
+ * @param value
+ */
+export function getFstrMatchExpr(args: string, value: string): FstrMatches {
+  return {
+    name: "strMatches",
+    args: [
+      {
+        name: "property",
+        args: [args],
+      },
+      value,
+    ],
+  };
+}
+
+/**
+ * @returns a "Fin" expression.
+ * @param args
+ * @param value
+ */
+export function getInExpr(args: string, value: string[]): Fin {
+  return {
+    name: "in",
+    args: [
+      {
+        name: "property",
+        args: [args],
+      },
+      ...value,
+    ],
+  };
+}

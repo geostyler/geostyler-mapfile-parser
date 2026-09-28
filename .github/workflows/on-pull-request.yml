@@ -4,23 +4,24 @@ on: pull_request
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20, 22, 24]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Cache Node.js modules 💾
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.npm
         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -29,7 +30,7 @@ jobs:
           ${{ runner.OS }}-
 
     - name: Install dependencies ⏬
-      run: npm install
+      run: npm ci
 
     - name: Lint code 💄
       run: npm run lint
@@ -39,9 +40,3 @@ jobs:
 
     - name: Build artifacts 🏗️
       run: npm run build
-
-    - name: Publish to coveralls ⭐
-      # coverage/lcov.info was generated in the previous npm run build step
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-import { LineObject } from '../parseMapfile';
+import { LineObject } from "../parseMapfile";
 
 /**
  *
@@ -17,7 +17,7 @@ export function checkBlockEndSum(lines: LineObject[]): void {
         blockCounter++;
       } else {
         if (line.key) {
-          if (line.key.toUpperCase() === 'END') {
+          if (line.key.toUpperCase() === "END") {
             endCounter++;
           }
         }
@@ -27,9 +27,13 @@ export function checkBlockEndSum(lines: LineObject[]): void {
 
   if (blockCounter !== endCounter) {
     if (blockCounter < endCounter) {
-      throw new Error(`Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`);
+      throw new Error(
+        `Too many ends (blocks: ${blockCounter}, ends: ${endCounter}).`,
+      );
     } else {
-      throw new Error(`Too few ends (blocks: ${blockCounter}, ends: ${endCounter}).`);
+      throw new Error(
+        `Too few ends (blocks: ${blockCounter}, ends: ${endCounter}).`,
+      );
     }
   }
 }

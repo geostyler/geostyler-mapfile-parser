@@ -1,17 +1,17 @@
-import { checkComment } from './parse/checkComment';
-import { checkKeyValue } from './parse/checkKeyValue';
-import { checkBlockKey } from './parse/checkBlockKey';
-import { parseBlockKey } from './parse/parseBlockKey';
-import { checkBlockEndSum } from './parse/checkBlockEndSum';
-import { determineDepth } from './parse/determineDepth';
-import { resolveSymbolset } from './parse/resolveSymbolset';
-import { Mapfile, MapfileSymbolset } from './mapfileTypes';
-import logger from '@terrestris/base-util/dist/Logger';
+import { checkComment } from "./parse/checkComment";
+import { checkKeyValue } from "./parse/checkKeyValue";
+import { checkBlockKey } from "./parse/checkBlockKey";
+import { parseBlockKey } from "./parse/parseBlockKey";
+import { checkBlockEndSum } from "./parse/checkBlockEndSum";
+import { determineDepth } from "./parse/determineDepth";
+import { resolveSymbolset } from "./parse/resolveSymbolset";
+import { Mapfile, MapfileSymbolset } from "./mapfileTypes";
+import { WARNINGS } from "../Useful.ts";
 
 // some blocks are actually a key value pair
-const pseudoBlockKeys = ['projection', 'pattern', 'points'];
+const pseudoBlockKeys = ["projection", "pattern", "points"];
 // some keys are reused to specify an array of values
-const listKeys = ['formatoption', 'include', 'processing'];
+const listKeys = ["formatoption", "include", "processing"];
 
 /**
  * Object representation of a Mapfile line.
@@ -58,14 +58,14 @@ function parseContent(content: string): Record<string, unknown> {
   let pseudoBlockKey: any;
 
   // remove DATA block from full content data
-  content = content.replace(/DATA "[^"\\]*(?:\\.[^"\\]*?)*"(\r\n?|\n)/gs, '');
+  content = content.replace(/DATA "[^"\\]*(?:\\.[^"\\]*?)*"(\r\n?|\n)/gs, "");
 
   // split content into trimmed lines like Van Damme
   const lines = content.split(/\s*(?:\r\n?|\n)\s*/g);
   // iterate over lines
   lines.forEach((line, index) => {
     // ommit empty lines and comments
-    if (line === '' || line.startsWith('#')) {
+    if (line === "" || line.startsWith("#")) {
       return;
     }
     // line object
@@ -78,7 +78,7 @@ function parseContent(content: string): Record<string, unknown> {
     // handle pseudo blocks
     if (pseudoBlockKeys.includes(lineObject.key)) {
       if (lineObject.value) {
-        currentBlock[lineObject.key] = lineObject.value.replace(/\s*END$/i, '');
+        currentBlock[lineObject.key] = lineObject.value.replace(/\s*END$/i, "");
         if (lineObject.value.match(/\s*END$/i)) {
           return;
         }
@@ -86,10 +86,11 @@ function parseContent(content: string): Record<string, unknown> {
       pseudoBlockKey = lineObject.key;
       return;
     }
-    if (pseudoBlockKey && lineObject.key !== 'end') {
-      const value = lineObject.contentWithoutComment.replace(/"/g, '');
+    if (pseudoBlockKey && lineObject.key !== "end") {
+      const value = lineObject.contentWithoutComment.replace(/"/g, "");
       if (currentBlock[pseudoBlockKey]) {
-        currentBlock[pseudoBlockKey] = `${currentBlock[pseudoBlockKey]} ${value}`;
+        currentBlock[pseudoBlockKey] =
+          `${currentBlock[pseudoBlockKey]} ${value}`;
       } else {
         currentBlock[pseudoBlockKey] = value;
       }
@@ -106,7 +107,7 @@ function parseContent(content: string): Record<string, unknown> {
     }
 
     // handle block end
-    if (lineObject.key === 'end') {
+    if (lineObject.key === "end") {
       if (pseudoBlockKey) {
         pseudoBlockKey = undefined;
       } else {
@@ -117,8 +118,10 @@ function parseContent(content: string): Record<string, unknown> {
 
     // insert key value pair
     if (lineObject.key in currentBlock) {
-      logger.warn(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
-      logger.error('Overwriting existing key! consider an array!');
+      WARNINGS.push(
+        `Duplicate key on line [${index + 1}]: ${lineObject.content}`,
+      );
+      WARNINGS.push("Overwriting existing key! consider an array!");
     }
     currentBlock[lineObject.key] = lineObject.value;
   });
@@ -140,7 +143,7 @@ export function parseMapfile(content: string, symbolsPath: string): Mapfile {
   let result: any = parseContent(content);
 
   // add map bock for consistency if not exists
-  result = 'map' in result ? result : { map: result };
+  result = "map" in result ? result : { map: result };
 
   // resolve symbolset
   const mapfile = resolveSymbolset(result as Mapfile, symbolsPath);
@@ -157,8 +160,8 @@ export function parseSymbolset(content: string): MapfileSymbolset {
   const result: any = parseContent(content);
 
   // A Mapfile symbolset begins with SYMBOLSET and ends with END
-  if (!('symbolset' in result)) {
-    logger.error('Symbolset could not be parsed.');
+  if (!("symbolset" in result)) {
+    WARNINGS.push("Symbolset could not be parsed.");
   }
 
   return result.symbolset as MapfileSymbolset;
