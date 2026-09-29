@@ -1,5 +1,5 @@
 import { LineObject } from '../parseMapfile';
-import { WARNINGS } from "../../Useful.ts";
+import { WARNINGS } from '../../Useful.ts';
 
 // there can be multiple layer, class and style block siblings
 const multiBlockKeys = {
@@ -20,10 +20,15 @@ const multiBlockKeys = {
  * @param {array} lines Array of line strings
  * @param {array} blocks Block stack
  */
-export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record<string, unknown> | undefined {
+export function parseBlockKey(
+  lineObject: LineObject,
+  currentBlock: any,
+): Record<string, unknown> | undefined {
   // test for unhadled block lines
   if (lineObject.isBlockLine) {
-    WARNINGS.push(`Not able to deal with the following Block line: ${lineObject.content}`);
+    WARNINGS.push(
+      `Not able to deal with the following Block line: ${lineObject.content}`,
+    );
     return;
   }
 
@@ -44,7 +49,10 @@ export function parseBlockKey(lineObject: LineObject, currentBlock: any): Record
   } else {
     // check for duplicate block key
     // @ts-expect-error TODO fix index typing
-    if (lineObject.key in currentBlock || multiBlockKeys[lineObject.key] in currentBlock) {
+    if (
+      lineObject.key in currentBlock ||
+      multiBlockKeys[lineObject.key] in currentBlock
+    ) {
       WARNINGS.push(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);
     }
     // create block

@@ -25,7 +25,9 @@ describe('checkComment', () => {
     expect(got.contentWithoutComment).toEqual('COLOR "#BADA55"');
   });
   it('works on lines with hex colors w/ an inline comment', () => {
-    const got = checkComment({ content: 'COLOR "#DEADBEEF" # baz comment' } as LineObject);
+    const got = checkComment({
+      content: 'COLOR "#DEADBEEF" # baz comment',
+    } as LineObject);
     expect(got.comment).toEqual('baz comment');
     expect(got.contentWithoutComment).toEqual('COLOR "#DEADBEEF"');
   });

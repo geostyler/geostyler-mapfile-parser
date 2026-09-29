@@ -1,8 +1,14 @@
 import * as fs from 'fs';
 import { parseSymbolset } from '../parseMapfile';
-import { MapfileSymbol, Mapfile, MapfileClass, MapfileLayer, MapfileStyle } from '../mapfileTypes';
+import {
+  MapfileSymbol,
+  Mapfile,
+  MapfileClass,
+  MapfileLayer,
+  MapfileStyle,
+} from '../mapfileTypes';
 import { parse } from 'path';
-import { WARNINGS } from "../../Useful.ts";
+import { WARNINGS } from '../../Useful.ts';
 
 let mapfileSymbols: Array<MapfileSymbol>;
 
@@ -17,7 +23,8 @@ function substituteSymbols(obj: any): void {
       } else {
         // TODO: distinguish corectly between index and name reference
         const symbol = mapfileSymbols.find(
-          (element) => element.name.replace('/\'|"/g', '') === obj[property].replace('/\'|"/g', '')
+          (element) =>
+            element.name.replace('/\'|"/g', '') === obj[property].replace('/\'|"/g', ''),
         );
         if (symbol) {
           obj[property] = symbol;
@@ -47,28 +54,20 @@ export function resolveSymbolsFromMapfile(mapfile: Mapfile): Mapfile {
             styles.forEach((style: MapfileStyle) => {
               if (style.symbol) {
                 symbols.forEach((symbol: any) => {
-                  if (
-                    symbol.name && symbol.image && symbol.name === style.symbol
-                  ) {
-                    style.symbol = (parse(symbol.image)
-                      .base as unknown) as MapfileSymbol;
+                  if (symbol.name && symbol.image && symbol.name === style.symbol) {
+                    style.symbol = parse(symbol.image).base as unknown as MapfileSymbol;
                   }
                 });
               }
             });
-          }  else if (mclass.labels) {
+          } else if (mclass.labels) {
             // parse symbol data within a style tag of a label
             mclass.labels.forEach((label) => {
               const styles: MapfileStyle[] = label.styles as MapfileStyle[];
               styles?.forEach((style: MapfileStyle) => {
                 symbols?.forEach((symbol: any) => {
-                  if (
-                    symbol.name &&
-                    symbol.image &&
-                    symbol.name === style.symbol
-                  ) {
-                    style.symbol = (parse(symbol.image)
-                      .base as unknown) as MapfileSymbol;
+                  if (symbol.name && symbol.image && symbol.name === style.symbol) {
+                    style.symbol = parse(symbol.image).base as unknown as MapfileSymbol;
                   }
                 });
               });
@@ -98,7 +97,9 @@ export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfil
     // Fallback to load the symbols file. Search "mapfile-symbols-path=" in the process args
     // (command line options).
     const processArgs = process.argv.slice(2);
-    const cliSymbolsetPath = processArgs.find((arg) => arg.search('mapfile-symbols-path=') === 0);
+    const cliSymbolsetPath = processArgs.find(
+      (arg) => arg.search('mapfile-symbols-path=') === 0,
+    );
     if (cliSymbolsetPath) {
       symbolsetPath = cliSymbolsetPath.substring(21);
       symbolsetFrom = 'command line argument';
@@ -117,7 +118,9 @@ export function resolveSymbolset(mapfile: Mapfile, symbolsPath?: string): Mapfil
   }
 
   if (!fs.existsSync(symbolsetPath)) {
-    WARNINGS.push(`No file found for symbolset path: ${symbolsetPath} (path taken from ${symbolsetFrom})`);
+    WARNINGS.push(
+      `No file found for symbolset path: ${symbolsetPath} (path taken from ${symbolsetFrom})`,
+    );
     return mapfile;
   }
 

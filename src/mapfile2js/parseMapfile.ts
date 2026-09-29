@@ -6,7 +6,7 @@ import { checkBlockEndSum } from './parse/checkBlockEndSum';
 import { determineDepth } from './parse/determineDepth';
 import { resolveSymbolset } from './parse/resolveSymbolset';
 import { Mapfile, MapfileSymbolset } from './mapfileTypes';
-import { WARNINGS } from "../Useful.ts";
+import { WARNINGS } from '../Useful.ts';
 
 // some blocks are actually a key value pair
 const pseudoBlockKeys = ['projection', 'pattern', 'points'];
