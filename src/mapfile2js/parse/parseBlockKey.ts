@@ -48,9 +48,9 @@ export function parseBlockKey(
     }
   } else {
     // check for duplicate block key
-    // @ts-expect-error TODO fix index typing
     if (
       lineObject.key in currentBlock ||
+      // @ts-expect-error TODO fix index typing
       multiBlockKeys[lineObject.key] in currentBlock
     ) {
       WARNINGS.push(`Overwriting block! Add '${lineObject.key}' to multi block keys!`);

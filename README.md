@@ -8,7 +8,7 @@
 
 ## Prerequisite
 
-[node v10+](https://nodejs.org/)
+[node v24+](https://nodejs.org/)
 
 And install it with npm:
 
