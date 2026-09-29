@@ -1,6 +1,6 @@
 import { Style } from 'geostyler-style';
 
-const pointSymbolStyle: Style = [
+const pointSymbolStyle: Style[] = [
   {
     name: 'point_symbol_style_in_label',
     rules: [

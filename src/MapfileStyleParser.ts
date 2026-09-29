@@ -1,5 +1,5 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
-import { rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray, isHex } from './Useful';
+import { WARNINGS, rgbToHex, isSquare, isTriangle, isCross, rgbRangeToHexArray, isHex } from './Useful';
 import {
   StyleParser,
   Style,
@@ -28,7 +28,6 @@ import {
   WriteStyleResult,
 } from 'geostyler-style';
 import { Mapfile, MapfileClass, MapfileStyle, MapfileLabel, MapfileLayer } from './mapfile2js/mapfileTypes';
-import logger from '@terrestris/base-util/dist/Logger';
 
 /**
  * The Result of the readMultiStyle function.
@@ -103,7 +102,7 @@ export class MapfileStyleParser implements StyleParser<string> {
    */
   getFilterFromClassItem(mapfileClass: MapfileClass, mapfileClassItem: string): Filter | null {
     if (!mapfileClassItem) {
-      logger.error(mapfileClassItem, 'Mapfile CLASSITEM undefined!');
+      WARNINGS.push(mapfileClassItem, 'Mapfile CLASSITEM undefined!');
     }
 
     const expression = mapfileClass.expression;
@@ -133,7 +132,7 @@ export class MapfileStyleParser implements StyleParser<string> {
           ]
         }, true];
       default:
-        logger.error(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
+        WARNINGS.push(`Unable to get Filter from CLASSITEM: ${mapfileClass}`);
     }
     return null;
   }
@@ -197,7 +196,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         return [operator as ComparisonOperator, attribute, valueOrNumber];
       }
       default:
-        logger.error(`Unknow comparison operator: ${operator}`);
+        WARNINGS.push(`Unknow comparison operator: ${operator}`);
         return null;
     }
   }
@@ -261,14 +260,14 @@ export class MapfileStyleParser implements StyleParser<string> {
       if (attributeMatch && operator && valueMatch) {
         return this.getFilterFromAttributeValueComparison(attributeMatch[1], operator, valueMatch[1]);
       } else {
-        logger.error(`Unable to parse common expression: ${attributeMatch}, ${operator}, ${valueMatch}`);
+        WARNINGS.push(`Unable to parse common expression: ${attributeMatch}, ${operator}, ${valueMatch}`);
       }
     }
 
     // TODO: implement logical combination expression relying on operator precedence
 
     if (mapfileExpression.length > 0) {
-      logger.warn(`Mapfile expression leftovers: ${mapfileExpression}`);
+      WARNINGS.push(`Mapfile expression leftovers: ${mapfileExpression}`);
     }
 
     return null;
@@ -288,9 +287,9 @@ export class MapfileStyleParser implements StyleParser<string> {
 
     // assert expression contains no string functions, arithmetic operations or spatial components
     if (/tostring \(|commify \(|upper \(|lower \(|initcap \(|firstcap \(|length \(/.test(expression)) {
-      logger.error(`Not able to parse string function: ${expression}`);
+      WARNINGS.push(`Not able to parse string function: ${expression}`);
     } else if (/round \(| \+ | - | \* | \/ | \^ | % /.test(expression)) {
-      logger.error(`Not able to parse arithmetic operator or function: ${expression}`);
+      WARNINGS.push(`Not able to parse arithmetic operator or function: ${expression}`);
       return null;
     } else if (
       [
@@ -309,16 +308,16 @@ export class MapfileStyleParser implements StyleParser<string> {
         'difference (',
       ].some((spatialComponent) => expression.includes(spatialComponent))
     ) {
-      logger.error(`Not able to parse spatial expression: ${expression}`);
+      WARNINGS.push(`Not able to parse spatial expression: ${expression}`);
       return null;
     } else if (expression.includes('´')) {
-      logger.error(`Not able to parse temporal expression: ${expression}`);
+      WARNINGS.push(`Not able to parse temporal expression: ${expression}`);
       return null;
     }
 
     // assert expression does not contain escaped quotes
     if (/\\'|\\"/.test(expression)) {
-      logger.error(`Mapfile expression may contain escaped quote: ${expression}`);
+      WARNINGS.push(`Mapfile expression may contain escaped quote: ${expression}`);
     }
 
     // get filter from expression value targeting CLASSITEM
@@ -328,7 +327,7 @@ export class MapfileStyleParser implements StyleParser<string> {
 
     // assert expression starts and ends with a bracket
     if (!/^\(.+\)$/.test(expression)) {
-      logger.error(`Malformed expression! ${expression}`);
+      WARNINGS.push(`Malformed expression! ${expression}`);
     }
 
     // get filter by expression parsing
@@ -461,7 +460,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         }
       }
       if (!markSymbolizer.wellKnownName) {
-        logger.warn(
+        WARNINGS.push(
           `Custom symbol not supported by MarkerSymbolyzer:\n${JSON.stringify(
             mapfileStyle.symbol,
             null,
@@ -644,7 +643,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         pointSymbolizer = this.getIconSymbolizerFromMapfileStyle(mapfileStyle);
       } else {
         // TODO: handle attribute pixmaps
-        logger.error('Not able to deal with attribute pixmaps');
+        WARNINGS.push('Not able to deal with attribute pixmaps');
       }
     }
     return pointSymbolizer;
@@ -768,7 +767,7 @@ export class MapfileStyleParser implements StyleParser<string> {
         } as ColorMap;
       }
     } else {
-      logger.warn('Raster classification not implemented!');
+      WARNINGS.push('Raster classification not implemented!');
     }
     return;
   }
@@ -1034,7 +1033,8 @@ export class MapfileStyleParser implements StyleParser<string> {
         }
         const geoStylerStyle: Style = this.mapfileLayerToGeoStylerStyle(mapfileLayers[0]);
         resolve({
-          output: geoStylerStyle
+          output: geoStylerStyle,
+          warnings: WARNINGS
         });
       } catch (error) {
         resolve({
@@ -1134,7 +1134,7 @@ export class MapfileStyleParser implements StyleParser<string> {
    */
   private checkWarnDropRule(notSupported: string, mapfileParentElement: string, mapfileElement: any): void {
     if (mapfileElement !== undefined) {
-      logger.warn(`Geostyler style does not support ${notSupported} operator
+      WARNINGS.push(`Geostyler style does not support ${notSupported} operator
         in ${mapfileParentElement}. This rule is dropped.`);
     }
   }

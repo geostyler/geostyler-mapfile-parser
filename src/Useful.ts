@@ -1,3 +1,5 @@
+export const WARNINGS: string[] = [];
+
 /**
  * Convert a color in RGB (R G B) format to hexadecimal (#RRGGBB) format
  *

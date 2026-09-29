@@ -4,7 +4,7 @@ import { beforeEach, expect, it, describe } from 'vitest';
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
-import { ComparisonFilter, Filter } from 'geostyler-style';
+import { ComparisonFilter } from 'geostyler-style';
 
 import point_simple_point from '../data/styles/point_simple_point';
 import line_simple_line from '../data/styles/line_simple_line';
@@ -225,7 +225,7 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can parse simple expression', () => {
       const mapfileExpression = '( "[attribute_name]" == "string_literal" )';
-      const geoStylerFilter: Filter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
+      const geoStylerFilter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
       expect(geoStylerFilter).toEqual(['==', 'attribute_name', 'string_literal'] as ComparisonFilter);
     });
   });

@@ -6,7 +6,7 @@ import { checkBlockEndSum } from './parse/checkBlockEndSum';
 import { determineDepth } from './parse/determineDepth';
 import { resolveSymbolset } from './parse/resolveSymbolset';
 import { Mapfile, MapfileSymbolset } from './mapfileTypes';
-import logger from '@terrestris/base-util/dist/Logger';
+import { WARNINGS } from "../Useful.ts";
 
 // some blocks are actually a key value pair
 const pseudoBlockKeys = ['projection', 'pattern', 'points'];
@@ -117,8 +117,8 @@ function parseContent(content: string): Record<string, unknown> {
 
     // insert key value pair
     if (lineObject.key in currentBlock) {
-      logger.warn(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
-      logger.error('Overwriting existing key! consider an array!');
+      WARNINGS.push(`Duplicate key on line [${index + 1}]: ${lineObject.content}`);
+      WARNINGS.push('Overwriting existing key! consider an array!');
     }
     currentBlock[lineObject.key] = lineObject.value;
   });
@@ -158,7 +158,7 @@ export function parseSymbolset(content: string): MapfileSymbolset {
 
   // A Mapfile symbolset begins with SYMBOLSET and ends with END
   if (!('symbolset' in result)) {
-    logger.error('Symbolset could not be parsed.');
+    WARNINGS.push('Symbolset could not be parsed.');
   }
 
   return result.symbolset as MapfileSymbolset;
