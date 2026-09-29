@@ -1,6 +1,6 @@
 import { Style } from 'geostyler-style';
 
-const pointStyle: Style = [{
+const pointStyle: Style[] = [{
   name: 'point_scale',
   rules: [{
     name: 'Max scale from class',

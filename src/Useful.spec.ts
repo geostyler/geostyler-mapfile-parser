@@ -6,7 +6,7 @@ import {
   isTriangle,
   rgbToHex,
   rgbRangeToHexArray,
-  isHex
+  isHex,
 } from './Useful';
 
 describe('isCross', () => {
