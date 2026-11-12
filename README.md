@@ -76,13 +76,13 @@ Be sure you have:
 
 - [GNU Make](https://www.gnu.org/software/make/)
 - [Docker](https://www.docker.com/)
-- [Docker-compose](https://docs.docker.com/compose/)
+- [Docker Compose](https://docs.docker.com/compose/) (v2, `docker compose`)
 
-Then run simply: `make run`
+Then run simply: `make run` (starts MapServer 8.6)
 
 You can now show predefined mapfiles at this url:
 
-<http://localhost:8380/mapserv?service=wms&version=1.3.0&request=getmap&bbox=46.4,6.4,47.2,7.8&layers=line_simple_line&width=1200&height=800&format=image/jpeg&CRS=EPSG:4326>
+<http://localhost:8380/?service=wms&version=1.3.0&request=getmap&bbox=46.4,6.4,47.2,7.8&layers=line_simple_line&width=1200&height=800&format=image/jpeg&CRS=EPSG:4326>
 
 Set the `layers` param to display other layers (from layers defined in /data/mapfiles).
 
