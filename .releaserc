@@ -17,7 +17,7 @@
       {
         "preset": "conventionalcommits",
         "presetConfig": {
-          "header": "Changelog of GeoStyler Parser for ArcGIS Pro layer files."
+          "header": "Changelog of GeoStyler Mapfile Parser (MapServer)"
         }
       }
     ],
