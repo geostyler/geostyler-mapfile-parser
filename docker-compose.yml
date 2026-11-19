@@ -1,12 +1,14 @@
-data:
-  image: geostyler_mapfile_parser_data
+services:
+  data:
+    image: geostyler_mapfile_parser_data
 
-mapserver:
-  image: camptocamp/mapserver:7.6
-  volumes_from:
-    - data
-  environment:
-    MS_DEBUGLEVEL: 2
-  ports:
-    - 8380:80
-  stop_signal: SIGKILL
+  mapserver:
+    image: camptocamp/mapserver:8.6
+    volumes_from:
+      - data
+    environment:
+      MS_DEBUGLEVEL: 5
+      MAPSERVER_CONFIG_FILE: /etc/mapserver/mapserver.conf
+    ports:
+      - 8380:80
+    stop_signal: SIGKILL

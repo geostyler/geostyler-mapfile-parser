@@ -4,7 +4,7 @@ import { beforeEach, expect, it, describe } from 'vitest';
 import * as fs from 'fs';
 import MapfileStyleParser from './MapfileStyleParser';
 
-import { ComparisonFilter, Filter } from 'geostyler-style';
+import { ComparisonFilter } from 'geostyler-style';
 
 import point_simple_point from '../data/styles/point_simple_point';
 import line_simple_line from '../data/styles/line_simple_line';
@@ -30,7 +30,6 @@ import raster_resampling_bilinear from '../data/styles/raster_resampling_bilinea
 import raster_resampling_nearest from '../data/styles/raster_resampling_nearest';
 import line_set_of_expressions from '../data/styles/line_set_of_expressions';
 import point_symbol_style_in_label from '../data/styles/point_symbol_style_in_label';
-
 
 it('MapfileStyleParser is defined', () => {
   expect(MapfileStyleParser).toBeDefined();
@@ -67,7 +66,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PolygonSymbolizer', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/polygon_simple_polygon.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/polygon_simple_polygon.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(polygon_simple_polygon);
@@ -83,7 +85,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can convert a RGB color to hexdecimal format', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_rgb_to_hex.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_simple_rgb_to_hex.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_rgb_to_hex);
@@ -107,7 +112,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a PointSymbolizer with style tags', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_st_sample_style_tags.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags);
@@ -115,7 +123,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer with many classes', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_simple_many_classes_filters.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_simple_many_classes_filters.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_simple_many_classes_filters);
@@ -123,7 +134,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple sample MapFile PointSymbolizer with style tags', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_st_sample_style_tags.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags);
@@ -131,7 +145,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer with filter list', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags_single_filter_list.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_st_sample_style_tags_single_filter_list.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags_single_filter_list);
@@ -139,7 +156,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile PointSymbolizer with filter regex', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_st_sample_style_tags_single_filter_regex.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_st_sample_style_tags_single_filter_regex.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_st_sample_style_tags_single_filter_regex);
@@ -171,7 +191,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
     */
     it('can convert a RGBRGB range to hexadecimal array', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/raster_rgbrange_to_hexarray.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/raster_rgbrange_to_hexarray.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_rgbrange_to_hexarray);
@@ -179,7 +202,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can resample a simple MapFile RasterSymbolizer (average)', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/raster_resampling_average.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/raster_resampling_average.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_average);
@@ -187,7 +213,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can resample a simple MapFile RasterSymbolizer (bilinear)', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/raster_resampling_bilinear.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/raster_resampling_bilinear.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_bilinear);
@@ -195,7 +224,10 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can resample a simple MapFile RasterSymbolizer (nearest)', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/raster_resampling_nearest.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/raster_resampling_nearest.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readStyle(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(raster_resampling_nearest);
@@ -203,19 +235,24 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can read a simple MapFile with several filter expressions', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/line_set_of_expressions.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/line_set_of_expressions.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readMultiStyles(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(line_set_of_expressions);
     });
     it('can read a simple MapFile with symbol style in label', async () => {
       expect.assertions(2);
-      const mapfile = fs.readFileSync('./data/mapfiles/point_symbol_style_in_label.map', 'utf8');
+      const mapfile = fs.readFileSync(
+        './data/mapfiles/point_symbol_style_in_label.map',
+        'utf8',
+      );
       const { output: geoStylerStyle } = await styleParser.readMultiStyles(mapfile);
       expect(geoStylerStyle).toBeDefined();
       expect(geoStylerStyle).toEqual(point_symbol_style_in_label);
     });
-
   });
 
   describe('#getFilterFromMapfileExpression', () => {
@@ -225,8 +262,13 @@ describe('MapfileStyleParser implements StyleParser', () => {
 
     it('can parse simple expression', () => {
       const mapfileExpression = '( "[attribute_name]" == "string_literal" )';
-      const geoStylerFilter: Filter = styleParser.getFilterFromMapfileExpression(mapfileExpression);
-      expect(geoStylerFilter).toEqual(['==', 'attribute_name', 'string_literal'] as ComparisonFilter);
+      const geoStylerFilter =
+        styleParser.getFilterFromMapfileExpression(mapfileExpression);
+      expect(geoStylerFilter).toEqual([
+        '==',
+        'attribute_name',
+        'string_literal',
+      ] as ComparisonFilter);
     });
   });
 
