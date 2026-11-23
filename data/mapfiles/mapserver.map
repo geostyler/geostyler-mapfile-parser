@@ -4,13 +4,13 @@
 # Test requests:
 #
 # WMS GetCapabilities:
-# /mapserv?service=wms&version=1.1.1&request=getcapabilities
+# /?service=wms&version=1.1.1&request=getcapabilities
 #
 # WMS GetMap:
-# /mapserv?service=wms&version=1.1.1&request=getmap&bbox=-180,-90,180,90&layers=countries&width=600&height=400&srs=EPSG:4326&format=image/png
+# /?service=wms&version=1.1.1&request=getmap&bbox=-180,-90,180,90&layers=countries&width=600&height=400&srs=EPSG:4326&format=image/png
 #
 # WMS GetFeatureInfo:
-# /mapserv?service=wms&version=1.1.1&request=getfeatureinfo&bbox=-180,-90,180,90&layers=countries&query_layers=countries&width=600&height=400&srs=EPSG:4326&format=image/png&x=180&y=90&info_format=application/vnd.ogc.gml
+# /?service=wms&version=1.1.1&request=getfeatureinfo&bbox=-180,-90,180,90&layers=countries&query_layers=countries&width=600&height=400&srs=EPSG:4326&format=image/png&x=180&y=90&info_format=application/vnd.ogc.gml
 #
 
 MAP
@@ -18,7 +18,7 @@ MAP
 
     # For Windows users: uncomment this line and adapt it to your
     # own mapserver's nad folder (use regular slash "/")
-    # CONFIG "PROJ_LIB" "C:/path/to/ms4w/proj/nad"
+    # CONFIG "PROJ_DATA" "C:/path/to/ms4w/share/proj"
 
     EXTENT -180 -90 180 90
     UNITS METERS
@@ -39,7 +39,7 @@ MAP
     STATUS ON
 
     FONTSET "fonts.conf"
-    SYMBOLSET "data/mapfiles/symbols.sym"
+    SYMBOLSET "symbols.sym"
 
     OUTPUTFORMAT
         NAME jpeg
@@ -78,15 +78,16 @@ MAP
         METADATA
             "wms_title" "Geostyler-mapfile-parser"
             "wms_abstract" "Geostyler-mapfile-parser"
-            #"wms_onlineresource" "http://mapserver//mapserv"
+            #"wms_onlineresource" "http://mapserver/"
             "wms_srs" "EPSG:4326"
             "wms_extent" "-180 -90 180 90"
             "wms_encoding" "UTF-8"
+            "wms_allow_getmap_without_styles" "true"
             "wms_enable_request" "*"
             "wfs_enable_request" "!*"
             "wfs_encoding" "UTF-8"
             "wfs_getfeature_formatlist" "gml,geojson"
-            #"wfs_onlineresource" "http://mapserver/mapserv"
+            #"wfs_onlineresource" "http://mapserver/"
         END
     END
 

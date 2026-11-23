@@ -1,6 +1,6 @@
 import { Style } from 'geostyler-style';
 
-const lineExpressionStyle: Style = [{
+const lineExpressionStyle: Style[] = [{
   name: 'roads_inline',
   rules: [
     {
