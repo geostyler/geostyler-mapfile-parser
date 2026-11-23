@@ -3,7 +3,7 @@ on: pull_request
 
 jobs:
   build:
-    uses: geostyler/workflows/.github/workflows/on-pull-request.yml@v1.0.0
+    uses: geostyler/workflows/.github/workflows/on-pull-request.yml@v1.0.1
     with:
       node-versions: '["24"]'
       package-manager: npm
