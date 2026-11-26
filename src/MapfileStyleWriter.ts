@@ -77,7 +77,7 @@ export function fillToMapfileStyle(fill: FillSymbolizer): MapfileStyleOutput {
 
   const outlineOpacity = asNumber(fill.outlineOpacity);
   const outlinecolor = toMapfileColor(outlineHex, [opacity, outlineOpacity]);
-  
+
   // Only set WIDTH, LINECAP and LINEJOIN if there is an outline color.
   const hasOutline = outlinecolor !== undefined;
   const width = hasOutline ? outlineWidth : undefined;
