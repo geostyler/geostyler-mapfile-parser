@@ -197,3 +197,41 @@ interface MapfileOutputformat {
   extension: string;
   fromatoptions: string[];
 }
+
+/**
+ * The LAYER that the writer outputs. It has only the keywords that the writer supports.
+ */
+export interface MapfileLayerOutput {
+  name?: string;
+  classes: MapfileClassOutput[];
+}
+
+/**
+ * The CLASS that the writer outputs.
+ */
+export interface MapfileClassOutput {
+  name?: string;
+  styles: MapfileStyleOutput[];
+}
+
+/**
+ * The STYLE that the writer outputs.
+ * A color is `#RRGGBB`, or `#RRGGBBAA` when it is transparent.
+ */
+export interface MapfileStyleOutput {
+  color?: string;
+  outlinecolor?: string;
+  width?: number;
+  linecap?: MapfileLineCap;
+  linejoin?: MapfileLineJoin;
+}
+
+/**
+ * The LINECAP values that the writer outputs.
+ */
+export type MapfileLineCap = 'butt' | 'round' | 'square';
+
+/**
+ * The LINEJOIN values that the writer outputs.
+ */
+export type MapfileLineJoin = 'bevel' | 'round' | 'miter';
