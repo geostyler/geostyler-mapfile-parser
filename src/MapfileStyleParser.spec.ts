@@ -276,5 +276,13 @@ describe('MapfileStyleParser implements StyleParser', () => {
     it('is defined', () => {
       expect(styleParser.writeStyle).toBeDefined();
     });
+
+    it('writes a polygon fill as a Mapfile LAYER', async () => {
+      const { output } = await styleParser.writeStyle({
+        name: 'buildings',
+        rules: [{ name: 'all', symbolizers: [{ kind: 'Fill', color: '#ff0000' }] }],
+      });
+      expect(output).toContain('COLOR "#FF0000"');
+    });
   });
 });

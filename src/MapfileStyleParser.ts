@@ -1,4 +1,6 @@
 import { parseMapfile } from './mapfile2js/parseMapfile';
+import { stringifyMapfileLayer } from './mapfile2js/stringifyMapfile';
+import { styleToMapfileLayer } from './MapfileStyleWriter';
 import {
   WARNINGS,
   rgbToHex,
@@ -1203,7 +1205,8 @@ export class MapfileStyleParser implements StyleParser<string> {
   writeStyle(geoStylerStyle: Style): Promise<WriteStyleResult<string>> {
     return new Promise<WriteStyleResult<string>>((resolve) => {
       try {
-        const mapfileString = 'TODO';
+        const mapfileLayer = styleToMapfileLayer(geoStylerStyle);
+        const mapfileString = stringifyMapfileLayer(mapfileLayer);
         resolve({
           output: mapfileString,
         });
